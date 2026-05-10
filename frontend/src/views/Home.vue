@@ -26,16 +26,37 @@
     <template v-else>
     <!-- Barra de navegación superior -->
     <nav class="navbar">
-      <div class="nav-brand">YOUWORLD</div>
+      <div class="nav-left">
+        <div class="nav-brand">YOUWORLD</div>
+        <div class="nav-info-tabs">
+          <button
+            v-for="tab in infoTabs"
+            :key="tab.key"
+            class="nav-info-tab"
+            :class="{ active: activeInfoPanel === tab.key }"
+            @click="toggleInfoPanel(tab.key)"
+          >
+            {{ tab.label }}
+          </button>
+        </div>
+      </div>
       <div class="nav-links">
         <LanguageSwitcher />
-        <a href="https://github.com/davidsilvbv-glitch/YouWorld" target="_blank" class="github-link">
-          {{ $t('nav.visitGithub') }} <span class="arrow">↗</span>
-        </a>
       </div>
     </nav>
 
     <div class="main-content">
+      <section v-if="activeInfoPanel" class="info-panel">
+        <div class="info-panel-inner">
+          <button class="info-close" @click="activeInfoPanel = null">×</button>
+          <h2>{{ activeInfoContent.title }}</h2>
+          <p v-if="activeInfoPanel !== 'workflow'">{{ activeInfoContent.body }}</p>
+          <ol v-else class="info-steps">
+            <li v-for="step in workflowInfo" :key="step">{{ step }}</li>
+          </ol>
+        </div>
+      </section>
+
       <!-- Sección superior: área Hero -->
       <section class="hero-section">
         <div class="hero-left">
@@ -253,8 +274,6 @@
         </div>
       </section>
 
-      <!-- Base de datos de proyectos históricos -->
-      <HistoryDatabase />
     </div>
     </template>
   </div>
@@ -265,13 +284,41 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { availableLocales } from '@/i18n'
-import HistoryDatabase from '../components/HistoryDatabase.vue'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 
 const router = useRouter()
-const { locale } = useI18n({ useScope: 'global' })
+const { locale, t } = useI18n({ useScope: 'global' })
 const hasChosenLanguage = ref(localStorage.getItem('youworld:languageSelected') === 'true')
 const introLocales = computed(() => availableLocales.filter(item => ['es', 'en'].includes(item.key)))
+const activeInfoPanel = ref(null)
+
+const infoTabs = computed(() => [
+  { key: 'how', label: t('home.howItWorksTitle') },
+  { key: 'workflow', label: t('home.workflowPreviewTitle') },
+  { key: 'why', label: t('home.whyChooseTitle') }
+])
+
+const workflowInfo = computed(() => [
+  t('home.step01Title'),
+  t('home.step02Title'),
+  t('home.step03Title'),
+  t('home.step04Title'),
+  t('home.step05Title')
+])
+
+const activeInfoContent = computed(() => {
+  if (activeInfoPanel.value === 'workflow') {
+    return { title: t('home.workflowPreviewTitle'), body: t('home.workflowPreviewDesc') }
+  }
+  if (activeInfoPanel.value === 'why') {
+    return { title: t('home.whyChooseTitle'), body: t('home.whyChooseDesc') }
+  }
+  return { title: t('home.howItWorksTitle'), body: t('home.howItWorksDesc') }
+})
+
+const toggleInfoPanel = (key) => {
+  activeInfoPanel.value = activeInfoPanel.value === key ? null : key
+}
 
 const chooseLanguage = (localeKey) => {
   locale.value = localeKey
@@ -1350,6 +1397,249 @@ const startSimulation = () => {
   .hero-logo {
     max-width: 200px;
     margin-bottom: 20px;
+  }
+}
+/* YouWorld sober pass */
+.home-container {
+  background:
+    radial-gradient(circle at 18% 8%, rgba(63, 22, 103, 0.38), transparent 32%),
+    radial-gradient(circle at 86% 18%, rgba(72, 34, 111, 0.22), transparent 28%),
+    linear-gradient(135deg, #05020b 0%, #0a0414 52%, #080312 100%);
+}
+
+.home-container::before,
+.intro-grid,
+.hero-section,
+.insight-strip,
+.left-panel {
+  display: none;
+}
+
+.intro-screen {
+  padding: 24px;
+}
+
+.intro-shell {
+  width: min(720px, 100%);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  text-align: center;
+}
+
+.intro-shell::before {
+  display: none;
+}
+
+.intro-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  color: rgba(114, 246, 255, 0.72);
+}
+
+.intro-title {
+  margin: 18px 0 16px;
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  letter-spacing: -0.07em;
+  text-shadow: none;
+}
+
+.intro-copy {
+  margin: 0 auto;
+  max-width: 620px;
+  font-size: clamp(1rem, 1.8vw, 1.22rem);
+  line-height: 1.72;
+  color: rgba(246, 239, 255, 0.72);
+}
+
+.intro-actions {
+  margin-top: 34px;
+  justify-content: center;
+  gap: 14px;
+}
+
+.intro-action-label {
+  width: 100%;
+  color: rgba(246, 239, 255, 0.52);
+  font-size: 0.74rem;
+}
+
+.intro-language-btn {
+  min-width: 118px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(221, 196, 255, 0.22);
+  box-shadow: none;
+}
+
+.intro-language-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(114, 246, 255, 0.1);
+}
+
+.navbar {
+  height: 72px;
+  padding: 0 clamp(18px, 5vw, 64px);
+  background: rgba(5, 2, 11, 0.82);
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: clamp(22px, 4vw, 56px);
+  min-width: 0;
+}
+
+.nav-brand {
+  font-size: 1rem;
+  letter-spacing: 0.16em;
+  text-shadow: none;
+  white-space: nowrap;
+}
+
+.nav-info-tabs {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 3vw, 34px);
+}
+
+.nav-info-tab {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(246, 239, 255, 0.62);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+.nav-info-tab:hover,
+.nav-info-tab.active {
+  color: #f6efff;
+}
+
+.main-content {
+  max-width: 980px;
+  padding: clamp(28px, 5vw, 58px) clamp(18px, 5vw, 44px) 72px;
+}
+
+.info-panel {
+  margin: 0 0 28px;
+}
+
+.info-panel-inner {
+  position: relative;
+  padding: 24px 28px;
+  border: 1px solid rgba(221, 196, 255, 0.16);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.info-panel h2 {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+  color: #f6efff;
+}
+
+.info-panel p,
+.info-steps {
+  margin: 0;
+  color: rgba(246, 239, 255, 0.7);
+  line-height: 1.7;
+}
+
+.info-steps {
+  padding-left: 20px;
+}
+
+.info-steps li + li {
+  margin-top: 8px;
+}
+
+.info-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  border: 0;
+  background: transparent;
+  color: rgba(246, 239, 255, 0.52);
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.dashboard-section {
+  display: block;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.right-panel {
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.right-panel::after {
+  display: none;
+}
+
+.console-box {
+  border-radius: 18px;
+  background: rgba(10, 5, 24, 0.48);
+  border-color: rgba(221, 196, 255, 0.18);
+  box-shadow: none;
+}
+
+.upload-zone,
+.input-wrapper,
+.start-engine-btn,
+.metric-card {
+  border-radius: 12px;
+}
+
+.upload-zone {
+  height: 250px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.input-wrapper {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.start-engine-btn {
+  overflow: hidden;
+}
+
+@media (max-width: 720px) {
+  .navbar {
+    height: auto;
+    align-items: flex-start;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    gap: 14px;
+  }
+
+  .nav-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .nav-info-tabs {
+    flex-wrap: wrap;
+    gap: 12px 18px;
+  }
+
+  .nav-links {
+    margin-left: auto;
   }
 }
 </style>
