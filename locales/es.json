@@ -35,6 +35,15 @@
     "visitGithub": "Visita YouWorld en GitHub"
   },
   "home": {
+    "introEyebrow": "Simulacion social predictiva",
+    "introDescription": "Convierte documentos, senales y preguntas en un mundo simulado donde agentes inteligentes prueban escenarios antes de que pasen.",
+    "chooseLanguage": "Elige tu idioma para entrar",
+    "howItWorksTitle": "Como funciona",
+    "howItWorksDesc": "Sube documentos, describe el escenario y YouWorld crea una base de realidad para simular respuestas colectivas.",
+    "workflowPreviewTitle": "Secuencia de trabajo",
+    "workflowPreviewDesc": "Primero lee contexto, luego construye memoria, configura agentes y finalmente genera una simulacion accionable.",
+    "whyChooseTitle": "Por que elegirnos",
+    "whyChooseDesc": "Disenado para explorar decisiones complejas con bajo costo inicial, lectura documental y resultados rapidos.",
     "tagline": "Motor de inteligencia colectiva simple y universal",
     "version": "",
     "heroTitle1": "Sube cualquier informe",

@@ -1,5 +1,29 @@
 <template>
   <div class="home-container">
+    <section v-if="!hasChosenLanguage" class="intro-screen">
+      <div class="intro-grid"></div>
+      <div class="intro-shell">
+        <p class="intro-eyebrow">{{ $t('home.introEyebrow') }}</p>
+        <h1 class="intro-title">YouWorld</h1>
+        <p class="intro-copy">{{ $t('home.introDescription') }}</p>
+
+        <div class="intro-actions">
+          <span class="intro-action-label">{{ $t('home.chooseLanguage') }}</span>
+          <div class="intro-language-list">
+            <button
+              v-for="localeOption in introLocales"
+              :key="localeOption.key"
+              class="intro-language-btn"
+              @click="chooseLanguage(localeOption.key)"
+            >
+              {{ localeOption.label }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <template v-else>
     <!-- Barra de navegación superior -->
     <nav class="navbar">
       <div class="nav-brand">YOUWORLD</div>
@@ -43,8 +67,14 @@
         
         <div class="hero-right">
           <!-- Área del Logo -->
-          <div class="logo-container">
-            <img src="../assets/logo/MiroFish_logo_left.jpeg" alt="YouWorld Logo" class="hero-logo" />
+          <div class="signal-map" aria-hidden="true">
+            <div class="signal-ring ring-one"></div>
+            <div class="signal-ring ring-two"></div>
+            <div class="signal-node node-one"></div>
+            <div class="signal-node node-two"></div>
+            <div class="signal-node node-three"></div>
+            <div class="signal-line line-one"></div>
+            <div class="signal-line line-two"></div>
           </div>
           
           <button class="scroll-down-btn" @click="scrollToBottom">
@@ -54,6 +84,24 @@
       </section>
 
       <!-- Sección inferior: diseño de dos columnas -->
+      <section class="insight-strip">
+        <article class="insight-card">
+          <span class="insight-num">01</span>
+          <h3>{{ $t('home.howItWorksTitle') }}</h3>
+          <p>{{ $t('home.howItWorksDesc') }}</p>
+        </article>
+        <article class="insight-card">
+          <span class="insight-num">02</span>
+          <h3>{{ $t('home.workflowPreviewTitle') }}</h3>
+          <p>{{ $t('home.workflowPreviewDesc') }}</p>
+        </article>
+        <article class="insight-card">
+          <span class="insight-num">03</span>
+          <h3>{{ $t('home.whyChooseTitle') }}</h3>
+          <p>{{ $t('home.whyChooseDesc') }}</p>
+        </article>
+      </section>
+
       <section class="dashboard-section">
         <!-- Columna izquierda: estado y pasos -->
         <div class="left-panel">
@@ -208,16 +256,30 @@
       <!-- Base de datos de proyectos históricos -->
       <HistoryDatabase />
     </div>
+    </template>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { availableLocales } from '@/i18n'
 import HistoryDatabase from '../components/HistoryDatabase.vue'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 
 const router = useRouter()
+const { locale } = useI18n({ useScope: 'global' })
+const hasChosenLanguage = ref(localStorage.getItem('youworld:languageSelected') === 'true')
+const introLocales = computed(() => availableLocales.filter(item => ['es', 'en'].includes(item.key)))
+
+const chooseLanguage = (localeKey) => {
+  locale.value = localeKey
+  localStorage.setItem('locale', localeKey)
+  localStorage.setItem('youworld:languageSelected', 'true')
+  document.documentElement.lang = localeKey
+  hasChosenLanguage.value = true
+}
 
 // Datos del formulario
 const formData = ref({
@@ -873,8 +935,405 @@ const startSimulation = () => {
   100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
 }
 
+/* YouWorld redesign */
+.home-container {
+  --yw-bg: #080414;
+  --yw-bg-2: #14072b;
+  --yw-surface: rgba(255, 255, 255, 0.075);
+  --yw-line: rgba(221, 196, 255, 0.2);
+  --yw-text: #f6efff;
+  --yw-muted: #b9a9ce;
+  --yw-accent: #ff7a1a;
+  --yw-cyan: #72f6ff;
+  min-height: 100vh;
+  color: var(--yw-text);
+  background:
+    radial-gradient(circle at 12% 12%, rgba(113, 25, 185, 0.55), transparent 34%),
+    radial-gradient(circle at 82% 20%, rgba(255, 122, 26, 0.22), transparent 28%),
+    linear-gradient(135deg, var(--yw-bg), var(--yw-bg-2) 58%, #05020b);
+  overflow-x: hidden;
+}
+
+.home-container::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent 85%);
+}
+
+.intro-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  position: relative;
+  isolation: isolate;
+}
+
+.intro-grid {
+  position: absolute;
+  inset: 7%;
+  border: 1px solid var(--yw-line);
+  background:
+    linear-gradient(90deg, transparent 49%, rgba(114, 246, 255, 0.12) 50%, transparent 51%),
+    linear-gradient(transparent 49%, rgba(255, 122, 26, 0.12) 50%, transparent 51%);
+  background-size: 86px 86px;
+  opacity: 0.65;
+  transform: perspective(900px) rotateX(62deg);
+  transform-origin: center bottom;
+}
+
+.intro-shell {
+  width: min(920px, 100%);
+  padding: clamp(32px, 7vw, 76px);
+  border: 1px solid var(--yw-line);
+  background: linear-gradient(145deg, rgba(20, 7, 43, 0.78), rgba(8, 4, 20, 0.93));
+  box-shadow: 0 30px 120px rgba(0, 0, 0, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  position: relative;
+}
+
+.intro-shell::before {
+  content: '';
+  position: absolute;
+  inset: -1px auto auto -1px;
+  width: 42%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--yw-accent), var(--yw-cyan));
+}
+
+.intro-eyebrow,
+.orange-tag,
+.version-text,
+.console-label,
+.panel-header,
+.steps-header,
+.insight-num,
+.intro-action-label {
+  color: var(--yw-cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.intro-title {
+  margin: 18px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(3.5rem, 12vw, 9rem);
+  line-height: 0.88;
+  letter-spacing: -0.08em;
+  text-shadow: 0 0 42px rgba(114, 246, 255, 0.18);
+}
+
+.intro-copy {
+  max-width: 720px;
+  color: var(--yw-muted);
+  font-size: clamp(1.05rem, 2vw, 1.45rem);
+  line-height: 1.65;
+}
+
+.intro-actions {
+  margin-top: 42px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.intro-language-list {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.intro-language-btn,
+.github-link {
+  border: 1px solid var(--yw-line);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--yw-text);
+}
+
+.intro-language-btn {
+  padding: 14px 22px;
+  min-width: 128px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.intro-language-btn:hover {
+  transform: translateY(-3px);
+  border-color: var(--yw-cyan);
+  background: rgba(114, 246, 255, 0.12);
+}
+
+.navbar {
+  height: 76px;
+  padding: 0 5vw;
+  background: rgba(8, 4, 20, 0.72);
+  border-bottom: 1px solid var(--yw-line);
+  backdrop-filter: blur(18px);
+}
+
+.nav-brand {
+  color: var(--yw-text);
+  letter-spacing: 0.14em;
+  text-shadow: 0 0 28px rgba(114, 246, 255, 0.25);
+}
+
+.github-link {
+  padding: 11px 16px;
+  text-decoration: none;
+}
+
+.main-content {
+  max-width: 1440px;
+  padding: 64px 5vw 90px;
+  margin: 0 auto;
+}
+
+.hero-section {
+  min-height: auto;
+  padding: 34px 0 26px;
+  align-items: stretch;
+  gap: 48px;
+}
+
+.hero-left {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.035));
+  border: 1px solid var(--yw-line);
+  padding: clamp(30px, 5vw, 56px);
+  position: relative;
+}
+
+.hero-left::after,
+.right-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 1px solid rgba(255, 122, 26, 0.16);
+  transform: translate(10px, 10px);
+}
+
+.main-title {
+  color: var(--yw-text);
+  font-size: clamp(2.8rem, 6vw, 6rem);
+  line-height: 0.96;
+  letter-spacing: -0.07em;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #ffffff, #b083ff 45%, var(--yw-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-desc {
+  color: var(--yw-muted);
+  font-size: 1.05rem;
+}
+
+.highlight-bold,
+.highlight-orange,
+.highlight-code {
+  color: #fff;
+  background: rgba(255, 122, 26, 0.14);
+}
+
+.hero-right {
+  display: grid;
+  place-items: center;
+  min-height: 360px;
+}
+
+.signal-map {
+  width: min(430px, 80vw);
+  aspect-ratio: 1;
+  position: relative;
+  border: 1px solid var(--yw-line);
+  background:
+    radial-gradient(circle at center, rgba(114, 246, 255, 0.18), transparent 24%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+  box-shadow: inset 0 0 80px rgba(114, 246, 255, 0.08), 0 28px 90px rgba(0, 0, 0, 0.38);
+}
+
+.signal-ring,
+.signal-node,
+.signal-line {
+  position: absolute;
+}
+
+.signal-ring {
+  inset: 18%;
+  border: 1px solid rgba(114, 246, 255, 0.3);
+  transform: rotate(45deg);
+}
+
+.ring-two {
+  inset: 33%;
+  border-color: rgba(255, 122, 26, 0.35);
+}
+
+.signal-node {
+  width: 13px;
+  height: 13px;
+  background: var(--yw-cyan);
+  box-shadow: 0 0 24px var(--yw-cyan);
+}
+
+.node-one { top: 24%; left: 28%; }
+.node-two { right: 23%; top: 38%; background: var(--yw-accent); box-shadow: 0 0 24px var(--yw-accent); }
+.node-three { left: 47%; bottom: 22%; }
+
+.signal-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(114, 246, 255, 0.75), transparent);
+  transform-origin: left center;
+}
+
+.line-one { width: 58%; left: 25%; top: 42%; transform: rotate(18deg); }
+.line-two { width: 44%; left: 33%; bottom: 34%; transform: rotate(-34deg); }
+
+.scroll-down-btn {
+  border-color: var(--yw-line);
+  color: var(--yw-text);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.insight-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin: 8px 0 32px;
+}
+
+.insight-card,
+.left-panel,
+.right-panel,
+.console-box {
+  border: 1px solid var(--yw-line);
+  background: rgba(10, 5, 24, 0.72);
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(16px);
+}
+
+.insight-card {
+  padding: 24px;
+}
+
+.insight-card h3 {
+  margin: 10px 0 8px;
+  color: var(--yw-text);
+  font-size: 1.18rem;
+}
+
+.insight-card p,
+.section-desc,
+.metric-label,
+.step-desc,
+.console-meta,
+.upload-hint {
+  color: var(--yw-muted);
+}
+
+.dashboard-section {
+  gap: 28px;
+}
+
+.left-panel,
+.right-panel {
+  padding: 30px;
+  position: relative;
+}
+
+.section-title,
+.metric-value,
+.step-title,
+.upload-title {
+  color: var(--yw-text);
+}
+
+.metric-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--yw-line);
+}
+
+.workflow-item {
+  border-bottom-color: var(--yw-line);
+}
+
+.step-num {
+  color: var(--yw-cyan);
+}
+
+.console-box {
+  padding: 28px;
+}
+
+.upload-zone,
+.input-wrapper {
+  background: rgba(255, 255, 255, 0.045);
+  border-color: var(--yw-line);
+}
+
+.upload-zone:hover,
+.upload-zone.drag-over {
+  background: rgba(114, 246, 255, 0.08);
+  border-color: var(--yw-cyan);
+}
+
+.upload-icon {
+  border-color: var(--yw-line);
+  color: var(--yw-cyan);
+}
+
+.file-item {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--yw-line);
+  color: var(--yw-text);
+}
+
+.code-input {
+  color: var(--yw-text);
+}
+
+.code-input::placeholder {
+  color: rgba(246, 239, 255, 0.44);
+}
+
+.model-badge {
+  color: var(--yw-cyan);
+}
+
+.start-engine-btn:not(:disabled) {
+  background: linear-gradient(90deg, #7c2cff, var(--yw-accent));
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.start-engine-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, var(--yw-accent), #ffcf70);
+  color: #12051f;
+}
+
+.start-engine-btn:disabled {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(246, 239, 255, 0.42);
+  border-color: var(--yw-line);
+}
+
 /* Adaptación responsive */
 @media (max-width: 1024px) {
+  .insight-strip {
+    grid-template-columns: 1fr;
+  }
+
   .dashboard-section {
     flex-direction: column;
   }

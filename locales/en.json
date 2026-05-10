@@ -35,6 +35,15 @@
     "visitGithub": "Visit YouWorld on GitHub"
   },
   "home": {
+    "introEyebrow": "Predictive social simulation",
+    "introDescription": "Turn documents, signals, and questions into a simulated world where intelligent agents test scenarios before they happen.",
+    "chooseLanguage": "Choose your language to enter",
+    "howItWorksTitle": "How it works",
+    "howItWorksDesc": "Upload documents, describe the scenario, and YouWorld builds a reality base to simulate collective responses.",
+    "workflowPreviewTitle": "Workflow sequence",
+    "workflowPreviewDesc": "It reads context, builds memory, configures agents, and produces an actionable simulation.",
+    "whyChooseTitle": "Why choose us",
+    "whyChooseDesc": "Built to explore complex decisions with low startup cost, document reading, and fast results.",
     "tagline": "Concise & Universal Swarm Intelligence Engine",
     "version": "",
     "heroTitle1": "Upload Reports,",

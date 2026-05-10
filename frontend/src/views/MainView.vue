@@ -3,7 +3,7 @@
     <!-- Header -->
     <header class="app-header">
       <div class="header-left">
-        <div class="brand" @click="router.push('/')">MIROFISH</div>
+        <div class="brand" @click="router.push('/')">YOUWORLD</div>
       </div>
       
       <div class="header-center">
@@ -541,5 +541,34 @@ onUnmounted(() => {
 
 .panel-wrapper.left {
   border-right: 1px solid #EAEAEA;
+}
+
+/* YouWorld simulation background pass */
+.main-view {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(124, 44, 255, 0.28), transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(255, 122, 26, 0.14), transparent 26%),
+    linear-gradient(135deg, #080414, #14072b 58%, #05020b);
+}
+
+.app-header {
+  background: rgba(8, 4, 20, 0.78);
+  border-bottom-color: rgba(221, 196, 255, 0.2);
+  color: #f6efff;
+  backdrop-filter: blur(18px);
+}
+
+.brand {
+  color: #f6efff;
+  letter-spacing: 0.14em;
+  text-shadow: 0 0 28px rgba(114, 246, 255, 0.22);
+}
+
+.content-area {
+  background: transparent;
+}
+
+.panel-wrapper.left {
+  border-right-color: rgba(221, 196, 255, 0.18);
 }
 </style>
