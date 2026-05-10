@@ -28,19 +28,19 @@
     "files": "files"
   },
   "meta": {
-    "title": "MiroFish - Predict Everything",
-    "description": "MiroFish - Social Media Opinion Simulation System"
+    "title": "YouWorld",
+    "description": "YouWorld - Social simulation and prediction platform"
   },
   "nav": {
-    "visitGithub": "Visit our Github page"
+    "visitGithub": "Visit YouWorld on GitHub"
   },
   "home": {
     "tagline": "Concise & Universal Swarm Intelligence Engine",
-    "version": "/ v0.1-Preview",
+    "version": "",
     "heroTitle1": "Upload Reports,",
     "heroTitle2": "Predict the Future",
     "heroDesc": "From a single document, {brand} extracts reality seeds to auto-generate a parallel world with up to {agentScale}. Inject variables from a god's-eye view to find the {optimalSolution} in complex group dynamics.",
-    "heroDescBrand": "MiroFish",
+    "heroDescBrand": "YouWorld",
     "heroDescAgentScale": "million-scale Agents",
     "heroDescOptimalSolution": "\"local optimum\"",
     "slogan": "Let Agents rehearse the future, let decisions prevail",
@@ -69,7 +69,7 @@
     "inputParams": "Input Parameters",
     "simulationPrompt": ">_ 02 / Simulation Prompt",
     "promptPlaceholder": "// Describe your simulation or prediction requirement in natural language",
-    "engineBadge": "Engine: MiroFish-V1.0",
+    "engineBadge": "Engine: YouWorld",
     "startEngine": "Start Engine",
     "initializing": "Initializing..."
   },

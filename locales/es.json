@@ -28,19 +28,19 @@
     "files": "archivos"
   },
   "meta": {
-    "title": "MiroFish - Predecir Todo",
-    "description": "MiroFish - Sistema de simulación de opinión en redes sociales"
+    "title": "YouWorld",
+    "description": "YouWorld - Plataforma de simulación social y predicción"
   },
   "nav": {
-    "visitGithub": "Visita nuestro GitHub"
+    "visitGithub": "Visita YouWorld en GitHub"
   },
   "home": {
     "tagline": "Motor de inteligencia colectiva simple y universal",
-    "version": "/ v0.1-ESP",
+    "version": "",
     "heroTitle1": "Sube cualquier informe",
     "heroTitle2": "Predice el futuro al instante",
     "heroDesc": "Incluso con solo un fragmento de texto, {brand} puede generar automáticamente un mundo paralelo con hasta {agentScale} basándose en las semillas de la realidad. Inyectando variables desde una perspectiva omnisciente, encuentra la {optimalSolution} en un entorno dinámico de interacciones grupales complejas",
-    "heroDescBrand": "MiroFish",
+    "heroDescBrand": "YouWorld",
     "heroDescAgentScale": "millones de Agentes",
     "heroDescOptimalSolution": "\"solución óptima local\"",
     "slogan": "Ensaya el futuro entre Agentes, gana decisiones tras cientos de simulaciones",
@@ -69,7 +69,7 @@
     "inputParams": "Parámetros de entrada",
     "simulationPrompt": ">_ 02 / Prompt de simulación",
     "promptPlaceholder": "// Describe tu necesidad de simulación o predicción en lenguaje natural (ej. Si la universidad emite un comunicado revocando la sanción, ¿qué tendencia de opinión generará?)",
-    "engineBadge": "Motor: MiroFish-V1.0",
+    "engineBadge": "Motor: YouWorld",
     "startEngine": "Iniciar motor",
     "initializing": "Inicializando..."
   },
