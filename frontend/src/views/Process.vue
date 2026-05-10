@@ -1,0 +1,1644 @@
+<template>
+  <div class="process-page">
+    <!-- Barra de navegación superior -->
+    <nav class="navbar">
+      <div class="nav-brand" @click="goHome">MIROFISH</div>
+      
+      <!-- indicador de pasos intermedios -->
+      <div class="nav-center">
+        <div class="step-badge">{{ t('process.stepLabel') }}</div>
+        <div class="step-name">{{ t('process.stepName') }}</div>
+      </div>
+
+      <div class="nav-status">
+        <span class="status-dot" :class="statusClass"></span>
+        <span class="status-text">{{ statusText }}</span>
+      </div>
+    </nav>
+
+    <!-- área de contenido principal -->
+    <div class="main-content">
+      <!-- izquierda: muestra de grafo en tiempo real -->
+      <div class="left-panel" :class="{ 'full-screen': isFullScreen }">
+        <div class="panel-header">
+          <div class="header-left">
+            <span class="header-deco">◆</span>
+            <span class="header-title">{{ t('process.realtimeGraph') }}</span>
+          </div>
+          <div class="header-right">
+            <template v-if="graphData">
+              <span class="stat-item">{{ graphData.node_count || graphData.nodes?.length || 0 }} {{ t('process.nodeCount') }}</span>
+              <span class="stat-divider">|</span>
+              <span class="stat-item">{{ graphData.edge_count || graphData.edges?.length || 0 }} {{ t('process.edgeCount') }}</span>
+              <span class="stat-divider">|</span>
+            </template>
+            <div class="action-buttons">
+                <button class="action-btn" @click="refreshGraph" :disabled="graphLoading" :title="t('graph.refreshTooltip')">
+                  <span class="icon-refresh" :class="{ 'spinning': graphLoading }">↻</span>
+                </button>
+                <button class="action-btn" @click="toggleFullScreen" :title="isFullScreen ? t('process.exitFullScreen') : t('process.enterFullScreen')">
+                  <span class="icon-fullscreen">{{ isFullScreen ? '↙' : '↗' }}</span>
+                </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="graph-container" ref="graphContainer">
+          <!-- visualización del grafo (mostrar siempre que haya datos) -->
+          <div v-if="graphData" class="graph-view">
+            <svg ref="graphSvg" class="graph-svg"></svg>
+            <!-- indicador de construcción en curso -->
+            <div v-if="currentPhase === 1" class="graph-building-hint">
+              <span class="building-dot"></span>
+              {{ t('process.realtimeUpdating') }}
+            </div>
+            
+            <!-- Panel de detalles de nodo/borde -->
+            <div v-if="selectedItem" class="detail-panel">
+              <div class="detail-panel-header">
+                <span class="detail-title">{{ selectedItem.type === 'node' ? $t('graphPanel.nodeDetails') : $t('process.relationship') }}</span>
+                <span v-if="selectedItem.type === 'node'" class="detail-badge" :style="{ background: selectedItem.color }">
+                  {{ selectedItem.entityType }}
+                </span>
+                <button class="detail-close" @click="closeDetailPanel">×</button>
+              </div>
+              
+              <!-- Detalles del nodo -->
+              <div v-if="selectedItem.type === 'node'" class="detail-content">
+                <div class="detail-row">
+                  <span class="detail-label">{{ $t('process.nameLabel') }}</span>
+                  <span class="detail-value highlight">{{ selectedItem.data.name }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">{{ $t('process.uuidLabel') }}</span>
+                  <span class="detail-value uuid">{{ selectedItem.data.uuid }}</span>
+                </div>
+                <div class="detail-row" v-if="selectedItem.data.created_at">
+                  <span class="detail-label">{{ $t('process.createdLabel') }}</span>
+                  <span class="detail-value">{{ formatDate(selectedItem.data.created_at) }}</span>
+                </div>
+                
+                <!-- Properties / Attributes -->
+                <div class="detail-section" v-if="selectedItem.data.attributes && Object.keys(selectedItem.data.attributes).length > 0">
+                  <span class="detail-label">{{ $t('process.propertiesLabel') }}</span>
+                  <div class="properties-list">
+                    <div v-for="(value, key) in selectedItem.data.attributes" :key="key" class="property-item">
+                      <span class="property-key">{{ key }}:</span>
+                      <span class="property-value">{{ value }}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Summary -->
+                <div class="detail-section" v-if="selectedItem.data.summary">
+                  <span class="detail-label">{{ $t('process.summaryLabel') }}</span>
+                  <p class="detail-summary">{{ selectedItem.data.summary }}</p>
+                </div>
+                
+                <!-- Labels -->
+                <div class="detail-row" v-if="selectedItem.data.labels?.length">
+                  <span class="detail-label">{{ $t('process.labelsLabel') }}</span>
+                  <div class="detail-labels">
+                    <span v-for="label in selectedItem.data.labels" :key="label" class="label-tag">{{ label }}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Detalles del borde -->
+              <div v-else class="detail-content">
+                <!-- mostrar relaciones -->
+                <div class="edge-relation">
+                  <span class="edge-source">{{ selectedItem.data.source_name || selectedItem.data.source_node_name }}</span>
+                  <span class="edge-arrow">→</span>
+                  <span class="edge-type">{{ selectedItem.data.name || selectedItem.data.fact_type || 'RELATED_TO' }}</span>
+                  <span class="edge-arrow">→</span>
+                  <span class="edge-target">{{ selectedItem.data.target_name || selectedItem.data.target_node_name }}</span>
+                </div>
+                
+                <div class="detail-subtitle">{{ $t('process.relationship') }}</div>
+                
+                <div class="detail-row">
+                  <span class="detail-label">{{ $t('process.uuidLabel') }}</span>
+                  <span class="detail-value uuid">{{ selectedItem.data.uuid }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Label:</span>
+                  <span class="detail-value">{{ selectedItem.data.name || selectedItem.data.fact_type || 'RELATED_TO' }}</span>
+                </div>
+                <div class="detail-row" v-if="selectedItem.data.fact_type">
+                  <span class="detail-label">{{ $t('graphPanel.type') }}:</span>
+                  <span class="detail-value">{{ selectedItem.data.fact_type }}</span>
+                </div>
+                
+                <!-- Fact -->
+                <div class="detail-section" v-if="selectedItem.data.fact">
+                  <span class="detail-label">{{ $t('graphPanel.fact') }}:</span>
+                  <p class="detail-summary">{{ selectedItem.data.fact }}</p>
+                </div>
+                
+                <!-- Episodes -->
+                <div class="detail-section" v-if="selectedItem.data.episodes?.length">
+                  <span class="detail-label">{{ $t('graphPanel.episodes') }}:</span>
+                  <div class="episodes-list">
+                    <span v-for="ep in selectedItem.data.episodes" :key="ep" class="episode-tag">{{ ep }}</span>
+                  </div>
+                </div>
+                
+                <div class="detail-row" v-if="selectedItem.data.created_at">
+                  <span class="detail-label">{{ $t('process.createdLabel') }}</span>
+                  <span class="detail-value">{{ formatDate(selectedItem.data.created_at) }}</span>
+                </div>
+                <div class="detail-row" v-if="selectedItem.data.valid_at">
+                  <span class="detail-label">Valid From:</span>
+                  <span class="detail-value">{{ formatDate(selectedItem.data.valid_at) }}</span>
+                </div>
+                <div class="detail-row" v-if="selectedItem.data.invalid_at">
+                  <span class="detail-label">Invalid At:</span>
+                  <span class="detail-value">{{ formatDate(selectedItem.data.invalid_at) }}</span>
+                </div>
+                <div class="detail-row" v-if="selectedItem.data.expired_at">
+                  <span class="detail-label">Expired At:</span>
+                  <span class="detail-value">{{ formatDate(selectedItem.data.expired_at) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- estado de carga -->
+          <div v-else-if="graphLoading" class="graph-loading">
+            <div class="loading-animation">
+              <div class="loading-ring"></div>
+              <div class="loading-ring"></div>
+              <div class="loading-ring"></div>
+            </div>
+            <p class="loading-text">{{ t('graph.loadingGraph') }}</p>
+          </div>
+
+          <!-- construcción Pendiente -->
+          <div v-else-if="currentPhase < 1" class="graph-waiting">
+            <div class="waiting-icon">
+              <svg viewBox="0 0 100 100" class="network-icon">
+                <circle cx="50" cy="20" r="8" fill="none" stroke="#000" stroke-width="1.5"/>
+                <circle cx="20" cy="60" r="8" fill="none" stroke="#000" stroke-width="1.5"/>
+                <circle cx="80" cy="60" r="8" fill="none" stroke="#000" stroke-width="1.5"/>
+                <circle cx="50" cy="80" r="8" fill="none" stroke="#000" stroke-width="1.5"/>
+                <line x1="50" y1="28" x2="25" y2="54" stroke="#000" stroke-width="1"/>
+                <line x1="50" y1="28" x2="75" y2="54" stroke="#000" stroke-width="1"/>
+                <line x1="28" y1="60" x2="72" y2="60" stroke="#000" stroke-width="1" stroke-dasharray="4"/>
+                <line x1="50" y1="72" x2="26" y2="66" stroke="#000" stroke-width="1"/>
+                <line x1="50" y1="72" x2="74" y2="66" stroke="#000" stroke-width="1"/>
+              </svg>
+            </div>
+            <p class="waiting-text">{{ t('process.waitingOntologyGen') }}</p>
+            <p class="waiting-hint">{{ t('process.autoStartHint') }}</p>
+          </div>
+
+          <!-- construcción en curso pero aún sin datos -->
+          <div v-else-if="currentPhase === 1 && !graphData" class="graph-waiting">
+            <div class="loading-animation">
+              <div class="loading-ring"></div>
+              <div class="loading-ring"></div>
+              <div class="loading-ring"></div>
+            </div>
+            <p class="waiting-text">{{ t('process.graphBuildingProgress') }}</p>
+            <p class="waiting-hint">{{ t('process.dataWillAppearSoon') }}</p>
+          </div>
+          
+          <!-- estado de Error -->
+          <div v-else-if="error" class="graph-error">
+            <span class="error-icon">⚠</span>
+            <p>{{ error }}</p>
+          </div>
+        </div>
+        
+        <!-- leyenda del grafo -->
+        <div v-if="graphData" class="graph-legend">
+          <div class="legend-item" v-for="type in entityTypes" :key="type.name">
+            <span class="legend-dot" :style="{ background: type.color }"></span>
+            <span class="legend-label">{{ type.name }}</span>
+            <span class="legend-count">{{ type.count }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- derecha: detalles del proceso de construcción -->
+      <div class="right-panel" :class="{ 'hidden': isFullScreen }">
+        <div class="panel-header dark-header">
+          <span class="header-icon">▣</span>
+          <span class="header-title">{{ t('process.buildProgress') }}</span>
+        </div>
+
+        <div class="process-content">
+          <!-- etapa 1: Generación de ontología -->
+          <div class="process-phase" :class="{ 'active': currentPhase === 0, 'completed': currentPhase > 0 }">
+            <div class="phase-header">
+              <span class="phase-num">01</span>
+              <div class="phase-info">
+                <div class="phase-title">{{ t('process.ontologyTitle') }}</div>
+                <div class="phase-api">{{ t('process.ontologyApi') }}</div>
+              </div>
+              <span class="phase-status" :class="getPhaseStatusClass(0)">
+                {{ getPhaseStatusText(0) }}
+              </span>
+            </div>
+
+            <div class="phase-detail">
+              <div class="detail-section">
+                <div class="detail-label">{{ t('step1.ontologyDesc') }}</div>
+              </div>
+              
+              <!-- progreso de generación de ontología -->
+              <div class="detail-section" v-if="ontologyProgress && currentPhase === 0">
+                <div class="detail-label">{{ t('process.generatingProgress') }}</div>
+                <div class="ontology-progress">
+                  <div class="progress-spinner"></div>
+                  <span class="progress-text">{{ ontologyProgress.message }}</span>
+                </div>
+              </div>
+              
+              <!-- información de ontología ya generada -->
+              <div class="detail-section" v-if="projectData?.ontology">
+                <div class="detail-label">{{ t('process.generatedEntityTypes') }} ({{ projectData.ontology.entity_types?.length || 0 }})</div>
+                <div class="entity-tags">
+                  <span
+                    v-for="entity in projectData.ontology.entity_types"
+                    :key="entity.name"
+                    class="entity-tag"
+                  >
+                    {{ entity.name }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="detail-section" v-if="projectData?.ontology">
+                <div class="detail-label">{{ t('process.generatedRelationTypes') }} ({{ projectData.ontology.relation_types?.length || 0 }})</div>
+                <div class="relation-list">
+                  <div
+                    v-for="(rel, idx) in projectData.ontology.relation_types?.slice(0, 5) || []"
+                    :key="idx"
+                    class="relation-item"
+                  >
+                    <span class="rel-source">{{ rel.source_type }}</span>
+                    <span class="rel-arrow">→</span>
+                    <span class="rel-name">{{ rel.name }}</span>
+                    <span class="rel-arrow">→</span>
+                    <span class="rel-target">{{ rel.target_type }}</span>
+                  </div>
+                  <div v-if="(projectData.ontology.relation_types?.length || 0) > 5" class="relation-more">
+                    +{{ projectData.ontology.relation_types.length - 5 }} {{ t('process.moreRelations') }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- estado Pendiente -->
+              <div class="detail-section waiting-state" v-if="!projectData?.ontology && currentPhase === 0 && !ontologyProgress">
+                <div class="waiting-hint">{{ t('process.waitingOntology') }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- etapa 2: Construcción de grafo -->
+          <div class="process-phase" :class="{ 'active': currentPhase === 1, 'completed': currentPhase > 1 }">
+            <div class="phase-header">
+              <span class="phase-num">02</span>
+              <div class="phase-info">
+                <div class="phase-title">{{ t('process.graphBuildTitle') }}</div>
+                <div class="phase-api">{{ t('process.graphBuildApi') }}</div>
+              </div>
+              <span class="phase-status" :class="getPhaseStatusClass(1)">
+                {{ getPhaseStatusText(1) }}
+              </span>
+            </div>
+
+            <div class="phase-detail">
+              <div class="detail-section">
+                <div class="detail-label">{{ t('process.graphBuildDesc') }}</div>
+              </div>
+
+              <!-- pendiente completitud de ontología -->
+              <div class="detail-section waiting-state" v-if="currentPhase < 1">
+                <div class="waiting-hint">{{ t('process.waitingOntologyComplete') }}</div>
+              </div>
+              
+              <!-- progreso de construcción -->
+              <div class="detail-section" v-if="buildProgress && currentPhase >= 1">
+                <div class="detail-label">{{ t('process.graphBuildingProgress') }}</div>
+                <div class="progress-bar">
+                  <div class="progress-fill" :style="{ width: buildProgress.progress + '%' }"></div>
+                </div>
+                <div class="progress-info">
+                  <span class="progress-message">{{ buildProgress.message }}</span>
+                  <span class="progress-percent">{{ buildProgress.progress }}%</span>
+                </div>
+              </div>
+              
+              <div class="detail-section" v-if="graphData">
+                <div class="detail-label">{{ t('process.buildResult') }}</div>
+                <div class="build-result">
+                  <div class="result-item">
+                    <span class="result-value">{{ graphData.node_count }}</span>
+                    <span class="result-label">{{ t('process.entityNodes') }}</span>
+                  </div>
+                  <div class="result-item">
+                    <span class="result-value">{{ graphData.edge_count }}</span>
+                    <span class="result-label">{{ t('process.relationEdges') }}</span>
+                  </div>
+                  <div class="result-item">
+                    <span class="result-value">{{ entityTypes.length }}</span>
+                    <span class="result-label">{{ t('process.schemaTypes') }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- etapa 3: Completado -->
+          <div class="process-phase" :class="{ 'active': currentPhase === 2, 'completed': currentPhase > 2 }">
+            <div class="phase-header">
+              <span class="phase-num">03</span>
+              <div class="phase-info">
+                <div class="phase-title">{{ t('process.buildCompleteTitle') }}</div>
+                <div class="phase-api">{{ t('process.preparingNextStep') }}</div>
+              </div>
+              <span class="phase-status" :class="getPhaseStatusClass(2)">
+                {{ getPhaseStatusText(2) }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Botón Siguiente -->
+          <div class="next-step-section" v-if="currentPhase >= 2">
+            <button class="next-step-btn" @click="goToNextStep" :disabled="currentPhase < 2">
+              {{ t('process.enterEnvSetup') }}
+              <span class="btn-arrow">→</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Panel de información del proyecto -->
+        <div class="project-panel">
+          <div class="project-header">
+            <span class="project-icon">◇</span>
+            <span class="project-title">{{ t('process.projectInfo') }}</span>
+          </div>
+          <div class="project-details" v-if="projectData">
+            <div class="project-item">
+              <span class="item-label">{{ t('process.projectName') }}</span>
+              <span class="item-value">{{ projectData.name }}</span>
+            </div>
+            <div class="project-item">
+              <span class="item-label">{{ t('process.projectId') }}</span>
+              <span class="item-value code">{{ projectData.project_id }}</span>
+            </div>
+            <div class="project-item" v-if="projectData.graph_id">
+              <span class="item-label">{{ t('process.graphId') }}</span>
+              <span class="item-value code">{{ projectData.graph_id }}</span>
+            </div>
+            <div class="project-item">
+              <span class="item-label">{{ t('process.simulationReq') }}</span>
+              <span class="item-value">{{ projectData.simulation_requirement || '-' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { generateOntology, getProject, buildGraph, getTaskStatus, getGraphData } from '../api/graph'
+import { getPendingUpload, clearPendingUpload } from '../store/pendingUpload'
+import * as d3 from 'd3'
+
+const route = useRoute()
+const router = useRouter()
+const { t } = useI18n({ useScope: 'global' })
+
+// ID del proyecto actual (puede cambiar de 'new' a ID real)
+const currentProjectId = ref(route.params.projectId)
+
+// Estado
+const loading = ref(true)
+const graphLoading = ref(false)
+const error = ref('')
+const projectData = ref(null)
+const graphData = ref(null)
+const buildProgress = ref(null)
+const ontologyProgress = ref(null) // progreso de generación de ontología
+const currentPhase = ref(-1) // -1: subiendo, 0: Generación de ontología, 1: Construcción de grafo, 2: completado
+const selectedItem = ref(null) // nodo o borde seleccionado
+const isFullScreen = ref(false)
+
+// Referencia DOM
+const graphContainer = ref(null)
+const graphSvg = ref(null)
+
+// temporizador de polling
+let pollTimer = null
+
+// Propiedades computadas
+const statusClass = computed(() => {
+  if (error.value) return 'error'
+  if (currentPhase.value >= 2) return 'completed'
+  return 'processing'
+})
+
+const statusText = computed(() => {
+  if (error.value) return t('process.buildFailed')
+  if (currentPhase.value >= 2) return t('process.buildComplete')
+  if (currentPhase.value === 1) return t('process.graphBuilding')
+  if (currentPhase.value === 0) return t('process.ontologyGenerating')
+  return t('process.initializing')
+})
+
+const entityTypes = computed(() => {
+  if (!graphData.value?.nodes) return []
+  
+  const typeMap = {}
+  const colors = ['#FF6B35', '#004E89', '#7B2D8E', '#1A936F', '#C5283D', '#E9724C']
+  
+  graphData.value.nodes.forEach(node => {
+    const type = node.labels?.find(l => l !== 'Entity') || 'Entity'
+    if (!typeMap[type]) {
+      typeMap[type] = { name: type, count: 0, color: colors[Object.keys(typeMap).length % colors.length] }
+    }
+    typeMap[type].count++
+  })
+  
+  return Object.values(typeMap)
+})
+
+// Métodos
+const goHome = () => {
+  router.push('/')
+}
+
+const goToNextStep = () => {
+  // TODO: Entrar a configuración del entorno paso
+  alert(t('process.envSetupInDevelopment'))
+}
+
+const toggleFullScreen = () => {
+  isFullScreen.value = !isFullScreen.value
+  // Wait for transition to finish then re-render graph
+  setTimeout(() => {
+    renderGraph()
+  }, 350)
+}
+
+// Cerrar panel de detalles
+const closeDetailPanel = () => {
+  selectedItem.value = null
+}
+
+// Formatear fecha
+const formatDate = (dateStr) => {
+  if (!dateStr) return '-'
+  try {
+    const date = new Date(dateStr)
+    return date.toLocaleString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  } catch {
+    return dateStr
+  }
+}
+
+// Seleccionar nodo
+const selectNode = (nodeData, color) => {
+  selectedItem.value = {
+    type: 'node',
+    data: nodeData,
+    color: color,
+    entityType: nodeData.labels?.find(l => l !== 'Entity' && l !== 'Node') || 'Entity'
+  }
+}
+
+// Seleccionar borde
+const selectEdge = (edgeData) => {
+  selectedItem.value = {
+    type: 'edge',
+    data: edgeData
+  }
+}
+
+const getPhaseStatusClass = (phase) => {
+  if (currentPhase.value > phase) return 'completed'
+  if (currentPhase.value === phase) return 'active'
+  return 'pending'
+}
+
+const getPhaseStatusText = (phase) => {
+  if (currentPhase.value > phase) return t('step1.completed')
+  if (currentPhase.value === phase) {
+    if (phase === 1 && buildProgress.value) {
+      return `${buildProgress.value.progress}%`
+    }
+    return t('step1.inProgress')
+  }
+  return t('step1.waiting')
+}
+
+// Inicializando - procesar nuevo proyecto o cargar proyecto existente
+const initProject = async () => {
+  const paramProjectId = route.params.projectId
+
+  if (paramProjectId === 'new') {
+    // Nuevo proyecto: obtener datos pendientes de subida desde store
+    await handleNewProject()
+  } else {
+    // Cargar proyecto existente
+    currentProjectId.value = paramProjectId
+    await loadProject()
+  }
+}
+
+// Procesar nuevo proyecto - llamar a ontology/generate API
+const handleNewProject = async () => {
+  const pending = getPendingUpload()
+  
+  if (!pending.isPending || pending.files.length === 0) {
+    error.value = t('process.noFilesToUpload')
+    loading.value = false
+    return
+  }
+  
+  try {
+    loading.value = true
+    currentPhase.value = 0 // etapa de Generación de ontología
+    ontologyProgress.value = { message: t('process.uploadingAndAnalyzing') }
+
+    // Construir FormData
+    const formDataObj = new FormData()
+    pending.files.forEach(file => {
+      formDataObj.append('files', file)
+    })
+    formDataObj.append('simulation_requirement', pending.simulationRequirement)
+
+    // Llamar a API de Generación de ontología
+    const response = await generateOntology(formDataObj)
+
+    if (response.success) {
+      // Limpiar datos pendientes de subida
+      clearPendingUpload()
+
+      // Actualizar ID de proyecto y datos
+      currentProjectId.value = response.data.project_id
+      projectData.value = response.data
+
+      // Actualizar URL (sin recargar página)
+      router.replace({
+        name: 'Process',
+        params: { projectId: response.data.project_id }
+      })
+      
+      ontologyProgress.value = null
+
+      // Iniciar automáticamente Construcción de grafo
+      await startBuildGraph()
+    } else {
+      error.value = response.error || t('process.ontologyGenFailed')
+    }
+  } catch (err) {
+    console.error('Handle new project error:', err)
+    error.value = t('process.projectInitFailed') + ': ' + (err.message || t('process.unknownError'))
+  } finally {
+    loading.value = false
+  }
+}
+
+// Cargar datos de proyecto existente
+const loadProject = async () => {
+  try {
+    loading.value = true
+    const response = await getProject(currentProjectId.value)
+    
+    if (response.success) {
+      projectData.value = response.data
+      updatePhaseByStatus(response.data.status)
+
+      // Iniciar automáticamente Construcción de grafo
+      if (response.data.status === 'ontology_generated' && !response.data.graph_id) {
+        await startBuildGraph()
+      }
+
+      // Continuar polling de tarea en construcción
+      if (response.data.status === 'graph_building' && response.data.graph_build_task_id) {
+        currentPhase.value = 1
+        startPollingTask(response.data.graph_build_task_id)
+      }
+
+      // Cargar Grafo Completado
+      if (response.data.status === 'graph_completed' && response.data.graph_id) {
+        currentPhase.value = 2
+        await loadGraph(response.data.graph_id)
+      }
+    } else {
+      error.value = response.error || t('process.loadProjectError')
+    }
+  } catch (err) {
+    console.error('Load project error:', err)
+      error.value = t('process.projectLoadFailed') + ': ' + (err.message || t('process.unknownError'))
+  } finally {
+    loading.value = false
+  }
+}
+
+const updatePhaseByStatus = (status) => {
+  switch (status) {
+    case 'created':
+    case 'ontology_generated':
+      currentPhase.value = 0
+      break
+    case 'graph_building':
+      currentPhase.value = 1
+      break
+    case 'graph_completed':
+      currentPhase.value = 2
+      break
+    case 'failed':
+      error.value = projectData.value?.error || t('process.processFailed')
+      break
+  }
+}
+
+// Iniciar Construir grafo
+const startBuildGraph = async () => {
+  try {
+    currentPhase.value = 1
+    // Establecer progreso inicial
+    buildProgress.value = {
+      progress: 0,
+      message: t('process.startingGraphBuild')
+    }
+    
+    const response = await buildGraph({ project_id: currentProjectId.value })
+    
+    if (response.success) {
+      buildProgress.value.message = t('process.graphBuildTaskStarted')
+
+      // Guardar task_id para polling
+      const taskId = response.data.task_id
+
+      // Iniciar polling de datos de Grafo (independiente de polling de estado de tarea)
+      startGraphPolling()
+
+      // Iniciar polling de estado de tarea
+      startPollingTask(taskId)
+    } else {
+      error.value = response.error || t('process.graphBuildStartFailed')
+      buildProgress.value = null
+    }
+  } catch (err) {
+    console.error('Build graph error:', err)
+    error.value = t('process.graphBuildStartFailed') + ': ' + (err.message || t('process.unknownError'))
+    buildProgress.value = null
+  }
+}
+
+// temporizador de polling de datos de Grafo
+let graphPollTimer = null
+
+// Iniciar polling de datos de Grafo
+const startGraphPolling = () => {
+  // Obtener inmediatamente una vez
+  fetchGraphData()
+
+  // Obtener datos de Grafo automáticamente cada 10 segundos
+  graphPollTimer = setInterval(async () => {
+    await fetchGraphData()
+  }, 10000)
+}
+
+// Actualizar grafo manualmente
+const refreshGraph = async () => {
+  graphLoading.value = true
+  await fetchGraphData()
+  graphLoading.value = false
+}
+
+// Detener polling de datos de Grafo
+const stopGraphPolling = () => {
+  if (graphPollTimer) {
+    clearInterval(graphPollTimer)
+    graphPollTimer = null
+  }
+}
+
+// Obtener datos del grafo
+const fetchGraphData = async () => {
+  try {
+    // Primero obtener información del proyecto para obtener graph_id
+    const projectResponse = await getProject(currentProjectId.value)
+
+    if (projectResponse.success && projectResponse.data.graph_id) {
+      const graphId = projectResponse.data.graph_id
+      projectData.value = projectResponse.data
+
+      // Obtener datos del grafo
+      const graphResponse = await getGraphData(graphId)
+
+      if (graphResponse.success && graphResponse.data) {
+        const newData = graphResponse.data
+        const newNodeCount = newData.node_count || newData.nodes?.length || 0
+        const oldNodeCount = graphData.value?.node_count || graphData.value?.nodes?.length || 0
+
+        console.log('Fetching graph data, nodes:', newNodeCount, 'edges:', newData.edge_count || newData.edges?.length || 0)
+
+        // Actualizar renderizado cuando los datos cambian
+        if (newNodeCount !== oldNodeCount || !graphData.value) {
+          graphData.value = newData
+          await nextTick()
+          renderGraph()
+        }
+      }
+    }
+  } catch (err) {
+    console.log('Graph data fetch:', err.message || 'not ready')
+  }
+}
+
+// Polling de estado de tarea
+const startPollingTask = (taskId) => {
+  // Ejecutar consulta inmediatamente una vez
+  pollTaskStatus(taskId)
+
+  // Luego polling periódico
+  pollTimer = setInterval(() => {
+    pollTaskStatus(taskId)
+  }, 2000)
+}
+
+// Consultar estado de tarea
+const pollTaskStatus = async (taskId) => {
+  try {
+    const response = await getTaskStatus(taskId)
+    
+    if (response.success) {
+      const task = response.data
+
+      // Actualizar display de progreso
+      buildProgress.value = {
+        progress: task.progress || 0,
+        message: task.message || t('process.processing')
+      }
+
+      console.log('Task status:', task.status, 'Progress:', task.progress)
+
+      if (task.status === 'completed') {
+        console.log('✅ ' + t('process.graphBuildingCompleteLoading'))
+
+        stopPolling()
+        stopGraphPolling()
+        currentPhase.value = 2
+
+        // Actualizar display de progreso a estado completado
+        buildProgress.value = {
+          progress: 100,
+          message: t('process.buildCompleteLoading')
+        }
+
+        // Recargar datos del proyecto para obtener graph_id
+        const projectResponse = await getProject(currentProjectId.value)
+        if (projectResponse.success) {
+          projectData.value = projectResponse.data
+
+          // Finalmente cargar datos completos de Grafo
+          if (projectResponse.data.graph_id) {
+            console.log('📊 ' + t('process.loadingGraph') + ':', projectResponse.data.graph_id)
+            await loadGraph(projectResponse.data.graph_id)
+            console.log('✅ ' + t('process.graphLoaded'))
+          }
+        }
+
+        // Limpiar display de progreso
+        buildProgress.value = null
+      } else if (task.status === 'failed') {
+        stopPolling()
+        stopGraphPolling()
+        error.value = t('process.graphBuildFailed') + ': ' + (task.error || t('process.unknownError'))
+        buildProgress.value = null
+      }
+    }
+  } catch (err) {
+    console.error('Poll task error:', err)
+  }
+}
+
+const stopPolling = () => {
+  if (pollTimer) {
+    clearInterval(pollTimer)
+    pollTimer = null
+  }
+}
+
+// Cargar datos de Grafo
+const loadGraph = async (graphId) => {
+  try {
+    graphLoading.value = true
+    const response = await getGraphData(graphId)
+    
+    if (response.success) {
+      graphData.value = response.data
+      await nextTick()
+      renderGraph()
+    }
+  } catch (err) {
+    console.error('Load graph error:', err)
+  } finally {
+    graphLoading.value = false
+  }
+}
+
+// Renderizar Grafo (D3.js)
+const renderGraph = () => {
+  if (!graphSvg.value || !graphData.value) {
+    console.log('Cannot render: svg or data missing')
+    return
+  }
+  
+  const container = graphContainer.value
+  if (!container) {
+    console.log('Cannot render: container missing')
+    return
+  }
+  
+  // Obtener dimensiones del contenedor
+  const rect = container.getBoundingClientRect()
+  const width = rect.width || 800
+  const height = (rect.height || 600) - 60
+  
+  if (width <= 0 || height <= 0) {
+    console.log('Cannot render: invalid dimensions', width, height)
+    return
+  }
+  
+  console.log('Rendering graph:', width, 'x', height)
+  
+  const svg = d3.select(graphSvg.value)
+    .attr('width', width)
+    .attr('height', height)
+    .attr('viewBox', `0 0 ${width} ${height}`)
+  
+  svg.selectAll('*').remove()
+
+  // Procesar datos de nodos
+  const nodesData = graphData.value.nodes || []
+  const edgesData = graphData.value.edges || []
+  
+  if (nodesData.length === 0) {
+    console.log('No nodes to render')
+    // Mostrar estado vacío
+    svg.append('text')
+      .attr('x', width / 2)
+      .attr('y', height / 2)
+      .attr('text-anchor', 'middle')
+      .attr('fill', '#999')
+      .text(t('graphPanel.waitingGraphData'))
+  return
+}
+
+// Procesar datos de nodos
+const nodesData = graphData.value.nodes || []
+const edgesData = graphData.value.edges || []
+
+if (nodesData.length === 0) {
+  console.log('No nodes to render')
+  // Mostrar estado vacío
+  svg.append('text')
+    .attr('x', width / 2)
+    .attr('y', height / 2)
+    .attr('text-anchor', 'middle')
+    .attr('fill', '#999')
+    .text(t('graphPanel.waitingGraphData'))
+  return
+}
+
+// Crear mapeo de nodos para buscar nombres
+const nodeMap = {}
+  nodesData.forEach(n => {
+    nodeMap[n.uuid] = n
+  })
+
+  const nodes = nodesData.map(n => ({
+    id: n.uuid,
+    name: n.name || t('process.unnamed'),
+    type: n.labels?.find(l => l !== 'Entity' && l !== 'Node') || 'Entity',
+    rawData: n // guardar datos originales
+  }))
+
+  // Crear conjunto de IDs de nodos para filtrar bordes válidos
+  const nodeIds = new Set(nodes.map(n => n.id))
+
+  const edges = edgesData
+    .filter(e => nodeIds.has(e.source_node_uuid) && nodeIds.has(e.target_node_uuid))
+    .map(e => ({
+      source: e.source_node_uuid,
+      target: e.target_node_uuid,
+      type: e.fact_type || e.name || 'RELATED_TO',
+      rawData: {
+        ...e,
+        source_name: nodeMap[e.source_node_uuid]?.name || t('process.unknown'),
+        target_name: nodeMap[e.target_node_uuid]?.name || t('process.unknown')
+      }
+    }))
+    }))
+
+  // Crear conjunto de IDs de nodos para filtrar bordes válidos
+  const nodeIds = new Set(nodes.map(n => n.id))
+
+  const edges = edgesData
+    .filter(e => nodeIds.has(e.source_node_uuid) && nodeIds.has(e.target_node_uuid))
+    .map(e => ({
+      source: e.source_node_uuid,
+      target: e.target_node_uuid,
+      type: e.fact_type || e.name || 'RELATED_TO',
+      rawData: {
+        ...e,
+        source_name: nodeMap[e.source_node_uuid]?.name || t('process.unknown'),
+        target_name: nodeMap[e.target_node_uuid]?.name || t('process.unknown')
+      }
+    }))
+
+  console.log('Nodes:', nodes.length, 'Edges:', edges.length)
+
+  // Mapeo de colores
+  const types = [...new Set(nodes.map(n => n.type))]
+  const colorScale = d3.scaleOrdinal()
+    .domain(types)
+    .range(['#FF6B35', '#004E89', '#7B2D8E', '#1A936F', '#C5283D', '#E9724C', '#2D3436', '#6C5CE7'])
+
+  // Layout de fuerza dirigida
+  const simulation = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(edges).id(d => d.id).distance(100).strength(0.5))
+    .force('charge', d3.forceManyBody().strength(-300))
+    .force('center', d3.forceCenter(width / 2, height / 2))
+    .force('collision', d3.forceCollide().radius(40))
+    .force('x', d3.forceX(width / 2).strength(0.05))
+    .force('y', d3.forceY(height / 2).strength(0.05))
+
+  // Añadir función de zoom
+  const g = svg.append('g')
+
+  svg.call(d3.zoom()
+    .extent([[0, 0], [width, height]])
+    .scaleExtent([0.2, 4])
+    .on('zoom', (event) => {
+      g.attr('transform', event.transform)
+    }))
+
+  // Dibujar bordes (incluyendo línea ancha transparente clickeable)
+  const linkGroup = g.append('g')
+    .attr('class', 'links')
+    .selectAll('g')
+    .data(edges)
+    .enter()
+    .append('g')
+    .style('cursor', 'pointer')
+    .on('click', (event, d) => {
+      event.stopPropagation()
+      selectEdge(d.rawData)
+    })
+
+  // Línea fina visible
+  const link = linkGroup.append('line')
+    .attr('stroke', '#ccc')
+    .attr('stroke-width', 1.5)
+    .attr('stroke-opacity', 0.6)
+
+  // Línea ancha transparente para clic
+  linkGroup.append('line')
+    .attr('stroke', 'transparent')
+    .attr('stroke-width', 10)
+
+  // Etiquetas de borde
+  const linkLabel = g.append('g')
+    .attr('class', 'link-labels')
+    .selectAll('text')
+    .data(edges)
+    .enter()
+    .append('text')
+    .attr('font-size', '9px')
+    .attr('fill', '#999')
+    .attr('text-anchor', 'middle')
+    .text(d => d.type.length > 15 ? d.type.substring(0, 12) + '...' : d.type)
+
+  // Dibujar nodos
+  const node = g.append('g')
+    .attr('class', 'nodes')
+    .selectAll('g')
+    .data(nodes)
+    .enter()
+    .append('g')
+    .style('cursor', 'pointer')
+    .on('click', (event, d) => {
+      event.stopPropagation()
+      selectNode(d.rawData, colorScale(d.type))
+    })
+    .call(d3.drag()
+      .on('start', dragstarted)
+      .on('drag', dragged)
+      .on('end', dragended))
+
+  node.append('circle')
+    .attr('r', 10)
+    .attr('fill', d => colorScale(d.type))
+    .attr('stroke', '#fff')
+    .attr('stroke-width', 2)
+    .attr('class', 'node-circle')
+  
+  node.append('text')
+    .attr('dx', 14)
+    .attr('dy', 4)
+    .text(d => d.name?.substring(0, 12) || '')
+    .attr('font-size', '11px')
+    .attr('fill', '#333')
+    .attr('font-family', 'JetBrains Mono, monospace')
+
+  // Clic en espacio en blanco cerrar panel de detalles
+  svg.on('click', () => {
+    closeDetailPanel()
+  })
+
+  simulation.on('tick', () => {
+    // Actualizar posición de todos los bordes (incluyendo líneas visibles y áreas de clic transparentes)
+    linkGroup.selectAll('line')
+      .attr('x1', d => d.source.x)
+      .attr('y1', d => d.source.y)
+      .attr('x2', d => d.target.x)
+      .attr('y2', d => d.target.y)
+
+    // Actualizar posición de etiquetas de borde
+    linkLabel
+      .attr('x', d => (d.source.x + d.target.x) / 2)
+      .attr('y', d => (d.source.y + d.target.y) / 2 - 5)
+
+    node.attr('transform', d => `translate(${d.x},${d.y})`)
+  })
+  
+  function dragstarted(event) {
+    if (!event.active) simulation.alphaTarget(0.3).restart()
+    event.subject.fx = event.subject.x
+    event.subject.fy = event.subject.y
+  }
+  
+  function dragged(event) {
+    event.subject.fx = event.x
+    event.subject.fy = event.y
+  }
+  
+  function dragended(event) {
+    if (!event.active) simulation.alphaTarget(0)
+    event.subject.fx = null
+    event.subject.fy = null
+  }
+}
+
+// Escuchar cambios de datos de Grafo
+watch(graphData, () => {
+  if (graphData.value) {
+    nextTick(() => renderGraph())
+  }
+})
+
+// Ciclo de vida
+onMounted(() => {
+  initProject()
+})
+
+onUnmounted(() => {
+  stopPolling()
+  stopGraphPolling()
+})
+</script>
+
+<style scoped>
+/* Variables */
+:root {
+  --black: #000000;
+  --white: #FFFFFF;
+  --orange: #FF6B35;
+  --gray-light: #F5F5F5;
+  --gray-border: #E0E0E0;
+  --gray-text: #666666;
+}
+
+.process-page {
+  min-height: 100vh;
+  background: var(--white);
+  font-family: 'JetBrains Mono', 'Noto Sans SC', monospace;
+  overflow: hidden; /* Evitar scroll del cuerpo en pantalla completa */
+}
+
+/* Barra de navegación */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 56px;
+  background: #000;
+  color: #fff;
+  z-index: 10;
+  position: relative;
+}
+
+.nav-brand {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.nav-brand:hover {
+  opacity: 0.8;
+}
+
+.nav-center {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.step-badge {
+  background: #FF6B35;
+  color: #fff;
+  padding: 2px 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border-radius: 2px;
+}
+
+.step-name {
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  color: #fff;
+}
+
+.nav-status {
+  display: flex;
+  align-items: center;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #666;
+  margin-right: 8px;
+}
+
+.status-dot.processing {
+  background: #FF6B35;
+  animation: pulse 1.5s infinite;
+}
+
+.status-dot.completed {
+  background: #1A936F;
+}
+
+.status-dot.error {
+  background: #C5283D;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.status-text {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+/* área de contenido principal */
+.main-content {
+  display: flex;
+  height: calc(100vh - 56px);
+  position: relative;
+}
+
+/* Panel izquierdo - 50% default */
+.left-panel {
+  width: 50%;
+  flex: none; /* Ancho fijo inicialmente */
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #E0E0E0;
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #fff;
+  z-index: 5;
+}
+
+.left-panel.full-screen {
+  width: 100%;
+  border-right: none;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-bottom: 1px solid #E0E0E0;
+  background: #fff;
+  height: 50px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-deco {
+  color: #FF6B35;
+  font-size: 0.8rem;
+}
+
+.header-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.75rem;
+  color: #666;
+}
+
+/* Leyenda del grafo */
+.graph-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 12px 24px;
+  border-top: 1px solid #E0E0E0;
+  background: #FAFAFA;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legend-label {
+  color: #333;
+}
+
+.legend-count {
+  color: #999;
+}
+
+/* Panel derecho - 50% default */
+.right-panel {
+  width: 50%;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, transform 0.3s ease;
+  overflow: hidden;
+  opacity: 1;
+}
+
+.right-panel.hidden {
+  width: 0;
+  opacity: 0;
+  transform: translateX(20px);
+  pointer-events: none;
+}
+
+.right-panel .panel-header.dark-header {
+  background: #000;
+  color: #fff;
+  border-bottom: none;
+}
+
+.right-panel .header-icon {
+  color: #FF6B35;
+  margin-right: 8px;
+}
+
+/* Contenido del proceso */
+.process-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+/* Etapas del proceso */
+.process-phase {
+  margin-bottom: 24px;
+  border: 1px solid #E0E0E0;
+  opacity: 0.5;
+  transition: all 0.3s;
+}
+
+.process-phase.active,
+.process-phase.completed {
+  opacity: 1;
+}
+
+.process-phase.active {
+  border-color: #FF6B35;
+}
+
+.process-phase.completed {
+  border-color: #1A936F;
+}
+
+/* Detalles de etapa */
+.phase-detail {
+  padding: 16px;
+}
+
+/* Etiquetas de entidad */
+.entity-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.entity-tag {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  background: #F5F5F5;
+  border: 1px solid #E0E0E0;
+  color: #333;
+}
+
+/* Lista de relaciones */
+.relation-list {
+  font-size: 0.8rem;
+}
+
+.relation-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px dashed #eee;
+}
+
+.relation-item:last-child {
+  border-bottom: none;
+}
+
+.rel-source,
+.rel-target {
+  color: #333;
+}
+
+.rel-arrow {
+  color: #ccc;
+}
+
+.rel-name {
+  color: #FF6B35;
+  font-weight: 500;
+}
+
+.relation-more {
+  padding-top: 8px;
+  color: #999;
+  font-size: 0.75rem;
+}
+
+/* progreso de generación de ontología */
+.ontology-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #FFF5F2;
+  border: 1px solid #FFE0D6;
+}
+
+.progress-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #FFE0D6;
+  border-top-color: #FF6B35;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.progress-text {
+  font-size: 0.85rem;
+  color: #333;
+}
+
+/* estado Pendiente */
+.waiting-state {
+  padding: 16px;
+  background: #F9F9F9;
+  border: 1px dashed #E0E0E0;
+  text-align: center;
+}
+
+.waiting-hint {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+/* Barra de progreso */
+.progress-bar {
+  height: 6px;
+  background: #E0E0E0;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #FF6B35;
+  transition: width 0.3s;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+}
+
+.progress-message {
+  color: #666;
+}
+
+.progress-percent {
+  color: #FF6B35;
+  font-weight: 600;
+}
+
+/* Resultados de construcción */
+.build-result {
+  display: flex;
+  gap: 16px;
+}
+
+.result-item {
+  flex: 1;
+  text-align: center;
+  padding: 12px;
+  background: #F5F5F5;
+}
+
+.result-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 4px;
+}
+
+.result-label {
+  font-size: 0.7rem;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Botón Siguiente */
+.next-step-section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #E0E0E0;
+}
+
+.next-step-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  background: #000;
+  color: #fff;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.next-step-btn:hover:not(:disabled) {
+  background: #FF6B35;
+}
+
+.next-step-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.btn-arrow {
+  font-size: 1.2rem;
+}
+
+/* Panel de información del proyecto */
+.project-panel {
+  border-top: 1px solid #E0E0E0;
+  background: #FAFAFA;
+}
+
+.project-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.project-icon {
+  color: #FF6B35;
+}
+
+.project-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.project-details {
+  padding: 16px 24px;
+}
+
+.project-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px dashed #E0E0E0;
+  font-size: 0.8rem;
+}
+
+.project-item:last-child {
+  border-bottom: none;
+}
+
+.item-label {
+  color: #999;
+  flex-shrink: 0;
+}
+
+.item-value {
+  color: #333;
+  text-align: right;
+  max-width: 60%;
+  word-break: break-all;
+}
+
+.item-value.code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: #666;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .main-content {
+    flex-direction: column;
+  }
+  
+  .left-panel {
+    width: 100% !important;
+    border-right: none;
+    border-bottom: 1px solid #E0E0E0;
+    height: 50vh;
+  }
+  
+  .right-panel {
+    width: 100% !important;
+    height: 50vh;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  
+  .right-panel.hidden {
+      display: none;
+  }
+}
+</style>
