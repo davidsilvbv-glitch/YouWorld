@@ -627,6 +627,22 @@ class ZhipuAILLMClient(OpenAIGenericClient):
                         },
                     }
 
+                # OpenRouter/Alibaba exige que los mensajes contengan la palabra
+                # "json" para permitir response_format=json_object.
+                if use_openrouter:
+                    json_instruction = (
+                        "\n\nIMPORTANT: Respond with valid JSON only. "
+                        "The output must be a JSON object with no extra text."
+                    )
+                    system_index = next(
+                        (i for i, msg in enumerate(openai_messages) if msg.get("role") == "system"),
+                        None,
+                    )
+                    if system_index is None:
+                        openai_messages.insert(0, {"role": "system", "content": json_instruction.strip()})
+                    elif "json" not in openai_messages[system_index].get("content", "").lower():
+                        openai_messages[system_index]["content"] += json_instruction
+
                 # Retry with stronger system prompt on second attempt
                 if attempt > 0:
                     logger.warning(
@@ -751,4 +767,5 @@ class ZhipuAILLMClient(OpenAIGenericClient):
             except Exception as e:
                 logger.error(f"Error en LLM response: {e}")
                 raise
+
 
