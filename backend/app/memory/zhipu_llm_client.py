@@ -1,10 +1,10 @@
-"""
+﻿"""
 Wrapper LLM client compatible con Graphiti para proveedores OpenAI-compatible
 que no soportan structured output nativo (z.ai/ZhipuAI, etc.).
 
 Problemas que resuelve:
 1. z.ai con response_format=json_schema devuelve JSON envuelto en ```json ... ```
-2. z.ai con max_tokens bajos agota tokens en reasoning y content queda vacío
+2. z.ai con max_tokens bajos agota tokens en reasoning y content queda vacÃ­o
 3. z.ai no soporta beta.chat.completions.parse() (structured output nativo)
 
 Hereda de OpenAIGenericClient y sobreescribe _generate_response para limpiar
@@ -35,18 +35,18 @@ def _strip_json_markdown(text: str) -> str:
       {"key": "value"}
       ```
 
-    Esto causaría json.loads() → ValueError.
+    Esto causarÃ­a json.loads() â†’ ValueError.
     """
     text = text.strip()
 
-    # Patrón: ```json ... ``` o ``` ... ```
+    # PatrÃ³n: ```json ... ``` o ``` ... ```
     match = re.match(r"^```(?:json)?\s*\n?(.*?)\n?\s*```$", text, re.DOTALL)
     if match:
         return match.group(1).strip()
 
-    # Si empieza con ``` pero no cerró correctamente
+    # Si empieza con ``` pero no cerrÃ³ correctamente
     if text.startswith("```"):
-        # Sacar la primera línea (```json) y último ``` si existe
+        # Sacar la primera lÃ­nea (```json) y Ãºltimo ``` si existe
         lines = text.split("\n")
         if lines:
             lines = [l for l in lines if not l.strip().startswith("```")]
@@ -103,7 +103,7 @@ def _extract_json_from_response(text: str) -> dict[str, Any]:
                     except (json.JSONDecodeError, ValueError):
                         break
 
-    # 4. Reemplazar caracteres problemáticos y reintentar
+    # 4. Reemplazar caracteres problemÃ¡ticos y reintentar
     # Algunos modelos agregan trailing commas o comentarios
     cleaned = re.sub(r",\s*([}\]])", r"\1", cleaned)  # trailing commas
     cleaned = re.sub(r"//.*$", "", cleaned, flags=re.MULTILINE)  # // comments
@@ -112,7 +112,7 @@ def _extract_json_from_response(text: str) -> dict[str, Any]:
     except (json.JSONDecodeError, ValueError):
         pass
 
-    # 5. json_repair como último recurso — repara JSONs con errores de sintaxis
+    # 5. json_repair como Ãºltimo recurso â€” repara JSONs con errores de sintaxis
     try:
         import json_repair
 
@@ -127,42 +127,42 @@ def _extract_json_from_response(text: str) -> dict[str, Any]:
     )
 
 
-# ── Mapeos de campos comunes que z.ai inventa ──
+# â”€â”€ Mapeos de campos comunes que z.ai inventa â”€â”€
 # z.ai tiende a generar nombres de campos descriptivos en vez de los que
-# pide el JSON schema. Estos mapeos corrigen los más comunes.
+# pide el JSON schema. Estos mapeos corrigen los mÃ¡s comunes.
 _FIELD_ALIASES = {
-    # ── Entity name (el LLM usa varios nombres para este campo) ──
+    # â”€â”€ Entity name (el LLM usa varios nombres para este campo) â”€â”€
     "entity": "name",
     "entity_name": "name",
     "node_name": "name",
     "node": "name",
     "label": "name",
     "title": "name",
-    # ── Entity type ──
+    # â”€â”€ Entity type â”€â”€
     "entity_type": "entity_type_id",
     "node_type": "entity_type_id",
     "type": "entity_type_id",
     "category": "entity_type_id",
-    # ── Description ──
+    # â”€â”€ Description â”€â”€
     "description_text": "description",
     "entity_description": "description",
     "desc": "description",
-    # ── Source ──
+    # â”€â”€ Source â”€â”€
     "source_text": "source_description",
-    # ── Edges/Relations ──
+    # â”€â”€ Edges/Relations â”€â”€
     "edge_type": "name",
     "relation_type": "name",
     "relation": "name",
     "target": "target_node_uuid",
     "source": "source_node_uuid",
-    # ── Edge deduplication fields (GLM often uses wrong names) ──
+    # â”€â”€ Edge deduplication fields (GLM often uses wrong names) â”€â”€
     "contradicting_facts": "contradicted_facts",
     "conflicting_facts": "contradicted_facts",
     "conflicts": "contradicted_facts",
     "duplicate": "duplicate_facts",
     "duplicates": "duplicate_facts",
     "duplicate_ids": "duplicate_facts",
-    # ── Entity/Edge wrappers (GLM often misses these) ──
+    # â”€â”€ Entity/Edge wrappers (GLM often misses these) â”€â”€
     "entities": "extracted_entities",
     "nodes": "extracted_entities",
     "items": "extracted_entities",
@@ -176,7 +176,7 @@ _FIELD_ALIASES = {
 
 def _detect_and_wrap_container(result: Any, response_model: type) -> Any:
     """
-    Detectar si la respuesta del LLM está FALTANTE el wrapper key del container.
+    Detectar si la respuesta del LLM estÃ¡ FALTANTE el wrapper key del container.
 
     GLM-4.5 a veces devuelve los campos de la entidad directamente SIN el
     wrapper key. Por ejemplo:
@@ -184,12 +184,12 @@ def _detect_and_wrap_container(result: Any, response_model: type) -> Any:
     LLM devuelve:   {"entity_name": "Mexico", "entity_type": 5, "description": "..."}
     Graphiti espera: {"extracted_entities": [{"name": "Mexico", "entity_type_id": 5}]}
 
-    Este método detecta ese caso y envuelve la respuesta en el key correcto.
+    Este mÃ©todo detecta ese caso y envuelve la respuesta en el key correcto.
 
     Estrategias (en orden de confianza):
-    A) Response ES una lista → wrap en {missing_key: result}
-    B) Response es dict con >50% overlap con inner model → wrap como lista de 1 item
-    C) Algún key del response contiene una lista que coincide con inner model → usar ese key
+    A) Response ES una lista â†’ wrap en {missing_key: result}
+    B) Response es dict con >50% overlap con inner model â†’ wrap como lista de 1 item
+    C) AlgÃºn key del response contiene una lista que coincide con inner model â†’ usar ese key
     """
     if not isinstance(result, (dict, list)):
         return result
@@ -201,7 +201,7 @@ def _detect_and_wrap_container(result: Any, response_model: type) -> Any:
     else:
         result_keys = set()
 
-    # Encontrar keys faltantes (los que el schema requiere pero no están en result)
+    # Encontrar keys faltantes (los que el schema requiere pero no estÃ¡n en result)
     missing_keys = [
         f
         for f, info in schema_fields.items()
@@ -235,12 +235,12 @@ def _detect_and_wrap_container(result: Any, response_model: type) -> Any:
         inner_model.model_fields if hasattr(inner_model, "model_fields") else {}
     )
 
-    # ── Strategy A: Response ES una lista ──
+    # â”€â”€ Strategy A: Response ES una lista â”€â”€
     if isinstance(result, list):
         logger.debug(f"Strategy A: Wrapping list result in '{missing_key}'")
         return {missing_key: result}
 
-    # ── Strategy B: Dict cuyas keys overlap con el inner model (>50%) ──
+    # â”€â”€ Strategy B: Dict cuyas keys overlap con el inner model (>50%) â”€â”€
     if isinstance(result, dict):
         # Aplicar aliases de _FIELD_ALIASES para calcular overlap correctamente
         # El LLM devuelve "entity_type" pero el schema espera "entity_type_id"
@@ -262,13 +262,13 @@ def _detect_and_wrap_container(result: Any, response_model: type) -> Any:
                 )
                 return {missing_key: [result]}
 
-        # ── Strategy C: Algún value es una lista que matchea el inner model ──
+        # â”€â”€ Strategy C: AlgÃºn value es una lista que matchea el inner model â”€â”€
         for key, value in result.items():
             if not isinstance(value, list):
                 continue
 
             # Verificar si los items de la lista son dicts con overlap
-            # (aplicar aliases para que entity_type → entity_type_id)
+            # (aplicar aliases para que entity_type â†’ entity_type_id)
             matching_items = 0
             for item in value:
                 if not isinstance(item, dict):
@@ -286,17 +286,17 @@ def _detect_and_wrap_container(result: Any, response_model: type) -> Any:
                     if item_overlap > 0.5:
                         matching_items += 1
 
-            # Si TODOS o la mayoría de los items matchean, usar este key
+            # Si TODOS o la mayorÃ­a de los items matchean, usar este key
             if matching_items >= len(value) * 0.5 and matching_items > 0:
                 logger.debug(f"Strategy C: Using list in '{key}' as '{missing_key}'")
                 wrapped = {missing_key: value}
-                # Remover el key viejo del result (si aún tiene el list)
+                # Remover el key viejo del result (si aÃºn tiene el list)
                 # pero solo si ya lo movimos
                 return wrapped
 
-        # ── Strategy D: Dict de str→str que parece {name: field_value} ──
-        # GLM-4.5 a veces devuelve {"Latinoamérica": "Región con..."} cuando
-        # espera {"summaries": [{"name": "Latinoamérica", "summary": "Región con..."}]}
+        # â”€â”€ Strategy D: Dict de strâ†’str que parece {name: field_value} â”€â”€
+        # GLM-4.5 a veces devuelve {"LatinoamÃ©rica": "RegiÃ³n con..."} cuando
+        # espera {"summaries": [{"name": "LatinoamÃ©rica", "summary": "RegiÃ³n con..."}]}
         # Detectar: todos los keys y values son strings, y el inner model
         # tiene un campo "name" y otro campo string principal.
         all_str_keys = all(isinstance(k, str) for k in result.keys())
@@ -308,7 +308,7 @@ def _detect_and_wrap_container(result: Any, response_model: type) -> Any:
             non_name_fields = inner_field_names - {"name", "summary"}
 
             if "name" in inner_field_names:
-                # Determinar qué campo representan los values
+                # Determinar quÃ© campo representan los values
                 # Si hay un campo "summary", description", o similar, usar ese
                 value_field = None
                 for candidate in ["summary", "description", "text", "content", "value"]:
@@ -323,7 +323,7 @@ def _detect_and_wrap_container(result: Any, response_model: type) -> Any:
                         {"name": k, value_field: v} for k, v in result.items()
                     ]
                     logger.debug(
-                        f"Strategy D: Dict of name→{value_field} wrapped "
+                        f"Strategy D: Dict of nameâ†’{value_field} wrapped "
                         f"({len(wrapped_list)} items) in '{missing_key}'"
                     )
                     return {missing_key: wrapped_list}
@@ -350,24 +350,24 @@ def _normalize_response(result: Any, response_model: type) -> Any:
     Normalizar la respuesta del LLM para que coincida con el response_model.
 
     Orden de operaciones:
-    1. _detect_and_wrap_container() — detecta si falta el wrapper key del container
+    1. _detect_and_wrap_container() â€” detecta si falta el wrapper key del container
     2. Normalizar keys del dict principal (aliases, fuzzy matching)
     3. Normalizar objects dentro de listas
-    4. Campos faltantes requeridos → búsqueda profunda recursiva
-    5. Type coercion (str → int)
+    4. Campos faltantes requeridos â†’ bÃºsqueda profunda recursiva
+    5. Type coercion (str â†’ int)
     """
-    # ── Paso 0: Detectar si falta el wrapper key del container ──
+    # â”€â”€ Paso 0: Detectar si falta el wrapper key del container â”€â”€
     result = _detect_and_wrap_container(result, response_model)
 
     schema_fields = response_model.model_fields
 
-    # Caso 1: Devolvió lista pero se espera dict
+    # Caso 1: DevolviÃ³ lista pero se espera dict
     if isinstance(result, list):
         for field_name, field_info in schema_fields.items():
             type_str = str(field_info.annotation).lower()
             if "list" in type_str:
                 result = {field_name: result}
-                logger.debug(f"Normalized: list → {{'{field_name}': [...]}}")
+                logger.debug(f"Normalized: list â†’ {{'{field_name}': [...]}}")
                 break
         else:
             return result
@@ -420,7 +420,7 @@ def _normalize_response(result: Any, response_model: type) -> Any:
     if required_missing:
         result = _deep_search_missing_keys(result, required_missing)
 
-    # Bug 2 fix: type coercion for int fields (e.g. entity_type_id "5" → 5)
+    # Bug 2 fix: type coercion for int fields (e.g. entity_type_id "5" â†’ 5)
     for field_name, field_info in schema_fields.items():
         if field_name not in result:
             continue
@@ -429,10 +429,10 @@ def _normalize_response(result: Any, response_model: type) -> Any:
         if _is_plain_int(annotation) and isinstance(result[field_name], str):
             if result[field_name].isdigit():
                 result[field_name] = int(result[field_name])
-                logger.debug(f"Coerced {field_name}: str → int")
+                logger.debug(f"Coerced {field_name}: str â†’ int")
 
     # Step 6: Auto-fill missing required list fields with empty defaults
-    # Covers list[int], list[str], list[BaseModel] — all safe to default to []
+    # Covers list[int], list[str], list[BaseModel] â€” all safe to default to []
     for field_name, field_info in schema_fields.items():
         if field_name not in result and field_info.is_required():
             annotation = field_info.annotation
@@ -449,8 +449,8 @@ def _normalize_response(result: Any, response_model: type) -> Any:
 def _deep_search_missing_keys(data: dict, missing_keys: list[str]) -> dict:
     """
     Buscar recursivamente en todo el dict (incluidos dicts anidados y listas)
-    para encontrar los keys faltantes. Si un key se encuentra en un nivel más profundo,
-    lo mueve al nivel raíz.
+    para encontrar los keys faltantes. Si un key se encuentra en un nivel mÃ¡s profundo,
+    lo mueve al nivel raÃ­z.
     """
     for key in list(missing_keys):
         found = _find_key_anywhere(data, key)
@@ -484,9 +484,9 @@ def _normalize_dict_keys(data: dict, expected_fields: dict) -> dict:
     Normalizar las keys de un dict para que coincidan con los campos esperados.
 
     Estrategia:
-    1. Si la key ya existe en expected_fields → mantener
-    2. Si la key está en _FIELD_ALIASES → mapear
-    3. Si el nombre esperado contiene substring de la key → mapear fuzzy
+    1. Si la key ya existe en expected_fields â†’ mantener
+    2. Si la key estÃ¡ en _FIELD_ALIASES â†’ mapear
+    3. Si el nombre esperado contiene substring de la key â†’ mapear fuzzy
     """
     normalized = {}
     used_keys = set()
@@ -571,7 +571,7 @@ class ZhipuAILLMClient(OpenAIGenericClient):
 
     z.ai tiene particularidades que rompen Graphiti:
     - Con response_format=json_schema, devuelve JSON envuelto en ```json ... ```
-    - Con max_tokens bajos, agota en reasoning y content queda vacío
+    - Con max_tokens bajos, agota en reasoning y content queda vacÃ­o
     - No soporta structured output nativo (beta.chat.completions.parse)
 
     Este wrapper limpia la respuesta y asegura que json.loads() funcione.
@@ -590,7 +590,7 @@ class ZhipuAILLMClient(OpenAIGenericClient):
         Sobreescribe OpenAIGenericClient._generate_response para:
         1. Limpiar respuestas envueltas en markdown
         2. Extraer JSON de respuestas con texto extra
-        3. Fallback a lista vacía cuando GLM devuelve texto plano (Bug A fix)
+        3. Fallback a lista vacÃ­a cuando GLM devuelve texto plano (Bug A fix)
         """
         import openai
 
@@ -606,9 +606,15 @@ class ZhipuAILLMClient(OpenAIGenericClient):
         max_retries = 1
         for attempt in range(max_retries + 1):
             try:
+                # OpenRouter suele comportarse mejor con json_object que con
+                # json_schema en extracciones largas de Graphiti. La
+                # normalizacion de abajo ya corrige wrappers/campos omitidos.
+                base_url = str(getattr(self.client, "base_url", "") or "")
+                use_openrouter = "openrouter.ai" in base_url
+
                 # Construir response_format
                 response_format = {"type": "json_object"}
-                if response_model is not None:
+                if response_model is not None and not use_openrouter:
                     schema_name = getattr(
                         response_model, "__name__", "structured_response"
                     )
@@ -631,40 +637,65 @@ class ZhipuAILLMClient(OpenAIGenericClient):
                             "\n\nIMPORTANT: You MUST respond with valid JSON only. No conversational text, no explanations, no other content. Your response MUST be parseable by JSON.parse()."
                         )
 
-                response = await self.client.chat.completions.create(
-                    model=self.model or os.environ.get("LLM_MODEL_NAME", "glm-4.5"),
-                    messages=openai_messages,
-                    temperature=self.temperature,
-                    max_tokens=self.max_tokens,
-                    response_format=response_format,
+                request_kwargs = {
+                    "model": self.model or os.environ.get("LLM_MODEL_NAME", "glm-4.5"),
+                    "messages": openai_messages,
+                    "temperature": self.temperature,
+                    "max_tokens": self.max_tokens,
+                    "response_format": response_format,
+                }
+                if use_openrouter:
+                    request_kwargs["extra_body"] = {"reasoning": {"enabled": False}}
+
+                logger.info(
+                    "Graphiti LLM request starting: model=%s provider=%s response_format=%s",
+                    request_kwargs["model"],
+                    "openrouter" if use_openrouter else "generic",
+                    response_format.get("type"),
+                )
+
+                response = await self.client.chat.completions.create(**request_kwargs)
+
+                logger.info(
+                    "Graphiti LLM request completed: model=%s choices=%s",
+                    request_kwargs["model"],
+                    len(response.choices or []),
                 )
 
                 if not response.choices:
+                    logger.error(
+                        "Graphiti LLM returned empty choices. model=%s provider=%s raw_response=%s",
+                        request_kwargs["model"],
+                        "openrouter" if use_openrouter else "generic",
+                        getattr(response, "model_dump", lambda **_: str(response))(exclude_none=True)
+                        if hasattr(response, "model_dump")
+                        else str(response),
+                    )
                     raise ValueError("API returned empty choices array")
                 raw_content = response.choices[0].message.content or ""
 
-                # Si el content está vacío pero hay reasoning_content,
+                # Si el content estÃ¡ vacÃ­o pero hay reasoning_content,
                 # puede que el modelo haya gastado todo en reasoning
                 if not raw_content.strip():
                     reasoning = response.choices[0].message.reasoning_content or ""
                     if reasoning:
                         logger.warning(
-                            f"LLM devolvió content vacío con {len(reasoning)} chars de reasoning. "
+                            f"LLM devolviÃ³ content vacÃ­o con {len(reasoning)} chars de reasoning. "
                             f"Probablemente max_tokens insuficiente. "
                             f"max_tokens={self.max_tokens}"
                         )
                     raise ValueError(
-                        "El LLM devolvió una respuesta vacía. "
+                        "El LLM devolviÃ³ una respuesta vacÃ­a. "
                         "Posiblemente max_tokens insuficiente para reasoning + output."
                     )
 
                 # Limpiar y extraer JSON (maneja ```json ... ``` wrappers)
                 result = _extract_json_from_response(raw_content)
 
-                # Debug temporal: ver qué devuelve el LLM antes de normalizar
+                # Debug temporal: ver quÃ© devuelve el LLM antes de normalizar
                 logger.debug(f"LLM raw response (first 300 chars): {str(result)[:300]}")
 
-                # ── Normalización para z.ai ──
+                # â”€â”€ NormalizaciÃ³n para z.ai â”€â”€
                 if response_model is not None:
                     model_name = getattr(response_model, "__name__", "?")
                     raw_keys = (
@@ -676,7 +707,7 @@ class ZhipuAILLMClient(OpenAIGenericClient):
                     new_keys = list(result.keys()) if isinstance(result, dict) else []
                     if raw_keys != new_keys:
                         logger.debug(
-                            f"Normalized {model_name}: {raw_keys} → {new_keys}"
+                            f"Normalized {model_name}: {raw_keys} â†’ {new_keys}"
                         )
                     else:
                         logger.debug(
@@ -709,8 +740,8 @@ class ZhipuAILLMClient(OpenAIGenericClient):
                         field_name = list_fields[0]
                         model_name = getattr(response_model, "__name__", "?")
                         logger.warning(
-                            f"GLM devolvió texto plano en lugar de JSON para {model_name}. "
-                            f"Retornando lista vacía en '{field_name}' como fallback. "
+                            f"GLM devolviÃ³ texto plano en lugar de JSON para {model_name}. "
+                            f"Retornando lista vacÃ­a en '{field_name}' como fallback. "
                             f"Raw response: {raw_content[:200]}"
                         )
                         return {field_name: []}
@@ -720,3 +751,4 @@ class ZhipuAILLMClient(OpenAIGenericClient):
             except Exception as e:
                 logger.error(f"Error en LLM response: {e}")
                 raise
+
