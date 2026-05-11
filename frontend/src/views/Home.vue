@@ -1,13 +1,13 @@
 <template>
   <div class="home-container">
-    <section v-if="!hasChosenLanguage" class="intro-screen">
+    <section v-if="showIntro" class="intro-screen">
       <div class="intro-grid"></div>
       <div class="intro-shell">
         <p class="intro-eyebrow">{{ $t('home.introEyebrow') }}</p>
         <h1 class="intro-title">YouWorld</h1>
         <p class="intro-copy">{{ $t('home.introDescription') }}</p>
 
-        <div class="intro-actions">
+        <div v-if="!hasChosenLanguage" class="intro-actions">
           <span class="intro-action-label">{{ $t('home.chooseLanguage') }}</span>
           <div class="intro-language-list">
             <button
@@ -41,7 +41,6 @@
         </div>
       </div>
       <div class="nav-links">
-        <LanguageSwitcher />
       </div>
     </nav>
 
@@ -282,15 +281,15 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { availableLocales } from '@/i18n'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 
 const router = useRouter()
 const { locale, t } = useI18n({ useScope: 'global' })
 const hasChosenLanguage = ref(localStorage.getItem('youworld:languageSelected') === 'true')
+const showIntro = ref(true)
 const introLocales = computed(() => availableLocales.filter(item => ['es', 'en'].includes(item.key)))
 const activeInfoPanel = ref(null)
 
@@ -328,7 +327,16 @@ const chooseLanguage = (localeKey) => {
   localStorage.setItem('youworld:languageSelected', 'true')
   document.documentElement.lang = localeKey
   hasChosenLanguage.value = true
+  showIntro.value = false
 }
+
+onMounted(() => {
+  if (hasChosenLanguage.value) {
+    window.setTimeout(() => {
+      showIntro.value = false
+    }, 1000)
+  }
+})
 
 // Datos del formulario
 const formData = ref({
@@ -1401,12 +1409,13 @@ const startSimulation = () => {
     margin-bottom: 20px;
   }
 }
-/* YouWorld sober pass */
+/* YouWorld refined pass */
 .home-container {
   background:
-    radial-gradient(circle at 18% 8%, rgba(63, 22, 103, 0.38), transparent 32%),
-    radial-gradient(circle at 86% 18%, rgba(72, 34, 111, 0.22), transparent 28%),
-    linear-gradient(135deg, #05020b 0%, #0a0414 52%, #080312 100%);
+    radial-gradient(circle at 72% 12%, rgba(91, 203, 190, 0.24), transparent 30%),
+    radial-gradient(circle at 28% 10%, rgba(77, 35, 111, 0.34), transparent 34%),
+    linear-gradient(125deg, #050607 0%, #081310 32%, #0b0715 72%, #05020a 100%);
+  font-family: 'Inter', sans-serif;
 }
 
 .home-container::before,
@@ -1443,8 +1452,10 @@ const startSimulation = () => {
 
 .intro-title {
   margin: 18px 0 16px;
-  font-size: clamp(2.8rem, 8vw, 5.5rem);
-  letter-spacing: -0.07em;
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(2.5rem, 7vw, 4.8rem);
+  letter-spacing: -0.08em;
+  font-weight: 700;
   text-shadow: none;
 }
 
@@ -1472,20 +1483,24 @@ const startSimulation = () => {
   min-width: 118px;
   padding: 12px 18px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(221, 196, 255, 0.22);
+  background: rgba(115, 220, 209, 0.18);
+  border: 0;
+  color: #eafffb;
   box-shadow: none;
+  font-family: 'Inter', sans-serif;
 }
 
 .intro-language-btn:hover {
   transform: translateY(-1px);
-  background: rgba(114, 246, 255, 0.1);
+  background: rgba(115, 220, 209, 0.28);
 }
 
 .navbar {
-  height: 72px;
-  padding: 0 clamp(18px, 5vw, 64px);
-  background: rgba(5, 2, 11, 0.82);
+  height: auto;
+  padding: 26px clamp(18px, 5vw, 64px) 0;
+  background: transparent;
+  border: 0;
+  backdrop-filter: none;
 }
 
 .nav-left {
@@ -1500,8 +1515,11 @@ const startSimulation = () => {
   background: transparent;
   padding: 0;
   cursor: pointer;
-  font-size: 1rem;
-  letter-spacing: 0.16em;
+  color: rgba(235, 255, 251, 0.92);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
   text-shadow: none;
   white-space: nowrap;
 }
@@ -1509,28 +1527,30 @@ const startSimulation = () => {
 .nav-info-tabs {
   display: flex;
   align-items: center;
-  gap: clamp(14px, 3vw, 34px);
+  gap: clamp(18px, 3vw, 38px);
 }
 
 .nav-info-tab {
   padding: 0;
   border: 0;
   background: transparent;
-  color: rgba(246, 239, 255, 0.62);
+  color: rgba(235, 255, 251, 0.58);
   cursor: pointer;
-  font-family: var(--font-mono);
+  font-family: 'Inter', sans-serif;
   font-size: 0.82rem;
-  letter-spacing: 0.02em;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  transition: color 0.2s ease;
 }
 
 .nav-info-tab:hover,
 .nav-info-tab.active {
-  color: #f6efff;
+  color: #77ddd5;
 }
 
 .main-content {
   max-width: 980px;
-  padding: clamp(28px, 5vw, 58px) clamp(18px, 5vw, 44px) 72px;
+  padding: clamp(40px, 7vw, 86px) clamp(18px, 5vw, 44px) 72px;
 }
 
 .section-page {
@@ -1543,9 +1563,9 @@ const startSimulation = () => {
 .section-back {
   border: 0;
   background: transparent;
-  color: rgba(246, 239, 255, 0.58);
+  color: rgba(235, 255, 251, 0.58);
   cursor: pointer;
-  font-family: var(--font-mono);
+  font-family: 'Inter', sans-serif;
   font-size: 0.84rem;
   padding: 0;
   margin-bottom: 42px;
@@ -1557,8 +1577,8 @@ const startSimulation = () => {
 
 .section-kicker {
   margin: 0 0 14px;
-  color: rgba(114, 246, 255, 0.76);
-  font-family: var(--font-mono);
+  color: rgba(119, 221, 213, 0.78);
+  font-family: 'Inter', sans-serif;
   font-size: 0.78rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -1566,7 +1586,9 @@ const startSimulation = () => {
 
 .section-page h1 {
   margin: 0 0 22px;
-  color: #f6efff;
+  color: #f4fffb;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
   font-size: clamp(2.2rem, 5vw, 4.2rem);
   line-height: 1;
   letter-spacing: -0.06em;
@@ -1575,7 +1597,7 @@ const startSimulation = () => {
 .section-body {
   max-width: 720px;
   margin: 0;
-  color: rgba(246, 239, 255, 0.72);
+  color: rgba(235, 255, 251, 0.68);
   font-size: 1.08rem;
   line-height: 1.78;
 }
@@ -1600,14 +1622,14 @@ const startSimulation = () => {
   position: absolute;
   left: 0;
   top: 2px;
-  color: rgba(114, 246, 255, 0.68);
-  font-family: var(--font-mono);
+  color: rgba(119, 221, 213, 0.72);
+  font-family: 'Inter', sans-serif;
   font-weight: 800;
 }
 
 .section-steps span {
   display: block;
-  color: #f6efff;
+  color: #f4fffb;
   font-weight: 800;
   font-size: 1.08rem;
   margin-bottom: 6px;
@@ -1615,7 +1637,7 @@ const startSimulation = () => {
 
 .section-steps p {
   margin: 0;
-  color: rgba(246, 239, 255, 0.64);
+  color: rgba(235, 255, 251, 0.62);
   line-height: 1.65;
 }
 
@@ -1685,29 +1707,91 @@ const startSimulation = () => {
 
 .console-box {
   border-radius: 18px;
-  background: rgba(10, 5, 24, 0.48);
-  border-color: rgba(221, 196, 255, 0.18);
+  background: transparent;
+  border: 0;
   box-shadow: none;
+  backdrop-filter: none;
+  padding: 0;
 }
 
 .upload-zone,
 .input-wrapper,
 .start-engine-btn,
 .metric-card {
-  border-radius: 12px;
+  border-radius: 22px;
 }
 
 .upload-zone {
   height: 250px;
-  background: rgba(255, 255, 255, 0.035);
+  background: rgba(255, 255, 255, 0.045);
+  border: 0;
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08);
 }
 
 .input-wrapper {
-  background: rgba(255, 255, 255, 0.035);
+  background: rgba(255, 255, 255, 0.045);
+  border: 0;
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08);
 }
 
 .start-engine-btn {
   overflow: hidden;
+  border: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.console-label,
+.console-meta,
+.console-divider span,
+.model-badge,
+.upload-title,
+.upload-hint,
+.code-input,
+.file-item {
+  font-family: 'Inter', sans-serif;
+}
+
+.console-label,
+.model-badge {
+  color: #77ddd5;
+  letter-spacing: 0.08em;
+}
+
+.console-meta,
+.console-divider span,
+.upload-hint {
+  color: rgba(235, 255, 251, 0.46);
+}
+
+.console-divider::before,
+.console-divider::after {
+  background: rgba(235, 255, 251, 0.12);
+}
+
+.upload-icon {
+  border: 0;
+  background: rgba(119, 221, 213, 0.12);
+  color: #77ddd5;
+  border-radius: 14px;
+}
+
+.upload-title {
+  color: rgba(244, 255, 251, 0.88);
+}
+
+.code-input {
+  color: rgba(244, 255, 251, 0.9);
+  font-weight: 500;
+}
+
+.start-engine-btn:not(:disabled) {
+  background: linear-gradient(90deg, #78ddd5, #a7eee8);
+  color: #06100f;
+}
+
+.start-engine-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #a7eee8, #78ddd5);
+  color: #06100f;
 }
 
 @media (max-width: 720px) {
