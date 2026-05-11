@@ -1,6 +1,7 @@
 <template>
   <div class="home-container">
-    <section v-if="showIntro" class="intro-screen">
+    <Transition name="screen-flow" mode="out-in">
+    <section v-if="showIntro" key="intro" class="intro-screen">
       <div class="intro-grid"></div>
       <div class="intro-shell">
         <p class="intro-eyebrow">{{ $t('home.introEyebrow') }}</p>
@@ -23,7 +24,7 @@
       </div>
     </section>
 
-    <template v-else>
+    <div v-else key="app" class="app-shell">
     <!-- Barra de navegación superior -->
     <nav class="navbar">
       <div class="nav-left">
@@ -49,7 +50,17 @@
         <button class="section-back" @click="activeInfoPanel = null">← {{ $t('common.back') }}</button>
         <p class="section-kicker">YouWorld</p>
         <h1>{{ activeInfoContent.title }}</h1>
-        <p v-if="activeInfoPanel !== 'workflow'" class="section-body">{{ activeInfoContent.body }}</p>
+        <div v-if="activeInfoPanel === 'how'" class="section-split">
+          <div class="section-copy">
+            <p v-for="paragraph in howParagraphs" :key="paragraph">{{ paragraph }}</p>
+          </div>
+          <div class="world-preview-placeholder">
+            <span>{{ $t('home.worldPreviewPlaceholder') }}</span>
+          </div>
+        </div>
+        <div v-else-if="activeInfoPanel === 'why'" class="section-copy wide">
+          <p v-for="paragraph in whyParagraphs" :key="paragraph">{{ paragraph }}</p>
+        </div>
         <ol v-else class="section-steps">
           <li v-for="step in workflowDetails" :key="step.title">
             <span>{{ step.title }}</span>
@@ -276,7 +287,8 @@
       </section>
 
     </div>
-    </template>
+    </div>
+    </Transition>
   </div>
 </template>
 
@@ -307,6 +319,18 @@ const workflowDetails = computed(() => [
   { title: t('home.step05Title'), desc: t('home.step05Desc') }
 ])
 
+const howParagraphs = computed(() => [
+  t('home.howParagraph1'),
+  t('home.howParagraph2'),
+  t('home.howParagraph3')
+])
+
+const whyParagraphs = computed(() => [
+  t('home.whyParagraph1'),
+  t('home.whyParagraph2'),
+  t('home.whyParagraph3')
+])
+
 const activeInfoContent = computed(() => {
   if (activeInfoPanel.value === 'workflow') {
     return { title: t('home.workflowPreviewTitle'), body: t('home.workflowPreviewDesc') }
@@ -334,7 +358,7 @@ onMounted(() => {
   if (hasChosenLanguage.value) {
     window.setTimeout(() => {
       showIntro.value = false
-    }, 1000)
+    }, 1800)
   }
 })
 
@@ -1550,14 +1574,14 @@ const startSimulation = () => {
 
 .main-content {
   max-width: 980px;
-  padding: clamp(40px, 7vw, 86px) clamp(18px, 5vw, 44px) 72px;
+  padding: clamp(18px, 3vw, 36px) clamp(18px, 5vw, 44px) 72px;
 }
 
 .section-page {
   max-width: 860px;
-  min-height: calc(100vh - 180px);
+  min-height: calc(100vh - 120px);
   margin: 0 auto;
-  padding: clamp(28px, 6vw, 72px) 0;
+  padding: clamp(10px, 2vw, 24px) 0 56px;
 }
 
 .section-back {
@@ -1568,7 +1592,7 @@ const startSimulation = () => {
   font-family: 'Inter', sans-serif;
   font-size: 0.84rem;
   padding: 0;
-  margin-bottom: 42px;
+  margin-bottom: clamp(22px, 3vw, 34px);
 }
 
 .section-back:hover {
@@ -1600,6 +1624,42 @@ const startSimulation = () => {
   color: rgba(235, 255, 251, 0.68);
   font-size: 1.08rem;
   line-height: 1.78;
+}
+
+.section-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+  gap: clamp(28px, 5vw, 58px);
+  align-items: start;
+}
+
+.section-copy {
+  display: grid;
+  gap: 18px;
+}
+
+.section-copy.wide {
+  max-width: 780px;
+}
+
+.section-copy p {
+  margin: 0;
+  color: rgba(235, 255, 251, 0.68);
+  font-size: 1.05rem;
+  line-height: 1.76;
+}
+
+.world-preview-placeholder {
+  min-height: 320px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 24% 18%, rgba(119, 221, 213, 0.18), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025));
+  display: grid;
+  place-items: center;
+  color: rgba(235, 255, 251, 0.46);
+  text-align: center;
+  padding: 28px;
 }
 
 .section-steps {
@@ -1794,7 +1854,32 @@ const startSimulation = () => {
   color: #06100f;
 }
 
+.screen-flow-enter-active,
+.screen-flow-leave-active {
+  transition: opacity 0.55s ease, transform 0.55s ease, filter 0.55s ease;
+}
+
+.screen-flow-enter-from {
+  opacity: 0;
+  transform: translateY(18px) scale(0.985);
+  filter: blur(8px);
+}
+
+.screen-flow-leave-to {
+  opacity: 0;
+  transform: translateY(-14px) scale(1.015);
+  filter: blur(8px);
+}
+
 @media (max-width: 720px) {
+  .section-split {
+    grid-template-columns: 1fr;
+  }
+
+  .world-preview-placeholder {
+    min-height: 220px;
+  }
+
   .navbar {
     height: auto;
     align-items: flex-start;
