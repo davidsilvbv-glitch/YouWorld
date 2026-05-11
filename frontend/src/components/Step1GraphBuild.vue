@@ -699,4 +699,187 @@ watch(() => props.systemLogs.length, () => {
   color: #CCC;
   word-break: break-all;
 }
+
+/* YouWorld visual layer */
+.workbench-panel {
+  background: transparent;
+  color: rgba(235, 255, 251, 0.72);
+  font-family: 'Inter', sans-serif;
+}
+
+.scroll-container {
+  padding: 0 0 14px;
+  gap: 16px;
+}
+
+.step-card {
+  border: 0;
+  border-radius: 28px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035));
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08);
+  padding: 26px;
+  overflow: hidden;
+}
+
+.step-card.active {
+  border-color: transparent;
+  box-shadow:
+    inset 0 0 0 1px rgba(119, 221, 213, 0.32),
+    0 18px 60px rgba(0, 0, 0, 0.2);
+}
+
+.step-card.completed {
+  box-shadow: inset 0 0 0 1px rgba(119, 221, 213, 0.16);
+}
+
+.step-num {
+  color: rgba(119, 221, 213, 0.34);
+  font-family: 'Inter', sans-serif;
+}
+
+.step-card.active .step-num,
+.step-card.completed .step-num {
+  color: #77ddd5;
+}
+
+.step-title {
+  color: rgba(244, 255, 251, 0.92);
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.badge {
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-family: 'Inter', sans-serif;
+}
+
+.badge.processing,
+.badge.accent {
+  background: rgba(119, 221, 213, 0.18);
+  color: #77ddd5;
+}
+
+.badge.success {
+  background: rgba(119, 221, 213, 0.14);
+  color: #a7eee8;
+}
+
+.badge.pending {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(235, 255, 251, 0.46);
+}
+
+.api-note {
+  color: rgba(235, 255, 251, 0.42);
+  font-family: 'Inter', sans-serif;
+}
+
+.description {
+  color: rgba(235, 255, 251, 0.64);
+  font-size: 0.92rem;
+}
+
+.progress-section {
+  color: #77ddd5;
+}
+
+.spinner-sm {
+  border-color: rgba(119, 221, 213, 0.18);
+  border-top-color: #77ddd5;
+}
+
+.stats-grid {
+  background: rgba(255, 255, 255, 0.045);
+  border-radius: 22px;
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.07);
+}
+
+.stat-value {
+  color: rgba(244, 255, 251, 0.92);
+  font-family: 'Inter', sans-serif;
+}
+
+.stat-label,
+.tag-label {
+  color: rgba(235, 255, 251, 0.42);
+}
+
+.entity-tag,
+.example-tag,
+.conn-item,
+.attr-item {
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.065);
+  color: rgba(235, 255, 251, 0.72);
+  font-family: 'Inter', sans-serif;
+}
+
+.entity-tag.clickable:hover {
+  background: rgba(119, 221, 213, 0.14);
+}
+
+.action-btn {
+  border-radius: 999px;
+  background: linear-gradient(90deg, #78ddd5, #a7eee8);
+  color: #06100f;
+  font-family: 'Inter', sans-serif;
+}
+
+.action-btn:disabled {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(235, 255, 251, 0.4);
+}
+
+.ontology-detail-overlay {
+  border: 0;
+  border-radius: 24px;
+  background: rgba(8, 19, 16, 0.92);
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.1), 0 18px 60px rgba(0, 0, 0, 0.3);
+}
+
+.detail-header {
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom-color: rgba(235, 255, 251, 0.08);
+}
+
+.detail-name,
+.detail-desc,
+.attr-name,
+.conn-node {
+  color: rgba(244, 255, 251, 0.9);
+  font-family: 'Inter', sans-serif;
+}
+
+.attr-desc,
+.attr-type,
+.conn-arrow,
+.section-label {
+  color: rgba(235, 255, 251, 0.5);
+}
+
+.system-logs {
+  margin-top: 0;
+  border-top: 1px solid rgba(235, 255, 251, 0.08);
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(235, 255, 251, 0.7);
+  font-family: 'Inter', sans-serif;
+  backdrop-filter: blur(14px);
+}
+
+.log-header {
+  border-bottom-color: rgba(235, 255, 251, 0.08);
+  color: rgba(235, 255, 251, 0.46);
+}
+
+.log-time {
+  color: rgba(119, 221, 213, 0.52);
+}
+
+.log-msg {
+  color: rgba(235, 255, 251, 0.74);
+}
 </style>

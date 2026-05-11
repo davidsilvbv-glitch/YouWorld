@@ -571,4 +571,90 @@ onUnmounted(() => {
 .panel-wrapper.left {
   border-right-color: rgba(221, 196, 255, 0.18);
 }
+
+/* YouWorld refined simulation surface */
+.main-view {
+  background:
+    radial-gradient(circle at 72% 8%, rgba(91, 203, 190, 0.2), transparent 30%),
+    radial-gradient(circle at 18% 10%, rgba(77, 35, 111, 0.32), transparent 34%),
+    linear-gradient(125deg, #050607 0%, #081310 34%, #0b0715 72%, #05020a 100%);
+  font-family: 'Inter', sans-serif;
+}
+
+.app-header {
+  height: 72px;
+  padding: 0 30px;
+  background: rgba(5, 4, 12, 0.72);
+  border-bottom: 1px solid rgba(235, 255, 251, 0.08);
+  backdrop-filter: blur(18px);
+}
+
+.brand {
+  color: rgba(244, 255, 251, 0.92);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.96rem;
+  font-weight: 800;
+  letter-spacing: 0.34em;
+  text-shadow: none;
+}
+
+.view-switcher {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  padding: 5px;
+  border: 1px solid rgba(235, 255, 251, 0.1);
+}
+
+.switch-btn {
+  border-radius: 999px;
+  color: rgba(235, 255, 251, 0.58);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  padding: 8px 18px;
+}
+
+.switch-btn.active {
+  background: rgba(119, 221, 213, 0.18);
+  color: #f4fffb;
+  box-shadow: none;
+}
+
+.workflow-step {
+  color: rgba(235, 255, 251, 0.68);
+}
+
+.step-num,
+.step-name {
+  color: rgba(235, 255, 251, 0.7);
+  font-family: 'Inter', sans-serif;
+}
+
+.step-name {
+  color: rgba(244, 255, 251, 0.86);
+}
+
+.step-divider {
+  background-color: rgba(235, 255, 251, 0.16);
+}
+
+.status-indicator {
+  color: rgba(235, 255, 251, 0.62);
+}
+
+.status-indicator.processing .dot {
+  background: #77ddd5;
+}
+
+.panel-wrapper {
+  padding: 14px;
+}
+
+.panel-wrapper.left {
+  border-right: 0;
+  padding-right: 7px;
+}
+
+.panel-wrapper.right {
+  padding-left: 7px;
+}
 </style>

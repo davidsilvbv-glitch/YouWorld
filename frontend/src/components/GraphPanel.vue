@@ -1423,4 +1423,107 @@ input:checked + .slider:before {
   padding: 3px 6px;
   font-size: 9px;
 }
+
+/* YouWorld visual layer */
+.graph-panel {
+  border-radius: 28px;
+  background-color: rgba(255, 255, 255, 0.045);
+  background-image:
+    radial-gradient(rgba(119, 221, 213, 0.18) 1.2px, transparent 1.2px),
+    radial-gradient(circle at 28% 18%, rgba(77, 35, 111, 0.2), transparent 34%);
+  background-size: 28px 28px, auto;
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08);
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: 18px 20px;
+  background: linear-gradient(to bottom, rgba(5, 6, 7, 0.86), rgba(5, 6, 7, 0));
+}
+
+.panel-title {
+  color: rgba(244, 255, 251, 0.86);
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+}
+
+.tool-btn {
+  height: 36px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.075);
+  color: rgba(235, 255, 251, 0.68);
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.09);
+  font-family: 'Inter', sans-serif;
+}
+
+.tool-btn:hover {
+  background: rgba(119, 221, 213, 0.14);
+  color: #f4fffb;
+  border-color: transparent;
+}
+
+.graph-state {
+  color: rgba(235, 255, 251, 0.58);
+  font-family: 'Inter', sans-serif;
+}
+
+.empty-icon {
+  color: rgba(119, 221, 213, 0.5);
+}
+
+.graph-building-hint,
+.finished-hint,
+.graph-legend,
+.edge-labels-toggle,
+.detail-panel {
+  border: 0;
+  border-radius: 22px;
+  background: rgba(8, 19, 16, 0.78);
+  color: rgba(235, 255, 251, 0.78);
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.1), 0 18px 50px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(18px);
+}
+
+.legend-title {
+  color: #77ddd5;
+  font-family: 'Inter', sans-serif;
+}
+
+.legend-item,
+.toggle-label {
+  color: rgba(235, 255, 251, 0.68);
+  font-family: 'Inter', sans-serif;
+}
+
+.slider {
+  background-color: rgba(235, 255, 251, 0.18);
+}
+
+input:checked + .slider {
+  background-color: #77ddd5;
+}
+
+.detail-panel-header {
+  background: rgba(255, 255, 255, 0.045);
+  border-bottom-color: rgba(235, 255, 251, 0.1);
+}
+
+.detail-title,
+.detail-value,
+.section-title {
+  color: rgba(244, 255, 251, 0.88);
+}
+
+.detail-label,
+.property-key {
+  color: rgba(119, 221, 213, 0.72);
+}
+
+.detail-content,
+.summary-text,
+.property-value,
+.fact-text {
+  color: rgba(235, 255, 251, 0.68);
+}
 </style>
