@@ -1,9 +1,9 @@
-<template>
+﻿<template>
   <div class="main-view">
     <!-- Header -->
     <header class="app-header">
       <div class="header-left">
-        <div class="brand" @click="router.push('/')">MIROFISH</div>
+        <div class="brand" @click="router.push('/')">YOUWORLD</div>
       </div>
       
       <div class="header-center">
@@ -48,7 +48,7 @@
         />
       </div>
 
-      <!-- Right Panel: Step2 Configuración del entorno -->
+      <!-- Right Panel: Step2 ConfiguraciÃ³n del entorno -->
       <div class="panel-wrapper right" :style="rightPanelStyle">
         <Step2EnvSetup
           :simulationId="currentSimulationId"
@@ -142,7 +142,7 @@ const toggleMaximize = (target) => {
 }
 
 const handleGoBack = () => {
-  // Volver a la página process
+  // Volver a la pÃ¡gina process
   if (projectData.value?.project_id) {
     router.push({ name: 'Process', params: { projectId: projectData.value.project_id } })
   } else {
@@ -153,45 +153,45 @@ const handleGoBack = () => {
 const handleNextStep = (params = {}) => {
   addLog(t('log.enterStep3'))
 
-  // Registrar configuración de rondas de simulación
+  // Registrar configuraciÃ³n de rondas de simulaciÃ³n
   if (params.maxRounds) {
     addLog(t('log.customRoundsConfig', { rounds: params.maxRounds }))
   } else {
     addLog(t('log.useAutoRounds'))
   }
   
-  // Construir parámetros de ruta
+  // Construir parÃ¡metros de ruta
   const routeParams = {
     name: 'SimulationRun',
     params: { simulationId: currentSimulationId.value }
   }
   
-  // Si hay rondas personalizadas, pasar a través de parámetros query
+  // Si hay rondas personalizadas, pasar a travÃ©s de parÃ¡metros query
   if (params.maxRounds) {
     routeParams.query = { maxRounds: params.maxRounds }
   }
   
-  // Navegar a la página Step 3
+  // Navegar a la pÃ¡gina Step 3
   router.push(routeParams)
 }
 
 // --- Data Logic ---
 
 /**
- * Comprobar y cerrar simulaciones en ejecución
- * Cuando el usuario vuelve de Step 3 a Step 2, se asume que quiere salir de la simulación
+ * Comprobar y cerrar simulaciones en ejecuciÃ³n
+ * Cuando el usuario vuelve de Step 3 a Step 2, se asume que quiere salir de la simulaciÃ³n
  */
 const checkAndStopRunningSimulation = async () => {
   if (!currentSimulationId.value) return
   
   try {
-    // Primero comprobar si el entorno de simulación está vivo
+    // Primero comprobar si el entorno de simulaciÃ³n estÃ¡ vivo
     const envStatusRes = await getEnvStatus({ simulation_id: currentSimulationId.value })
     
     if (envStatusRes.success && envStatusRes.data?.env_alive) {
       addLog(t('log.detectedSimEnvRunning'))
       
-      // Intentar cerrar con gracia el entorno de simulación
+      // Intentar cerrar con gracia el entorno de simulaciÃ³n
       try {
         const closeRes = await closeSimulationEnv({
           simulation_id: currentSimulationId.value,
@@ -207,11 +207,11 @@ const checkAndStopRunningSimulation = async () => {
         }
       } catch (closeErr) {
         addLog(t('log.closeSimEnvException', { error: closeErr.message }))
-        // Si el cierre elegante falla debido a una excepción, intentar detener forzosamente
+        // Si el cierre elegante falla debido a una excepciÃ³n, intentar detener forzosamente
         await forceStopSimulation()
       }
     } else {
-      // El entorno no se está ejecutando, pero el proceso puede seguir activo, comprobar estado de simulación
+      // El entorno no se estÃ¡ ejecutando, pero el proceso puede seguir activo, comprobar estado de simulaciÃ³n
       const simRes = await getSimulation(currentSimulationId.value)
       if (simRes.success && simRes.data?.status === 'running') {
         addLog(t('log.detectedSimRunning'))
@@ -220,12 +220,12 @@ const checkAndStopRunningSimulation = async () => {
     }
   } catch (err) {
     // El fallo al verificar el estado del entorno no afecta el flujo subsequente
-    console.warn('Fallo al verificar estado de simulación:', err)
+    console.warn('Fallo al verificar estado de simulaciÃ³n:', err)
   }
 }
 
 /**
- * Forzar detención de simulación
+ * Forzar detenciÃ³n de simulaciÃ³n
  */
 const forceStopSimulation = async () => {
   try {
@@ -244,19 +244,19 @@ const loadSimulationData = async () => {
   try {
     addLog(t('log.loadingSimData', { id: currentSimulationId.value }))
 
-    // Obtener información de simulación
+    // Obtener informaciÃ³n de simulaciÃ³n
     const simRes = await getSimulation(currentSimulationId.value)
     if (simRes.success && simRes.data) {
       const simData = simRes.data
 
-      // Obtener información de proyecto
+      // Obtener informaciÃ³n de proyecto
       if (simData.project_id) {
         const projRes = await getProject(simData.project_id)
         if (projRes.success && projRes.data) {
           projectData.value = projRes.data
           addLog(t('log.projectLoadSuccess', { id: projRes.data.project_id }))
 
-          // Obtener datos de gráfico
+          // Obtener datos de grÃ¡fico
           if (projRes.data.graph_id) {
             await loadGraph(projRes.data.graph_id)
           }
@@ -294,10 +294,10 @@ const refreshGraph = () => {
 onMounted(async () => {
   addLog(t('log.simViewInit'))
 
-  // Comprobar y cerrar simulaciones en ejecución (cuando el usuario vuelve de Step 3)
+  // Comprobar y cerrar simulaciones en ejecuciÃ³n (cuando el usuario vuelve de Step 3)
   await checkAndStopRunningSimulation()
 
-  // Cargar datos de simulación
+  // Cargar datos de simulaciÃ³n
   loadSimulationData()
 })
 </script>
@@ -341,9 +341,9 @@ onMounted(async () => {
 
 .view-switcher {
   display: flex;
-  background: #F5F5F5;
-  padding: 4px;
-  border-radius: 6px;
+  background: rgba(255,255,255,0.04);
+  padding: 5px;
+  border-radius: 999px;
   gap: 4px;
 }
 
@@ -353,7 +353,7 @@ onMounted(async () => {
   padding: 6px 16px;
   font-size: 12px;
   font-weight: 600;
-  color: #666;
+  color: #8fa5a1;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
@@ -361,7 +361,7 @@ onMounted(async () => {
 
 .switch-btn.active {
   background: #FFF;
-  color: #000;
+  color: #edf6f2;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
@@ -381,18 +381,18 @@ onMounted(async () => {
 .step-num {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
-  color: #999;
+  color: #6ed0c8;
 }
 
 .step-name {
   font-weight: 700;
-  color: #000;
+  color: #edf6f2;
 }
 
 .step-divider {
   width: 1px;
   height: 14px;
-  background-color: #E0E0E0;
+  background-color: rgba(255,255,255,0.12);
 }
 
 .status-indicator {
@@ -400,7 +400,7 @@ onMounted(async () => {
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: #666;
+  color: #8fa5a1;
   font-weight: 500;
 }
 
@@ -411,9 +411,9 @@ onMounted(async () => {
   background: #CCC;
 }
 
-.status-indicator.processing .dot { background: #FF5722; animation: pulse 1s infinite; }
-.status-indicator.completed .dot { background: #4CAF50; }
-.status-indicator.error .dot { background: #F44336; }
+.status-indicator.processing .dot { background: #f6a04d; animation: pulse 1s infinite; }
+.status-indicator.completed .dot { background: #6ed0c8; }
+.status-indicator.error .dot { background: #ff7a7a; }
 
 @keyframes pulse { 50% { opacity: 0.5; } }
 
@@ -433,7 +433,8 @@ onMounted(async () => {
 }
 
 .panel-wrapper.left {
-  border-right: 1px solid #EAEAEA;
+  border-right: 1px solid rgba(118, 163, 157, 0.12);
 }
 </style>
+
 

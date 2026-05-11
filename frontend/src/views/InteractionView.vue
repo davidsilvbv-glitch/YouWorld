@@ -1,9 +1,9 @@
-<template>
+﻿<template>
   <div class="main-view">
     <!-- Header -->
     <header class="app-header">
       <div class="header-left">
-        <div class="brand" @click="router.push('/')">MIROFISH</div>
+        <div class="brand" @click="router.push('/')">YOUWORLD</div>
       </div>
       
       <div class="header-center">
@@ -49,7 +49,7 @@
         />
       </div>
 
-      <!-- Right Panel: Step5 Interacción profunda -->
+      <!-- Right Panel: Step5 InteracciÃ³n profunda -->
       <div class="panel-wrapper right" :style="rightPanelStyle">
         <Step5Interaction
           :reportId="currentReportId"
@@ -83,7 +83,7 @@ const props = defineProps({
   reportId: String
 })
 
-// Layout State - por defecto cambiar a vista de Área de trabajo
+// Layout State - por defecto cambiar a vista de Ãrea de trabajo
 const viewMode = ref('workbench')
 
 // Data State
@@ -160,7 +160,7 @@ const loadReportData = async () => {
         if (simRes.success && simRes.data) {
           const simData = simRes.data
 
-          // obtener info del proyecto (no bloqueante — el panel de grafo es enriquecimiento)
+          // obtener info del proyecto (no bloqueante â€” el panel de grafo es enriquecimiento)
           if (simData.project_id) {
             try {
               const projRes = await getProject(simData.project_id)
@@ -174,7 +174,7 @@ const loadReportData = async () => {
                 }
               }
             } catch (projErr) {
-              // 404 u otro error — proyecto no disponible, continuar sin él
+              // 404 u otro error â€” proyecto no disponible, continuar sin Ã©l
               projectNotFound.value = true
               addLog(t('api.projectNotFound', { id: simData.project_id }))
               projectData.value = null
@@ -266,9 +266,9 @@ onMounted(() => {
 
 .view-switcher {
   display: flex;
-  background: #F5F5F5;
-  padding: 4px;
-  border-radius: 6px;
+  background: rgba(255,255,255,0.04);
+  padding: 5px;
+  border-radius: 999px;
   gap: 4px;
 }
 
@@ -278,7 +278,7 @@ onMounted(() => {
   padding: 6px 16px;
   font-size: 12px;
   font-weight: 600;
-  color: #666;
+  color: #8fa5a1;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
@@ -286,7 +286,7 @@ onMounted(() => {
 
 .switch-btn.active {
   background: #FFF;
-  color: #000;
+  color: #edf6f2;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
@@ -306,18 +306,18 @@ onMounted(() => {
 .step-num {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
-  color: #999;
+  color: #6ed0c8;
 }
 
 .step-name {
   font-weight: 700;
-  color: #000;
+  color: #edf6f2;
 }
 
 .step-divider {
   width: 1px;
   height: 14px;
-  background-color: #E0E0E0;
+  background-color: rgba(255,255,255,0.12);
 }
 
 .status-indicator {
@@ -325,7 +325,7 @@ onMounted(() => {
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: #666;
+  color: #8fa5a1;
   font-weight: 500;
 }
 
@@ -336,10 +336,10 @@ onMounted(() => {
   background: #CCC;
 }
 
-.status-indicator.ready .dot { background: #4CAF50; }
-.status-indicator.processing .dot { background: #FF9800; animation: pulse 1s infinite; }
-.status-indicator.completed .dot { background: #4CAF50; }
-.status-indicator.error .dot { background: #F44336; }
+.status-indicator.ready .dot { background: #6ed0c8; }
+.status-indicator.processing .dot { background: #f6a04d; animation: pulse 1s infinite; }
+.status-indicator.completed .dot { background: #6ed0c8; }
+.status-indicator.error .dot { background: #ff7a7a; }
 
 @keyframes pulse { 50% { opacity: 0.5; } }
 
@@ -359,6 +359,7 @@ onMounted(() => {
 }
 
 .panel-wrapper.left {
-  border-right: 1px solid #EAEAEA;
+  border-right: 1px solid rgba(118, 163, 157, 0.12);
 }
 </style>
+

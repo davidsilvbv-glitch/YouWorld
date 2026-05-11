@@ -1,7 +1,7 @@
-<template>
+﻿<template>
   <div class="env-setup-panel">
     <div class="scroll-container">
-      <!-- Step 01: Instancia de simulación -->
+      <!-- Step 01: Instancia de simulaciÃ³n -->
       <div class="step-card" :class="{ 'active': phase === 0, 'completed': phase > 0 }">
         <div class="card-header">
           <div class="step-info">
@@ -113,7 +113,7 @@
         </div>
       </div>
 
-      <!-- Step 03: Generar configuración de doble plataforma -->
+      <!-- Step 03: Generar configuraciÃ³n de doble plataforma -->
       <div class="step-card" :class="{ 'active': phase === 2, 'completed': phase > 2 }">
         <div class="card-header">
           <div class="step-info">
@@ -135,7 +135,7 @@
           
           <!-- Config Preview -->
           <div v-if="simulationConfig" class="config-detail-panel">
-            <!-- Configuración de tiempo -->
+            <!-- ConfiguraciÃ³n de tiempo -->
             <div class="config-block">
               <div class="config-grid">
                 <div class="config-item">
@@ -159,27 +159,27 @@
                 <div class="period-item">
                   <span class="period-label">{{ $t('step2.peakHours') }}</span>
                   <span class="period-hours">{{ simulationConfig.time_config?.peak_hours?.join(':00, ') }}:00</span>
-                  <span class="period-multiplier">×{{ simulationConfig.time_config?.peak_activity_multiplier }}</span>
+                  <span class="period-multiplier">Ã—{{ simulationConfig.time_config?.peak_activity_multiplier }}</span>
                 </div>
                 <div class="period-item">
                   <span class="period-label">{{ $t('step2.workHours') }}</span>
                   <span class="period-hours">{{ simulationConfig.time_config?.work_hours?.[0] }}:00-{{ simulationConfig.time_config?.work_hours?.slice(-1)[0] }}:00</span>
-                  <span class="period-multiplier">×{{ simulationConfig.time_config?.work_activity_multiplier }}</span>
+                  <span class="period-multiplier">Ã—{{ simulationConfig.time_config?.work_activity_multiplier }}</span>
                 </div>
                 <div class="period-item">
                   <span class="period-label">{{ $t('step2.morningHours') }}</span>
                   <span class="period-hours">{{ simulationConfig.time_config?.morning_hours?.[0] }}:00-{{ simulationConfig.time_config?.morning_hours?.slice(-1)[0] }}:00</span>
-                  <span class="period-multiplier">×{{ simulationConfig.time_config?.morning_activity_multiplier }}</span>
+                  <span class="period-multiplier">Ã—{{ simulationConfig.time_config?.morning_activity_multiplier }}</span>
                 </div>
                 <div class="period-item">
                   <span class="period-label">{{ $t('step2.offPeakHours') }}</span>
                   <span class="period-hours">{{ simulationConfig.time_config?.off_peak_hours?.[0] }}:00-{{ simulationConfig.time_config?.off_peak_hours?.slice(-1)[0] }}:00</span>
-                  <span class="period-multiplier">×{{ simulationConfig.time_config?.off_peak_activity_multiplier }}</span>
+                  <span class="period-multiplier">Ã—{{ simulationConfig.time_config?.off_peak_activity_multiplier }}</span>
                 </div>
               </div>
             </div>
 
-            <!-- Configuración de Agentes -->
+            <!-- ConfiguraciÃ³n de Agentes -->
             <div class="config-block">
               <div class="config-block-header">
                 <span class="config-block-title">{{ $t('step2.agentConfig') }}</span>
@@ -203,7 +203,7 @@
                     </div>
                   </div>
                   
-                  <!-- línea de tiempo activa -->
+                  <!-- lÃ­nea de tiempo activa -->
                   <div class="agent-timeline">
                     <span class="timeline-label">{{ $t('step2.activeTimePeriod') }}</span>
                     <div class="mini-timeline">
@@ -224,7 +224,7 @@
                     </div>
                   </div>
 
-                  <!-- parámetros de comportamiento -->
+                  <!-- parÃ¡metros de comportamiento -->
                   <div class="agent-params">
                     <div class="param-group">
                       <div class="param-item">
@@ -264,7 +264,7 @@
               </div>
             </div>
 
-            <!-- configuración de plataforma -->
+            <!-- configuraciÃ³n de plataforma -->
             <div class="config-block">
               <div class="config-block-header">
                 <span class="config-block-title">{{ $t('step2.recommendAlgoConfig') }}</span>
@@ -327,7 +327,7 @@
               </div>
             </div>
 
-            <!-- Razonamiento de configuración LLM -->
+            <!-- Razonamiento de configuraciÃ³n LLM -->
             <div v-if="simulationConfig.generation_reasoning" class="config-block">
               <div class="config-block-header">
                 <span class="config-block-title">{{ $t('step2.llmConfigReasoning') }}</span>
@@ -346,7 +346,7 @@
         </div>
       </div>
 
-      <!-- Step 04: Orquestación de activación inicial -->
+      <!-- Step 04: OrquestaciÃ³n de activaciÃ³n inicial -->
       <div class="step-card" :class="{ 'active': phase === 3, 'completed': phase > 3 }">
         <div class="card-header">
           <div class="step-info">
@@ -367,7 +367,7 @@
           </p>
 
           <div v-if="simulationConfig?.event_config" class="orchestration-content">
-            <!-- dirección narrativa -->
+            <!-- direcciÃ³n narrativa -->
             <div class="narrative-box">
               <span class="box-label narrative-label">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="special-icon">
@@ -418,7 +418,7 @@
         </div>
       </div>
 
-      <!-- Step 05: Preparación completada -->
+      <!-- Step 05: PreparaciÃ³n completada -->
       <div class="step-card" :class="{ 'active': phase === 4 }">
         <div class="card-header">
           <div class="step-info">
@@ -435,7 +435,7 @@
           <p class="api-note">POST /api/simulation/start</p>
           <p class="description">{{ $t('step2.setupCompleteDesc') }}</p>
           
-          <!-- configuración de rondas de simulación - solo se muestra cuando la generación de configuración está completada y se calculan las rondas -->
+          <!-- configuraciÃ³n de rondas de simulaciÃ³n - solo se muestra cuando la generaciÃ³n de configuraciÃ³n estÃ¡ completada y se calculan las rondas -->
           <div v-if="simulationConfig && autoGeneratedRounds" class="rounds-config-section">
             <div class="rounds-header">
               <div class="header-left">
@@ -501,7 +501,7 @@
                       </span>
                     </div>
                     <div class="auto-desc">
-                      <p class="highlight-tip" @click="useCustomRounds = true">{{ $t('step2.customTip') }} ➝</p>
+                      <p class="highlight-tip" @click="useCustomRounds = true">{{ $t('step2.customTip') }} âž</p>
                     </div>
                   </div>
                 </div>
@@ -514,14 +514,14 @@
               class="action-btn secondary"
               @click="$emit('go-back')"
             >
-              ← {{ $t('step2.backToGraphBuild') }}
+              â† {{ $t('step2.backToGraphBuild') }}
             </button>
             <button 
               class="action-btn primary"
               :disabled="phase < 4"
               @click="handleStartSimulation"
             >
-              {{ $t('step2.startDualWorldSim') }} ➝
+              {{ $t('step2.startDualWorldSim') }} âž
             </button>
           </div>
         </div>
@@ -540,11 +540,11 @@
             </div>
             <span class="modal-profession">{{ selectedProfile.profession }}</span>
           </div>
-          <button class="close-btn" @click="selectedProfile = null">×</button>
+          <button class="close-btn" @click="selectedProfile = null">Ã—</button>
         </div>
         
         <div class="modal-body">
-          <!-- información básica -->
+          <!-- informaciÃ³n bÃ¡sica -->
           <div class="modal-info-grid">
             <div class="info-item">
               <span class="info-label">{{ $t('step2.profileModalAge') }}</span>
@@ -564,13 +564,13 @@
             </div>
           </div>
 
-          <!-- Biografía -->
+          <!-- BiografÃ­a -->
           <div class="modal-section">
             <span class="section-label">{{ $t('step2.profileModalBio') }}</span>
             <p class="section-bio">{{ selectedProfile.bio || $t('step2.noBio') }}</p>
           </div>
 
-          <!-- temas de interés -->
+          <!-- temas de interÃ©s -->
           <div class="modal-section" v-if="selectedProfile.interested_topics?.length">
             <span class="section-label">{{ $t('step2.profileModalTopics') }}</span>
             <div class="topics-grid">
@@ -656,7 +656,7 @@ const props = defineProps({
 const emit = defineEmits(['go-back', 'next-step', 'add-log', 'update-status'])
 
 // State
-const phase = ref(0) // 0: Inicializando, 1: Generando perfiles, 2: Generando configuración, 3: Completado
+const phase = ref(0) // 0: Inicializando, 1: Generando perfiles, 2: Generando configuraciÃ³n, 3: Completado
 const taskId = ref(null)
 const prepareProgress = ref(0)
 const currentStage = ref('')
@@ -668,43 +668,43 @@ const simulationConfig = ref(null)
 const selectedProfile = ref(null)
 const showProfilesDetail = ref(true)
 
-// Deduplicación de logs: registrar la última información clave de salida
+// DeduplicaciÃ³n de logs: registrar la Ãºltima informaciÃ³n clave de salida
 let lastLoggedMessage = ''
 let lastLoggedProfileCount = 0
 let lastLoggedConfigStage = ''
 
-// Configuración de número de rondas simuladas
-const useCustomRounds = ref(false) // Por defecto usar número de rondas automáticas
+// ConfiguraciÃ³n de nÃºmero de rondas simuladas
+const useCustomRounds = ref(false) // Por defecto usar nÃºmero de rondas automÃ¡ticas
 const customMaxRounds = ref(40)   // Por defecto recomendadas 40 rondas
 
 // Watch stage to update phase
 watch(currentStage, (newStage) => {
   if (newStage === 'Generando perfiles de agentes' || newStage === 'generating_profiles') {
     phase.value = 1
-  } else if (newStage === 'Generando configuración de simulación' || newStage === 'generating_config') {
+  } else if (newStage === 'Generando configuraciÃ³n de simulaciÃ³n' || newStage === 'generating_config') {
     phase.value = 2
-    // Entrar a fase de generación de configuración, iniciar consulta de rondas
+    // Entrar a fase de generaciÃ³n de configuraciÃ³n, iniciar consulta de rondas
     if (!configTimer) {
       addLog(t('log.startGeneratingConfig'))
       startConfigPolling()
     }
   } else if (newStage === 'Preparando scripts' || newStage === 'copying_scripts') {
-    phase.value = 2 // Aún pertenece a la fase de configuración
+    phase.value = 2 // AÃºn pertenece a la fase de configuraciÃ³n
   }
 })
 
-// Calcular el número de rondas generadas automáticamente desde la configuración (sin usar valores por defecto hardcodeados)
+// Calcular el nÃºmero de rondas generadas automÃ¡ticamente desde la configuraciÃ³n (sin usar valores por defecto hardcodeados)
 const autoGeneratedRounds = computed(() => {
   if (!simulationConfig.value?.time_config) {
-    return null // Volver null cuando la configuración no se ha generado
+    return null // Volver null cuando la configuraciÃ³n no se ha generado
   }
   const totalHours = simulationConfig.value.time_config.total_simulation_hours
   const minutesPerRound = simulationConfig.value.time_config.minutes_per_round
   if (!totalHours || !minutesPerRound) {
-    return null // Volver null cuando los datos de configuración están incompletos
+    return null // Volver null cuando los datos de configuraciÃ³n estÃ¡n incompletos
   }
   const calculatedRounds = Math.floor((totalHours * 60) / minutesPerRound)
-  // Asegurar que el número máximo de rondas no sea menor que 40 (valor recomendado), evitando rangos anormales del slider
+  // Asegurar que el nÃºmero mÃ¡ximo de rondas no sea menor que 40 (valor recomendado), evitando rangos anormales del slider
   return Math.max(calculatedRounds, 40)
 })
 
@@ -721,7 +721,7 @@ const displayProfiles = computed(() => {
   return profiles.value.slice(0, 6)
 })
 
-// Obtener username correspondiente según agent_id
+// Obtener username correspondiente segÃºn agent_id
 const getAgentUsername = (agentId) => {
   if (profiles.value && profiles.value.length > agentId && agentId >= 0) {
     const profile = profiles.value[agentId]
@@ -730,7 +730,7 @@ const getAgentUsername = (agentId) => {
   return `agent_${agentId}`
 }
 
-// Calcular el número total de temas relacionados de todos los perfiles
+// Calcular el nÃºmero total de temas relacionados de todos los perfiles
 const totalTopicsCount = computed(() => {
   return profiles.value.reduce((sum, p) => {
     return sum + (p.interested_topics?.length || 0)
@@ -742,17 +742,17 @@ const addLog = (msg) => {
   emit('add-log', msg)
 }
 
-// Manejar clic del botón Iniciar simulación
+// Manejar clic del botÃ³n Iniciar simulaciÃ³n
 const handleStartSimulation = () => {
-  // Construir parámetros para pasar al componente padre
+  // Construir parÃ¡metros para pasar al componente padre
   const params = {}
   
   if (useCustomRounds.value) {
-    // Usuario personaliza número de rondas, pasar parámetro max_rounds
+    // Usuario personaliza nÃºmero de rondas, pasar parÃ¡metro max_rounds
     params.maxRounds = customMaxRounds.value
     addLog(t('log.startSimCustomRounds', { rounds: customMaxRounds.value }))
   } else {
-    // Usuario elige mantener número de rondas generadas automáticamente, no pasar parámetro max_rounds
+    // Usuario elige mantener nÃºmero de rondas generadas automÃ¡ticamente, no pasar parÃ¡metro max_rounds
     addLog(t('log.startSimAutoRounds', { rounds: autoGeneratedRounds.value }))
   }
   
@@ -770,7 +770,7 @@ const selectProfile = (profile) => {
   selectedProfile.value = profile
 }
 
-// Iniciar automáticamente la preparación de la simulación
+// Iniciar automÃ¡ticamente la preparaciÃ³n de la simulaciÃ³n
 const startPrepareSimulation = async () => {
   if (!props.simulationId) {
     addLog(t('log.errorMissingSimId'))
@@ -814,7 +814,7 @@ const startPrepareSimulation = async () => {
       addLog(t('log.startPollingProgress'))
       // Iniciar consulta de progreso de rondas
       startPolling()
-      // Iniciar obtención de Profiles en tiempo real
+      // Iniciar obtenciÃ³n de Profiles en tiempo real
       startProfilesPolling()
     } else {
       addLog(t('log.prepareFailed', { error: res.error || t('common.unknownError') }))
@@ -864,7 +864,7 @@ const pollPrepareStatus = async () => {
       prepareProgress.value = data.progress || 0
       progressMessage.value = data.message || ''
       
-      // Analizar información de fase y emitir logs detallados
+      // Analizar informaciÃ³n de fase y emitir logs detallados
       if (data.progress_detail) {
         currentStage.value = data.progress_detail.current_stage_name || ''
         
@@ -893,7 +893,7 @@ const pollPrepareStatus = async () => {
         }
       }
       
-      // Verificar si está completado
+      // Verificar si estÃ¡ completado
       if (data.status === 'completed' || data.status === 'ready' || data.already_prepared) {
         addLog(t('log.prepareComplete'))
         stopPolling()
@@ -919,7 +919,7 @@ const fetchProfilesRealtime = async () => {
     if (res.success && res.data) {
       const prevCount = profiles.value.length
       profiles.value = res.data.profiles || []
-      // Solo actualizar cuando API Volver valores válidos, evitando sobrescribir valores válidos existentes
+      // Solo actualizar cuando API Volver valores vÃ¡lidos, evitando sobrescribir valores vÃ¡lidos existentes
       if (res.data.total_expected) {
         expectedTotal.value = res.data.total_expected
       }
@@ -931,7 +931,7 @@ const fetchProfilesRealtime = async () => {
       })
       entityTypes.value = Array.from(types)
       
-      // Emitir logs de progreso de Profile generación (solo cuando cantidad cambia)
+      // Emitir logs de progreso de Profile generaciÃ³n (solo cuando cantidad cambia)
       const currentCount = profiles.value.length
       if (currentCount > 0 && currentCount !== lastLoggedProfileCount) {
         lastLoggedProfileCount = currentCount
@@ -943,14 +943,14 @@ const fetchProfilesRealtime = async () => {
         }
         addLog(t('log.agentProfile', { current: currentCount, total: total, name: profileName, profession: latestProfile?.profession || t('step2.unknownProfession') }))
         
-        // Si toda generación está completa
+        // Si toda generaciÃ³n estÃ¡ completa
         if (expectedTotal.value && currentCount >= expectedTotal.value) {
           addLog(t('log.allProfilesComplete', { count: currentCount }))
         }
       }
     }
   } catch (err) {
-    console.warn('Obtención de Profiles fallida:', err)
+    console.warn('ObtenciÃ³n de Profiles fallida:', err)
   }
 }
 
@@ -975,7 +975,7 @@ const fetchConfigRealtime = async () => {
     if (res.success && res.data) {
       const data = res.data
       
-      // Emitir logs de fase de generación de configuración (evitar repeticiones)
+      // Emitir logs de fase de generaciÃ³n de configuraciÃ³n (evitar repeticiones)
       if (data.generation_stage && data.generation_stage !== lastLoggedConfigStage) {
         lastLoggedConfigStage = data.generation_stage
         if (data.generation_stage === 'generating_profiles') {
@@ -985,27 +985,27 @@ const fetchConfigRealtime = async () => {
         }
       }
       
-      // Si la configuración ya se generó
+      // Si la configuraciÃ³n ya se generÃ³
       if (data.config_generated && data.config) {
         simulationConfig.value = data.config
         addLog(t('log.configComplete'))
         
-        // Mostrar resumen de configuración detallado
+        // Mostrar resumen de configuraciÃ³n detallado
         if (data.summary) {
           addLog(t('log.configSummaryAgents', { count: data.summary.total_agents }))
           addLog(t('log.configSummaryHours', { hours: data.summary.simulation_hours }))
           addLog(t('log.configSummaryPosts', { count: data.summary.initial_posts_count }))
           addLog(t('log.configSummaryTopics', { count: data.summary.hot_topics_count }))
-          addLog(t('log.configSummaryPlatforms', { twitter: data.summary.has_twitter_config ? '✓' : '✗', reddit: data.summary.has_reddit_config ? '✓' : '✗' }))
+          addLog(t('log.configSummaryPlatforms', { twitter: data.summary.has_twitter_config ? 'âœ“' : 'âœ—', reddit: data.summary.has_reddit_config ? 'âœ“' : 'âœ—' }))
         }
         
-        // Mostrar detalles de Configuración de tiempo
+        // Mostrar detalles de ConfiguraciÃ³n de tiempo
         if (data.config.time_config) {
           const tc = data.config.time_config
           addLog(t('log.timeConfigDetail', { minutes: tc.minutes_per_round, rounds: Math.floor((tc.total_simulation_hours * 60) / tc.minutes_per_round) }))
         }
         
-        // Mostrar Configuración de eventos
+        // Mostrar ConfiguraciÃ³n de eventos
         if (data.config.event_config?.narrative_direction) {
           const narrative = data.config.event_config.narrative_direction
           addLog(t('log.narrativeDirection', { direction: narrative.length > 50 ? narrative.substring(0, 50) + '...' : narrative }))
@@ -1018,7 +1018,7 @@ const fetchConfigRealtime = async () => {
       }
     }
   } catch (err) {
-    console.warn('Obtención de Config fallida:', err)
+    console.warn('ObtenciÃ³n de Config fallida:', err)
   }
 }
 
@@ -1026,11 +1026,11 @@ const loadPreparedData = async () => {
   phase.value = 2
   addLog(t('log.loadingExistingConfig'))
   
-  // Última obtención de Profiles
+  // Ãšltima obtenciÃ³n de Profiles
   await fetchProfilesRealtime()
   addLog(t('log.loadedAgentProfiles', { count: profiles.value.length }))
   
-  // Obtener configuración (usando interfaz en tiempo real)
+  // Obtener configuraciÃ³n (usando interfaz en tiempo real)
   try {
     const res = await getSimulationConfigRealtime(props.simulationId)
     if (res.success && res.data) {
@@ -1038,7 +1038,7 @@ const loadPreparedData = async () => {
         simulationConfig.value = res.data.config
         addLog(t('log.configLoadSuccess'))
         
-        // Mostrar resumen de configuración detallado
+        // Mostrar resumen de configuraciÃ³n detallado
         if (res.data.summary) {
           addLog(t('log.configSummaryAgents', { count: res.data.summary.total_agents }))
           addLog(t('log.configSummaryHours', { hours: res.data.summary.simulation_hours }))
@@ -1049,7 +1049,7 @@ const loadPreparedData = async () => {
         phase.value = 4
         emit('update-status', 'completed')
       } else {
-        // Configuración aún no generada, iniciar consulta de rondas
+        // ConfiguraciÃ³n aÃºn no generada, iniciar consulta de rondas
         addLog(t('log.configGenerating'))
         startConfigPolling()
       }
@@ -1071,7 +1071,7 @@ watch(() => props.systemLogs?.length, () => {
 })
 
 onMounted(() => {
-  // Inicio automático del proceso de preparación
+  // Inicio automÃ¡tico del proceso de preparaciÃ³n
   if (props.simulationId) {
     addLog(t('log.step2Init'))
     startPrepareSimulation()
@@ -1907,7 +1907,7 @@ onUnmounted(() => {
   flex: 1;
 }
 
-/* información básica cuadrícula */
+/* informaciÃ³n bÃ¡sica cuadrÃ­cula */
 .modal-info-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -1943,7 +1943,7 @@ onUnmounted(() => {
   color: #FF5722;
 }
 
-/* área del módulo */
+/* Ã¡rea del mÃ³dulo */
 .modal-section {
   margin-bottom: 28px;
 }
@@ -2277,7 +2277,7 @@ onUnmounted(() => {
   margin: 0;
 }
 
-/* estilos de configuración de número de rondas simuladas */
+/* estilos de configuraciÃ³n de nÃºmero de rondas simuladas */
 .rounds-config-section {
   margin: 24px 0;
   padding-top: 24px;
@@ -2604,4 +2604,119 @@ onUnmounted(() => {
   transform: scale(0.95) translateY(10px);
   opacity: 0;
 }
+
+/* YouWorld dark visual override */
+.env-setup-panel {
+  background: transparent;
+  color: #e9f3f0;
+}
+.scroll-container {
+  padding: 18px;
+  gap: 16px;
+}
+.step-card,
+.info-card,
+.stats-grid,
+.profile-card,
+.config-detail-panel,
+.platform-card,
+.agent-card,
+.narrative-box,
+.topics-section,
+.initial-posts-section,
+.rounds-config-section,
+.auto-info-card,
+.profile-modal,
+.system-logs {
+  background: linear-gradient(180deg, rgba(17, 23, 31, 0.94), rgba(16, 15, 28, 0.92));
+  border: 1px solid rgba(118, 163, 157, 0.16);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.22);
+}
+.step-card.active {
+  border-color: rgba(110, 208, 200, 0.52);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24), inset 0 0 0 1px rgba(110, 208, 200, 0.16);
+}
+.step-title,
+.profile-realname,
+.config-block-title,
+.section-title,
+.modal-realname,
+.val-num,
+.stat-value,
+.config-item-value,
+.agent-name,
+.platform-name,
+.post-role,
+.post-id {
+  color: #edf6f2;
+}
+.step-num,
+.api-note,
+.preview-title,
+.stat-label,
+.info-label,
+.config-item-label,
+.period-label,
+.param-label,
+.box-label,
+.section-desc,
+.modal-username,
+.log-title,
+.log-id {
+  color: #8fa5a1;
+}
+.description,
+.profile-bio,
+.info-value,
+.config-item-value,
+.period-hours,
+.param-value,
+.narrative-text,
+.post-text,
+.section-bio,
+.section-persona,
+.log-msg,
+.log-time,
+.modal-profession,
+.profile-profession {
+  color: #c9d7d4;
+}
+.badge.success,
+.badge.processing,
+.badge.pending,
+.badge.accent,
+.topic-tag,
+.hot-topic-tag,
+.topic-item,
+.agent-type,
+.agent-stance,
+.duration-badge {
+  border-radius: 999px;
+}
+.badge.success { background: rgba(110, 208, 200, 0.14); color: #85e3db; }
+.badge.processing { background: rgba(246, 160, 77, 0.16); color: #ffc07c; }
+.badge.pending { background: rgba(255,255,255,0.06); color: #8fa5a1; }
+.badge.accent, .topic-tag, .hot-topic-tag, .topic-item, .duration-badge { background: rgba(110, 208, 200, 0.12); color: #9fe8e1; }
+.profile-profession, .agent-type { background: rgba(255,255,255,0.06); color: #aab9b5; }
+.action-btn.primary {
+  background: linear-gradient(135deg, #67d1c7, #80a8ff);
+  color: #071013;
+}
+.action-btn.secondary {
+  background: rgba(255,255,255,0.05);
+  color: #d7e4e0;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.info-row,
+.profiles-preview,
+.config-block,
+.timeline-item,
+.modal-section,
+.log-header {
+  border-color: rgba(255,255,255,0.08) !important;
+}
+.minimal-slider {
+  accent-color: #6ed0c8;
+}
 </style>
+

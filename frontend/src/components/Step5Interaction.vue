@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="interaction-panel">
     <!-- Main Split Layout -->
     <div class="main-split-layout">
@@ -437,7 +437,7 @@ const showToolsDetail = ref(true)
 // Chat State
 const chatInput = ref('')
 const chatHistory = ref([])
-const chatHistoryCache = ref({}) // Caché de todos los registros de conversación: { 'report_agent': [], 'agent_0': [], 'agent_1': [], ... }
+const chatHistoryCache = ref({}) // CachÃ© de todos los registros de conversaciÃ³n: { 'report_agent': [], 'agent_0': [], 'agent_1': [], ... }
 const isSending = ref(false)
 const chatMessages = ref(null)
 const chatInputRef = ref(null)
@@ -487,7 +487,7 @@ const selectChatTarget = (target) => {
   }
 }
 
-// Guardar registro de conversación actual al caché
+// Guardar registro de conversaciÃ³n actual al cachÃ©
 const saveChatHistory = () => {
   if (chatHistory.value.length === 0) return
   
@@ -499,7 +499,7 @@ const saveChatHistory = () => {
 }
 
 const selectReportAgentChat = () => {
-  // Guardar registro de conversación actual
+  // Guardar registro de conversaciÃ³n actual
   saveChatHistory()
   
   activeTab.value = 'chat'
@@ -508,7 +508,7 @@ const selectReportAgentChat = () => {
   selectedAgentIndex.value = null
   showAgentDropdown.value = false
   
-  // Restaurar registro de conversación del Report Agent
+  // Restaurar registro de conversaciÃ³n del Report Agent
   chatHistory.value = chatHistoryCache.value['report_agent'] || []
 }
 
@@ -528,7 +528,7 @@ const toggleAgentDropdown = () => {
 }
 
 const selectAgent = (agent, idx) => {
-  // Guardar registro de conversación actual
+  // Guardar registro de conversaciÃ³n actual
   saveChatHistory()
   
   selectedAgent.value = agent
@@ -536,7 +536,7 @@ const selectAgent = (agent, idx) => {
   chatTarget.value = 'agent'
   showAgentDropdown.value = false
   
-  // Restaurar registro de conversación de este Agent
+  // Restaurar registro de conversaciÃ³n de este Agent
   chatHistory.value = chatHistoryCache.value[`agent_${idx}`] || []
   addLog(t('log.selectChatTarget', { name: agent.username }))
 }
@@ -583,7 +583,7 @@ const renderMarkdown = (content) => {
   
   // Limpiar todo el espacio entre elementos de lista
   html = html.replace(/<\/li>\s+<li/g, '</li><li')
-  // Limpiar espacio después de etiquetas de inicio de lista
+  // Limpiar espacio despuÃ©s de etiquetas de inicio de lista
   html = html.replace(/<ul class="md-ul">\s+/g, '<ul class="md-ul">')
   html = html.replace(/<ol class="md-ol">\s+/g, '<ol class="md-ol">')
   // Limpiar espacio antes de etiquetas de fin de lista
@@ -602,17 +602,17 @@ const renderMarkdown = (content) => {
   html = html.replace(/(<\/h[2-5]>)<\/p>/g, '$1')
   html = html.replace(/<p class="md-p">(<ul|<ol|<blockquote|<pre|<hr)/g, '$1')
   html = html.replace(/(<\/ul>|<\/ol>|<\/blockquote>|<\/pre>)<\/p>/g, '$1')
-  // Limpiar etiquetas <br> antes y después de elementos de bloque
+  // Limpiar etiquetas <br> antes y despuÃ©s de elementos de bloque
   html = html.replace(/<br>\s*(<ul|<ol|<blockquote)/g, '$1')
   html = html.replace(/(<\/ul>|<\/ol>|<\/blockquote>)\s*<br>/g, '$1')
-  // Limpiar caso <p><br> seguido inmediatamente de elemento de bloque (línea vacía excesiva)
+  // Limpiar caso <p><br> seguido inmediatamente de elemento de bloque (lÃ­nea vacÃ­a excesiva)
   html = html.replace(/<p class="md-p">(<br>\s*)+(<ul|<ol|<blockquote|<pre|<hr)/g, '$2')
   // Limpiar etiquetas <br> consecutivas
   html = html.replace(/(<br>\s*){2,}/g, '<br>')
-  // Limpiar <br> antes de etiquetas de inicio de párrafo después de elementos de bloque
+  // Limpiar <br> antes de etiquetas de inicio de pÃ¡rrafo despuÃ©s de elementos de bloque
   html = html.replace(/(<\/ol>|<\/ul>|<\/blockquote>)<br>(<p|<div)/g, '$1$2')
 
-  // Corregir numeración de listas ordenadas no continuas: cuando una <ol> de un solo elemento está separada por contenido de párrafo, mantener numeración incremental
+  // Corregir numeraciÃ³n de listas ordenadas no continuas: cuando una <ol> de un solo elemento estÃ¡ separada por contenido de pÃ¡rrafo, mantener numeraciÃ³n incremental
   const tokens = html.split(/(<ol class="md-ol">(?:<li class="md-oli"[^>]*>[\s\S]*?<\/li>)+<\/ol>)/g)
   let olCounter = 0
   let inSequence = false
@@ -674,7 +674,7 @@ const sendMessage = async () => {
     } finally {
       isSending.value = false
       scrollToBottom()
-      // Guardar automáticamente el registro de conversación al caché
+      // Guardar automÃ¡ticamente el registro de conversaciÃ³n al cachÃ©
       saveChatHistory()
     }
   }
@@ -722,9 +722,9 @@ const sendToAgent = async (message) => {
     const historyContext = chatHistory.value
       .filter(msg => msg.content !== message)
       .slice(-6)
-      .map(msg => `${msg.role === 'user' ? 'Preguntador' : 'Tú'}：${msg.content}`)
+      .map(msg => `${msg.role === 'user' ? 'Preguntador' : 'TÃº'}ï¼š${msg.content}`)
       .join('\n')
-    prompt = `A continuación está nuestra conversación anterior：\n${historyContext}\n\nAhora mi nueva pregunta es：${message}`
+    prompt = `A continuaciÃ³n estÃ¡ nuestra conversaciÃ³n anteriorï¼š\n${historyContext}\n\nAhora mi nueva pregunta esï¼š${message}`
   }
   
   const res = await interviewAgents({
@@ -2031,7 +2031,7 @@ watch(() => props.simulationId, (newId) => {
   margin-bottom: 0;
 }
 
-/* Corregir numeración de listas ordenadas - usar contador CSS para que múltiples elementos ol mantengan numeración continua */
+/* Corregir numeraciÃ³n de listas ordenadas - usar contador CSS para que mÃºltiples elementos ol mantengan numeraciÃ³n continua */
 .message-text {
   counter-reset: list-counter;
 }
@@ -2536,7 +2536,7 @@ watch(() => props.simulationId, (newId) => {
   margin: 6px 0;
 }
 
-/* Estilos de cita en área de chat/cuestionario */
+/* Estilos de cita en Ã¡rea de chat/cuestionario */
 .chat-messages :deep(.md-quote),
 .result-answer :deep(.md-quote) {
   margin: 12px 0;
@@ -2574,6 +2574,134 @@ watch(() => props.simulationId, (newId) => {
   border-top: 1px solid #E5E7EB;
   margin: 24px 0;
 }
+
+/* YouWorld dark visual override */
+.interaction-panel,
+.right-panel {
+  background:
+    radial-gradient(circle at 16% 14%, rgba(90, 58, 143, 0.16), transparent 30%),
+    radial-gradient(circle at 84% 10%, rgba(63, 145, 137, 0.12), transparent 24%),
+    linear-gradient(180deg, #0b0f15 0%, #10131d 48%, #0c1218 100%);
+  color: #e9f3f0;
+}
+.left-panel.report-style {
+  background: linear-gradient(180deg, rgba(11, 15, 21, 0.96), rgba(14, 18, 27, 0.96));
+  border-right: 1px solid rgba(118, 163, 157, 0.16);
+}
+.report-tag,
+.tab-pill.active,
+.send-btn,
+.survey-submit-btn {
+  background: linear-gradient(135deg, #67d1c7, #80a8ff);
+  color: #071013;
+}
+.report-id,
+.sub-title,
+.generated-content,
+.waiting-text,
+.action-bar-subtitle,
+.profile-card-handle,
+.profile-card-profession,
+.message-time,
+.sender-name,
+.checkbox-role,
+.result-role {
+  color: #8fa5a1;
+}
+.main-title,
+.section-title,
+.action-bar-title,
+.profile-card-name,
+.tools-card-name,
+.result-name {
+  color: #edf6f2;
+}
+.generated-content,
+.profile-card-bio p,
+.message-text,
+.result-answer,
+.result-question,
+.tool-desc,
+.checkbox-name,
+.agent-name,
+.agent-role {
+  color: #c9d7d4;
+}
+.header-divider,
+.generated-content :deep(.md-h2),
+.action-bar,
+.profile-card-body,
+.chat-input-area,
+.section-header-row.clickable:hover,
+.dropdown-menu,
+.survey-results,
+.result-card,
+.agent-checkbox,
+.survey-input,
+.chat-input,
+.report-agent-tools-card,
+.agent-profile-card,
+.chat-messages {
+  border-color: rgba(118, 163, 157, 0.14) !important;
+}
+.action-bar,
+.report-agent-tools-card,
+.agent-profile-card,
+.dropdown-menu,
+.survey-results,
+.result-card,
+.agent-checkbox,
+.survey-input,
+.chat-input,
+.chat-messages,
+.tools-card-body,
+.section-header-row.clickable:hover {
+  background: rgba(255,255,255,0.04);
+}
+.tab-pill,
+.agent-pill,
+.survey-pill,
+.tools-card-toggle,
+.profile-card-toggle,
+.send-btn {
+  border-radius: 999px;
+}
+.tab-pill,
+.agent-pill,
+.survey-pill {
+  background: rgba(255,255,255,0.04);
+  color: #d4e3df;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.dropdown-item:hover,
+.agent-checkbox.checked,
+.result-card,
+.message-text,
+.chat-input,
+.survey-input {
+  background: rgba(255,255,255,0.05);
+}
+.message-avatar,
+.tools-card-avatar,
+.profile-card-avatar,
+.result-avatar,
+.checkbox-avatar,
+.agent-avatar {
+  background: rgba(110, 208, 200, 0.16);
+  color: #dffaf5;
+}
+.chat-message.user .message-text {
+  background: linear-gradient(135deg, rgba(103, 209, 199, 0.22), rgba(128, 168, 255, 0.18));
+  color: #edf6f2;
+}
+.chat-message.assistant .message-text {
+  background: rgba(255,255,255,0.06);
+  color: #d8e6e2;
+}
+.empty-text,
+.tools-card-subtitle {
+  color: #9db2ae;
+}
 </style>
 
 <style>
@@ -2581,4 +2709,133 @@ watch(() => props.simulationId, (newId) => {
 html[lang="en"] .report-header-block .main-title {
   font-size: 28px;
 }
+
+/* YouWorld dark visual override */
+.interaction-panel,
+.right-panel {
+  background:
+    radial-gradient(circle at 16% 14%, rgba(90, 58, 143, 0.16), transparent 30%),
+    radial-gradient(circle at 84% 10%, rgba(63, 145, 137, 0.12), transparent 24%),
+    linear-gradient(180deg, #0b0f15 0%, #10131d 48%, #0c1218 100%);
+  color: #e9f3f0;
+}
+.left-panel.report-style {
+  background: linear-gradient(180deg, rgba(11, 15, 21, 0.96), rgba(14, 18, 27, 0.96));
+  border-right: 1px solid rgba(118, 163, 157, 0.16);
+}
+.report-tag,
+.tab-pill.active,
+.send-btn,
+.survey-submit-btn {
+  background: linear-gradient(135deg, #67d1c7, #80a8ff);
+  color: #071013;
+}
+.report-id,
+.sub-title,
+.generated-content,
+.waiting-text,
+.action-bar-subtitle,
+.profile-card-handle,
+.profile-card-profession,
+.message-time,
+.sender-name,
+.checkbox-role,
+.result-role {
+  color: #8fa5a1;
+}
+.main-title,
+.section-title,
+.action-bar-title,
+.profile-card-name,
+.tools-card-name,
+.result-name {
+  color: #edf6f2;
+}
+.generated-content,
+.profile-card-bio p,
+.message-text,
+.result-answer,
+.result-question,
+.tool-desc,
+.checkbox-name,
+.agent-name,
+.agent-role {
+  color: #c9d7d4;
+}
+.header-divider,
+.generated-content :deep(.md-h2),
+.action-bar,
+.profile-card-body,
+.chat-input-area,
+.section-header-row.clickable:hover,
+.dropdown-menu,
+.survey-results,
+.result-card,
+.agent-checkbox,
+.survey-input,
+.chat-input,
+.report-agent-tools-card,
+.agent-profile-card,
+.chat-messages {
+  border-color: rgba(118, 163, 157, 0.14) !important;
+}
+.action-bar,
+.report-agent-tools-card,
+.agent-profile-card,
+.dropdown-menu,
+.survey-results,
+.result-card,
+.agent-checkbox,
+.survey-input,
+.chat-input,
+.chat-messages,
+.tools-card-body,
+.section-header-row.clickable:hover {
+  background: rgba(255,255,255,0.04);
+}
+.tab-pill,
+.agent-pill,
+.survey-pill,
+.tools-card-toggle,
+.profile-card-toggle,
+.send-btn {
+  border-radius: 999px;
+}
+.tab-pill,
+.agent-pill,
+.survey-pill {
+  background: rgba(255,255,255,0.04);
+  color: #d4e3df;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.dropdown-item:hover,
+.agent-checkbox.checked,
+.result-card,
+.message-text,
+.chat-input,
+.survey-input {
+  background: rgba(255,255,255,0.05);
+}
+.message-avatar,
+.tools-card-avatar,
+.profile-card-avatar,
+.result-avatar,
+.checkbox-avatar,
+.agent-avatar {
+  background: rgba(110, 208, 200, 0.16);
+  color: #dffaf5;
+}
+.chat-message.user .message-text {
+  background: linear-gradient(135deg, rgba(103, 209, 199, 0.22), rgba(128, 168, 255, 0.18));
+  color: #edf6f2;
+}
+.chat-message.assistant .message-text {
+  background: rgba(255,255,255,0.06);
+  color: #d8e6e2;
+}
+.empty-text,
+.tools-card-subtitle {
+  color: #9db2ae;
+}
 </style>
+
