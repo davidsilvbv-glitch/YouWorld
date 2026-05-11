@@ -359,7 +359,31 @@ class LLMClient:
                 if response_format:
                     kwargs["response_format"] = response_format
 
+                # OpenRouter reasoning-enabled models can spend a long time in
+                # chain-of-thought mode for JSON tasks. For structured outputs
+                # we disable reasoning explicitly to keep ontology generation
+                # deterministic and fast.
+                if (
+                    self.base_url
+                    and "openrouter.ai" in self.base_url
+                    and response_format
+                    and response_format.get("type") == "json_object"
+                ):
+                    kwargs["extra_body"] = {"reasoning": {"enabled": False}}
+
+                logger.info(
+                    "LLM request starting: model=%s attempt=%s json_mode=%s",
+                    self.model,
+                    attempt + 1,
+                    bool(response_format),
+                )
+
                 response = self.client.chat.completions.create(**kwargs)
+                logger.info(
+                    "LLM request completed: model=%s attempt=%s",
+                    self.model,
+                    attempt + 1,
+                )
                 content = response.choices[0].message.content
 
                 if content is None:
