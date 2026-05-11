@@ -27,7 +27,7 @@
     <!-- Barra de navegación superior -->
     <nav class="navbar">
       <div class="nav-left">
-        <div class="nav-brand">YOUWORLD</div>
+        <button class="nav-brand" @click="activeInfoPanel = null">YOUWORLD</button>
         <div class="nav-info-tabs">
           <button
             v-for="tab in infoTabs"
@@ -46,19 +46,21 @@
     </nav>
 
     <div class="main-content">
-      <section v-if="activeInfoPanel" class="info-panel">
-        <div class="info-panel-inner">
-          <button class="info-close" @click="activeInfoPanel = null">×</button>
-          <h2>{{ activeInfoContent.title }}</h2>
-          <p v-if="activeInfoPanel !== 'workflow'">{{ activeInfoContent.body }}</p>
-          <ol v-else class="info-steps">
-            <li v-for="step in workflowInfo" :key="step">{{ step }}</li>
-          </ol>
-        </div>
+      <section v-if="activeInfoPanel" class="section-page">
+        <button class="section-back" @click="activeInfoPanel = null">← {{ $t('common.back') }}</button>
+        <p class="section-kicker">YouWorld</p>
+        <h1>{{ activeInfoContent.title }}</h1>
+        <p v-if="activeInfoPanel !== 'workflow'" class="section-body">{{ activeInfoContent.body }}</p>
+        <ol v-else class="section-steps">
+          <li v-for="step in workflowDetails" :key="step.title">
+            <span>{{ step.title }}</span>
+            <p>{{ step.desc }}</p>
+          </li>
+        </ol>
       </section>
 
       <!-- Sección superior: área Hero -->
-      <section class="hero-section">
+      <section v-if="false" class="hero-section">
         <div class="hero-left">
           <div class="tag-row">
             <span class="orange-tag">{{ $t('home.tagline') }}</span>
@@ -105,7 +107,7 @@
       </section>
 
       <!-- Sección inferior: diseño de dos columnas -->
-      <section class="insight-strip">
+      <section v-if="false" class="insight-strip">
         <article class="insight-card">
           <span class="insight-num">01</span>
           <h3>{{ $t('home.howItWorksTitle') }}</h3>
@@ -123,9 +125,9 @@
         </article>
       </section>
 
-      <section class="dashboard-section">
+      <section v-if="!activeInfoPanel" class="dashboard-section">
         <!-- Columna izquierda: estado y pasos -->
-        <div class="left-panel">
+        <div v-if="false" class="left-panel">
           <div class="panel-header">
             <span class="status-dot">■</span> {{ $t('home.systemStatus') }}
           </div>
@@ -298,12 +300,12 @@ const infoTabs = computed(() => [
   { key: 'why', label: t('home.whyChooseTitle') }
 ])
 
-const workflowInfo = computed(() => [
-  t('home.step01Title'),
-  t('home.step02Title'),
-  t('home.step03Title'),
-  t('home.step04Title'),
-  t('home.step05Title')
+const workflowDetails = computed(() => [
+  { title: t('home.step01Title'), desc: t('home.step01Desc') },
+  { title: t('home.step02Title'), desc: t('home.step02Desc') },
+  { title: t('home.step03Title'), desc: t('home.step03Desc') },
+  { title: t('home.step04Title'), desc: t('home.step04Desc') },
+  { title: t('home.step05Title'), desc: t('home.step05Desc') }
 ])
 
 const activeInfoContent = computed(() => {
@@ -1494,6 +1496,10 @@ const startSimulation = () => {
 }
 
 .nav-brand {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
   font-size: 1rem;
   letter-spacing: 0.16em;
   text-shadow: none;
@@ -1525,6 +1531,92 @@ const startSimulation = () => {
 .main-content {
   max-width: 980px;
   padding: clamp(28px, 5vw, 58px) clamp(18px, 5vw, 44px) 72px;
+}
+
+.section-page {
+  max-width: 860px;
+  min-height: calc(100vh - 180px);
+  margin: 0 auto;
+  padding: clamp(28px, 6vw, 72px) 0;
+}
+
+.section-back {
+  border: 0;
+  background: transparent;
+  color: rgba(246, 239, 255, 0.58);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  padding: 0;
+  margin-bottom: 42px;
+}
+
+.section-back:hover {
+  color: #f6efff;
+}
+
+.section-kicker {
+  margin: 0 0 14px;
+  color: rgba(114, 246, 255, 0.76);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.section-page h1 {
+  margin: 0 0 22px;
+  color: #f6efff;
+  font-size: clamp(2.2rem, 5vw, 4.2rem);
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.section-body {
+  max-width: 720px;
+  margin: 0;
+  color: rgba(246, 239, 255, 0.72);
+  font-size: 1.08rem;
+  line-height: 1.78;
+}
+
+.section-steps {
+  list-style: none;
+  counter-reset: steps;
+  padding: 0;
+  margin: 28px 0 0;
+  display: grid;
+  gap: 24px;
+}
+
+.section-steps li {
+  counter-increment: steps;
+  position: relative;
+  padding-left: 56px;
+}
+
+.section-steps li::before {
+  content: counter(steps, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 2px;
+  color: rgba(114, 246, 255, 0.68);
+  font-family: var(--font-mono);
+  font-weight: 800;
+}
+
+.section-steps span {
+  display: block;
+  color: #f6efff;
+  font-weight: 800;
+  font-size: 1.08rem;
+  margin-bottom: 6px;
+}
+
+.section-steps p {
+  margin: 0;
+  color: rgba(246, 239, 255, 0.64);
+  line-height: 1.65;
 }
 
 .info-panel {
