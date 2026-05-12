@@ -1,4 +1,4 @@
-"""
+﻿"""
 API de rutas del grafo
 Usa el mecanismo de contexto del proyecto para persistir el estado del servidor
 """
@@ -17,9 +17,10 @@ from ..utils.logger import get_logger
 from ..utils.locale import t, get_locale, set_locale
 from ..models.task import TaskManager, TaskStatus
 from ..models.project import ProjectManager, ProjectStatus
+from ..auth import bind_project_to_user, get_current_user, get_user_project_ids, user_owns_project
 
 
-# �# �Obtener el logger
+# ï¿½# ï¿½Obtener el logger
 logger = get_logger("mirofish.api")
 
 
@@ -36,14 +37,14 @@ def _get_graph_builder():
 
 
 def allowed_file(filename: str) -> bool:
-    """Comprueba si la extensión de archivo es permitida"""
+    """Comprueba si la extensiÃ³n de archivo es permitida"""
     if not filename or "." not in filename:
         return False
     ext = os.path.splitext(filename)[1].lower().lstrip(".")
     return ext in Config.ALLOWED_EXTENSIONS
 
 
-# ============== Proyectos gestión de interfaces ==============
+# ============== Proyectos gestiÃ³n de interfaces ==============
 
 
 @graph_bp.route("/project/<project_id>", methods=["GET"])
@@ -51,6 +52,10 @@ def get_project(project_id: str):
     """
     Obtener detalles del proyecto
     """
+    current_user = get_current_user()
+    if current_user and not user_owns_project(current_user.user_id, project_id):
+        return jsonify({"success": False, "error": "forbidden"}), 403
+
     project = ProjectManager.get_project(project_id)
 
     if not project:
@@ -67,7 +72,12 @@ def list_projects():
     Listar todos los proyectos
     """
     limit = request.args.get("limit", 50, type=int)
-    projects = ProjectManager.list_projects(limit=limit)
+    current_user = get_current_user()
+    projects = ProjectManager.list_projects(limit=500)
+    owned_ids = get_user_project_ids(current_user.user_id) if current_user else None
+    if owned_ids is not None:
+        projects = [p for p in projects if p.project_id in owned_ids]
+    projects = projects[:limit]
 
     return jsonify(
         {
@@ -83,6 +93,10 @@ def delete_project(project_id: str):
     """
     Borrar proyecto
     """
+    current_user = get_current_user()
+    if current_user and not user_owns_project(current_user.user_id, project_id):
+        return jsonify({"success": False, "error": "forbidden"}), 403
+
     success = ProjectManager.delete_project(project_id)
 
     if not success:
@@ -98,6 +112,10 @@ def reset_project(project_id: str):
     """
     Restablecer el estado del proyecto (para reconstruir grafo)
     """
+    current_user = get_current_user()
+    if current_user and not user_owns_project(current_user.user_id, project_id):
+        return jsonify({"success": False, "error": "forbidden"}), 403
+
     project = ProjectManager.get_project(project_id)
 
     if not project:
@@ -105,7 +123,7 @@ def reset_project(project_id: str):
             {"success": False, "error": t("api.projectNotFound", id=project_id)}
         ), 404
 
-    # Resetear al estado generado de ontología
+    # Resetear al estado generado de ontologÃ­a
     if project.ontology:
         project.status = ProjectStatus.ONTOLOGY_GENERATED
     else:
@@ -131,13 +149,13 @@ def reset_project(project_id: str):
 @graph_bp.route("/ontology/generate", methods=["POST"])
 def generate_ontology():
     """
-    Proyecto Interfaz 1: cargar archivos y generar ontología
+    Proyecto Interfaz 1: cargar archivos y generar ontologÃ­a
 
     Solicitud (multipart/form-data):
-        files: Archivos cargados (PDF/MD/TXT), puede ser múltiple
-        simulation_requirement: Requisito de simulación (obligatorio)
+        files: Archivos cargados (PDF/MD/TXT), puede ser mÃºltiple
+        simulation_requirement: Requisito de simulaciÃ³n (obligatorio)
         project_name: Nombre del proyecto (opcional)
-        additional_context: Explicación adicional (opcional)
+        additional_context: ExplicaciÃ³n adicional (opcional)
 
     Respuesta:
         {
@@ -155,15 +173,15 @@ def generate_ontology():
         }
     """
     try:
-        logger.info("=== Comenzando generación de ontología ===")
+        logger.info("=== Comenzando generaciÃ³n de ontologÃ­a ===")
 
-        # Obtener parámetros
+        # Obtener parÃ¡metros
         simulation_requirement = request.form.get("simulation_requirement", "")
         project_name = request.form.get("project_name", "Unnamed Project")
         additional_context = request.form.get("additional_context", "")
 
         logger.debug(f"Nombre del proyecto: {project_name}")
-        logger.debug(f"Requisito de simulación: {simulation_requirement[:100]}...")
+        logger.debug(f"Requisito de simulaciÃ³n: {simulation_requirement[:100]}...")
 
         if not simulation_requirement:
             return jsonify(
@@ -207,13 +225,13 @@ def generate_ontology():
             ProjectManager.delete_project(project.project_id)
             return jsonify({"success": False, "error": t("api.noDocProcessed")}), 400
 
-        # Guardar texto extraído
+        # Guardar texto extraÃ­do
         project.total_text_length = len(all_text)
         ProjectManager.save_extracted_text(project.project_id, all_text)
-        logger.info(f"Texto extraído completado, {len(all_text)} caracteres")
+        logger.info(f"Texto extraÃ­do completado, {len(all_text)} caracteres")
 
-        # Generar ontología
-        logger.info("Llamando LLM para generar ontología...")
+        # Generar ontologÃ­a
+        logger.info("Llamando LLM para generar ontologÃ­a...")
         generator = OntologyGenerator()
         ontology = generator.generate(
             document_texts=document_texts,
@@ -221,11 +239,11 @@ def generate_ontology():
             additional_context=additional_context if additional_context else None,
         )
 
-        # Guardar ontología en proyecto
+        # Guardar ontologÃ­a en proyecto
         entity_count = len(ontology.get("entity_types", []))
         edge_count = len(ontology.get("edge_types", []))
         logger.info(
-            f"Ontología generada: {entity_count} tipos de entidades, {edge_count} tipos de relaciones"
+            f"OntologÃ­a generada: {entity_count} tipos de entidades, {edge_count} tipos de relaciones"
         )
 
         project.ontology = {
@@ -235,7 +253,7 @@ def generate_ontology():
         project.analysis_summary = ontology.get("analysis_summary", "")
         project.status = ProjectStatus.ONTOLOGY_GENERATED
         ProjectManager.save_project(project)
-        logger.info(f"=== Ontología generada === ID del proyecto: {project.project_id}")
+        logger.info(f"=== OntologÃ­a generada === ID del proyecto: {project.project_id}")
 
         return jsonify(
             {
@@ -263,7 +281,7 @@ def generate_ontology():
 @graph_bp.route("/build", methods=["POST"])
 def build_graph():
     """
-    Proyecto Interfaz 2: construir grafo según project_id
+    Proyecto Interfaz 2: construir grafo segÃºn project_id
 
     Solicitud (JSON):
         {
@@ -279,14 +297,14 @@ def build_graph():
             "data": {
                 "project_id": "proj_xxxx",
                 "task_id": "task_xxxx",
-                "message": "Tarea de construcción de grafo iniciada"
+                "message": "Tarea de construcciÃ³n de grafo iniciada"
             }
         }
     """
     try:
-        logger.info("=== Comenzando construcción de grafo ===")
+        logger.info("=== Comenzando construcciÃ³n de grafo ===")
 
-        # Verificar configuración según el backend
+        # Verificar configuraciÃ³n segÃºn el backend
         errors = []
         if Config.MEMORY_BACKEND == "zep":
             if not Config.ZEP_API_KEY:
@@ -294,7 +312,7 @@ def build_graph():
         # Para graphiti se usa Neo4j (verificado en Config.validate)
 
         if errors:
-            logger.error(f"Error de configuración: {errors}")
+            logger.error(f"Error de configuraciÃ³n: {errors}")
             return jsonify(
                 {
                     "success": False,
@@ -305,12 +323,16 @@ def build_graph():
         # Parsear solicitud
         data = request.get_json() or {}
         project_id = data.get("project_id")
-        logger.debug(f"Parámetros de solicitud: project_id={project_id}")
+        logger.debug(f"ParÃ¡metros de solicitud: project_id={project_id}")
 
         if not project_id:
             return jsonify({"success": False, "error": t("api.requireProjectId")}), 400
 
         # Obtener proyecto
+        current_user = get_current_user()
+        if current_user and not user_owns_project(current_user.user_id, project_id):
+            return jsonify({"success": False, "error": "forbidden"}), 403
+
         project = ProjectManager.get_project(project_id)
         if not project:
             return jsonify(
@@ -347,7 +369,7 @@ def build_graph():
             project.error = None
             ProjectManager.save_project(project)
 
-        # Obtener configuración
+        # Obtener configuraciÃ³n
         graph_name = data.get("graph_name", project.name or "MiroFish Graph")
         chunk_size = data.get(
             "chunk_size", project.chunk_size or Config.DEFAULT_CHUNK_SIZE
@@ -356,16 +378,16 @@ def build_graph():
             "chunk_overlap", project.chunk_overlap or Config.DEFAULT_CHUNK_OVERLAP
         )
 
-        # Actualizar configuración de proyecto
+        # Actualizar configuraciÃ³n de proyecto
         project.chunk_size = chunk_size
         project.chunk_overlap = chunk_overlap
 
-        # Obtener texto extraído
+        # Obtener texto extraÃ­do
         text = ProjectManager.get_extracted_text(project_id)
         if not text:
             return jsonify({"success": False, "error": t("api.textNotFound")}), 400
 
-        # Obtener ontología
+        # Obtener ontologÃ­a
         ontology = project.ontology
         if not ontology:
             return jsonify({"success": False, "error": t("api.ontologyNotFound")}), 400
@@ -374,7 +396,7 @@ def build_graph():
         task_manager = TaskManager()
         task_id = task_manager.create_task(f"Construir grafo: {graph_name}")
         logger.info(
-            f"Creación de tarea de construcción de grafo: task_id={task_id}, project_id={project_id}"
+            f"CreaciÃ³n de tarea de construcciÃ³n de grafo: task_id={task_id}, project_id={project_id}"
         )
 
         # Actualizar estado del proyecto
@@ -390,14 +412,14 @@ def build_graph():
             set_locale(current_locale)
             build_logger = get_logger("mirofish.build")
             try:
-                build_logger.info(f"[{task_id}] Iniciando construcción de grafo...")
+                build_logger.info(f"[{task_id}] Iniciando construcciÃ³n de grafo...")
                 task_manager.update_task(
                     task_id,
                     status=TaskStatus.PROCESSING,
                     message=t("progress.initGraphService"),
                 )
 
-                # Crear servicio de construcción de grafo según backend
+                # Crear servicio de construcciÃ³n de grafo segÃºn backend
                 builder = _get_graph_builder()
                 creating_msg = (
                     t("progress.creatingGraphitiGraph")
@@ -422,13 +444,13 @@ def build_graph():
                 project.graph_id = graph_id
                 ProjectManager.save_project(project)
 
-                # Configurar ontología
+                # Configurar ontologÃ­a
                 task_manager.update_task(
                     task_id, message=t("progress.settingOntology"), progress=15
                 )
                 builder.set_ontology(graph_id, ontology)
 
-                # Añadir texto
+                # AÃ±adir texto
                 def add_progress_callback(msg, progress_ratio):
                     progress = 15 + int(progress_ratio * 40)  # 15% - 55%
                     task_manager.update_task(task_id, message=msg, progress=progress)
@@ -578,7 +600,7 @@ def get_graph_data(graph_id: str):
 @graph_bp.route("/delete/<graph_id>", methods=["DELETE"])
 def delete_graph(graph_id: str):
     """
-    Borrar grafo (Zep o Graphiti según MEMORY_BACKEND)
+    Borrar grafo (Zep o Graphiti segÃºn MEMORY_BACKEND)
     """
     try:
         if Config.MEMORY_BACKEND == "zep" and not Config.ZEP_API_KEY:
@@ -593,3 +615,15 @@ def delete_graph(graph_id: str):
         return jsonify(
             {"success": False, "error": str(e), "traceback": traceback.format_exc()}
         ), 500
+
+
+
+
+
+
+
+
+
+
+
+

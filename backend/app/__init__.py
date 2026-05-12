@@ -1,12 +1,12 @@
-"""
-MiroFish Backend - Fábrica de aplicaciones Flask
+﻿"""
+MiroFish Backend - FÃ¡brica de aplicaciones Flask
 """
 
 import os
 import warnings
 
-# Suprimir advertencias de multiprocessing resource_tracker (de librerías de terceros como transformers)
-# Debe configurarse antes de todas las demás importaciones
+# Suprimir advertencias de multiprocessing resource_tracker (de librerÃ­as de terceros como transformers)
+# Debe configurarse antes de todas las demÃ¡s importaciones
 warnings.filterwarnings("ignore", message=".*resource_tracker.*")
 
 from flask import Flask, request
@@ -17,19 +17,19 @@ from .utils.logger import setup_logger, get_logger
 
 
 def create_app(config_class=Config):
-    """Función de fábrica de aplicaciones Flask"""
+    """FunciÃ³n de fÃ¡brica de aplicaciones Flask"""
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    # Configurar codificación JSON: asegurar que el chino se muestre directamente (en lugar de formato \uXXXX)
-    # Flask >= 2.3 usa app.json.ensure_ascii, versiones anteriores usan configuración JSON_AS_ASCII
+    # Configurar codificaciÃ³n JSON: asegurar que el chino se muestre directamente (en lugar de formato \uXXXX)
+    # Flask >= 2.3 usa app.json.ensure_ascii, versiones anteriores usan configuraciÃ³n JSON_AS_ASCII
     if hasattr(app, "json") and hasattr(app.json, "ensure_ascii"):
         app.json.ensure_ascii = False
 
     # Configurar logging
     logger = setup_logger("mirofish")
 
-    # Solo imprimir información de inicio en el subproceso del reloader (evitar duplicar en modo debug)
+    # Solo imprimir informaciÃ³n de inicio en el subproceso del reloader (evitar duplicar en modo debug)
     is_reloader_process = os.environ.get("WERKZEUG_RUN_MAIN") == "true"
     debug_mode = app.config.get("DEBUG", False)
     should_log_startup = not debug_mode or is_reloader_process
@@ -40,7 +40,7 @@ def create_app(config_class=Config):
         logger.info("=" * 50)
 
     # Habilitar CORS
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
     # Registrar funcion de limpieza de procesos de simulacion (al cerrar el servidor, terminar todos los procesos de simulacion)
     from .services.simulation_runner import SimulationRunner
@@ -49,13 +49,13 @@ def create_app(config_class=Config):
 
     # Inicializar backend de memoria en main thread (evita meta tensor error
     # de PyTorch cuando Graphiti carga HuggingFaceEmbedder desde un thread).
-    # SIEMPRE correr, sin importar debug mode — el proceso que sirve requests
+    # SIEMPRE correr, sin importar debug mode â€” el proceso que sirve requests
     # necesita el embedder cargado en su propio thread.
     from .memory import get_memory_backend
 
     try:
         backend = get_memory_backend()
-        # Forzar inicialización completa (incluye HuggingFaceEmbedder)
+        # Forzar inicializaciÃ³n completa (incluye HuggingFaceEmbedder)
         if hasattr(backend, "_get_graphiti"):
             backend._get_graphiti()
     except Exception as e:
@@ -86,6 +86,7 @@ def create_app(config_class=Config):
     app.register_blueprint(graph_bp, url_prefix="/api/graph")
     app.register_blueprint(simulation_bp, url_prefix="/api/simulation")
     app.register_blueprint(report_bp, url_prefix="/api/report")
+    app.register_blueprint(auth_bp, url_prefix="/api/auth")
 
     # Verificacion de salud
     @app.route("/health")
@@ -96,3 +97,8 @@ def create_app(config_class=Config):
         logger.info("MiroFish Backend iniciado correctamente")
 
     return app
+
+
+
+
+
