@@ -3,6 +3,9 @@
     <Transition name="screen-flow" mode="out-in">
     <section v-if="showIntro" key="intro" class="intro-screen">
       <div class="intro-grid"></div>
+      <button class="intro-auth-link" @click="openAuthGate">
+        {{ authCtaLabel }}
+      </button>
       <div class="intro-shell">
         <p class="intro-eyebrow">{{ $t('home.introEyebrow') }}</p>
         <h1 class="intro-title">YouWorld</h1>
@@ -42,6 +45,9 @@
         </div>
       </div>
       <div class="nav-links">
+        <button class="nav-auth-btn" @click="openAuthGate">
+          {{ authCtaLabel }}
+        </button>
       </div>
     </nav>
 
@@ -274,7 +280,7 @@
             <div class="console-section btn-section">
               <button 
                 class="start-engine-btn"
-                @click="startSimulation"
+                @click="handleStartSimulation"
                 :disabled="!canSubmit || loading"
               >
                 <span v-if="!loading">{{ $t('home.startEngine') }}</span>
@@ -297,13 +303,21 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { availableLocales } from '@/i18n'
+import { getPendingUpload, setPendingUpload } from '../store/pendingUpload'
+import { initializeAuthSession, useAuthSession } from '../store/authSession'
 
 const router = useRouter()
 const { locale, t } = useI18n({ useScope: 'global' })
+const { state, isAuthenticated } = useAuthSession()
 const hasChosenLanguage = ref(localStorage.getItem('youworld:languageSelected') === 'true')
 const showIntro = ref(true)
 const introLocales = computed(() => availableLocales.filter(item => ['es', 'en'].includes(item.key)))
 const activeInfoPanel = ref(null)
+const authCtaLabel = computed(() => {
+  if (state.user?.name) return state.user.name
+  if (state.user?.email) return state.user.email
+  return t('auth.cta')
+})
 
 const infoTabs = computed(() => [
   { key: 'how', label: t('home.howItWorksTitle') },
@@ -355,6 +369,14 @@ const chooseLanguage = (localeKey) => {
 }
 
 onMounted(() => {
+  initializeAuthSession()
+
+  const pending = getPendingUpload()
+  if (pending.isPending) {
+    files.value = pending.files
+    formData.value.simulationRequirement = pending.simulationRequirement
+  }
+
   if (hasChosenLanguage.value) {
     window.setTimeout(() => {
       showIntro.value = false
@@ -433,6 +455,32 @@ const scrollToBottom = () => {
   window.scrollTo({
     top: document.body.scrollHeight,
     behavior: 'smooth'
+  })
+}
+
+const openAuthGate = () => {
+  if (files.value.length > 0 || formData.value.simulationRequirement.trim()) {
+    setPendingUpload(files.value, formData.value.simulationRequirement)
+  }
+  router.push({ name: 'Auth' })
+}
+
+const handleStartSimulation = () => {
+  if (!canSubmit.value || loading.value) return
+
+  setPendingUpload(files.value, formData.value.simulationRequirement)
+
+  if (!isAuthenticated.value) {
+    router.push({
+      name: 'Auth',
+      query: { next: 'process-new' }
+    })
+    return
+  }
+
+  router.push({
+    name: 'Process',
+    params: { projectId: 'new' }
   })
 }
 
@@ -1454,6 +1502,22 @@ const startSimulation = () => {
   padding: 24px;
 }
 
+.intro-auth-link {
+  position: absolute;
+  top: 28px;
+  right: clamp(18px, 5vw, 52px);
+  z-index: 2;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(244, 255, 251, 0.88);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
 .intro-shell {
   width: min(720px, 100%);
   padding: 0;
@@ -1570,6 +1634,31 @@ const startSimulation = () => {
 .nav-info-tab:hover,
 .nav-info-tab.active {
   color: #77ddd5;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.nav-auth-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 11px 18px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(244, 255, 251, 0.88);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav-auth-btn:hover,
+.intro-auth-link:hover {
+  background: rgba(119, 221, 213, 0.16);
+  color: #f4fffb;
 }
 
 .main-content {
@@ -1901,6 +1990,10 @@ const startSimulation = () => {
 
   .nav-links {
     margin-left: auto;
+  }
+
+  .intro-auth-link {
+    top: 18px;
   }
 }
 </style>
