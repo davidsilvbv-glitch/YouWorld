@@ -168,12 +168,15 @@
     </div>
 
     <!-- Bottom Info / Logs -->
-    <div class="system-logs">
-      <div class="log-header">
-        <span class="log-title">{{ $t('mainView.systemDashboard') }}</span>
-        <span class="log-id">{{ projectData?.project_id || 'NO_PROJECT' }}</span>
-      </div>
-      <div class="log-content" ref="logContent">
+    <div class="system-logs" :class="{ collapsed: !showSystemLogs }">
+      <button class="log-header log-toggle" @click="showSystemLogs = !showSystemLogs">
+        <div class="log-header-left">
+          <span class="log-title">{{ $t('mainView.systemDashboard') }}</span>
+          <span class="log-id">{{ projectData?.project_id || 'NO_PROJECT' }}</span>
+        </div>
+        <span class="log-toggle-icon" :class="{ open: showSystemLogs }">⌄</span>
+      </button>
+      <div v-if="showSystemLogs" class="log-content" ref="logContent">
         <div class="log-line" v-for="(log, idx) in systemLogs" :key="idx">
           <span class="log-time">{{ log.time }}</span>
           <span class="log-msg">{{ translateLog(log.msg) }}</span>
@@ -208,6 +211,7 @@ defineEmits(['next-step'])
 const selectedOntologyItem = ref(null)
 const logContent = ref(null)
 const creatingSimulation = ref(false)
+const showSystemLogs = ref(false)
 
 const ontologyDescription = computed(() =>
   t(
@@ -891,6 +895,11 @@ watch(() => props.systemLogs.length, () => {
   color: rgba(235, 255, 251, 0.7);
   font-family: 'Inter', sans-serif;
   backdrop-filter: blur(14px);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.system-logs.collapsed {
+  background: rgba(0, 0, 0, 0.18);
 }
 
 @media (max-width: 1200px) {
@@ -900,8 +909,38 @@ watch(() => props.systemLogs.length, () => {
 }
 
 .log-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
   border-bottom-color: rgba(235, 255, 251, 0.08);
   color: rgba(235, 255, 251, 0.46);
+}
+
+.log-toggle {
+  border: 0;
+  background: transparent;
+  padding: 0 0 8px;
+  cursor: pointer;
+}
+
+.log-header-left {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+}
+
+.log-toggle-icon {
+  color: rgba(119, 221, 213, 0.72);
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.log-toggle-icon.open {
+  transform: rotate(180deg);
 }
 
 .log-time {
