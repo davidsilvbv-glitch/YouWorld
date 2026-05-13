@@ -13,6 +13,7 @@ from flask import Flask, request
 from flask_cors import CORS
 
 from .config import Config
+from .db import init_db
 from .utils.logger import setup_logger, get_logger
 
 
@@ -81,7 +82,9 @@ def create_app(config_class=Config):
         return response
 
     # Registrar blueprints
-    from .api import graph_bp, simulation_bp, report_bp
+    from .api import graph_bp, simulation_bp, report_bp, auth_bp
+
+    init_db()
 
     app.register_blueprint(graph_bp, url_prefix="/api/graph")
     app.register_blueprint(simulation_bp, url_prefix="/api/simulation")
