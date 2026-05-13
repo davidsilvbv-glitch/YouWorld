@@ -16,9 +16,8 @@
         </div>
         
         <div class="card-content">
-          <p class="api-note">POST /api/graph/ontology/generate</p>
           <p class="description">
-            {{ $t('step1.ontologyDesc') }}
+            {{ ontologyDescription }}
           </p>
 
           <!-- Loading / Progress -->
@@ -120,9 +119,8 @@
         </div>
 
         <div class="card-content">
-          <p class="api-note">POST /api/graph/build</p>
           <p class="description">
-            {{ $t('step1.graphRagDesc') }}
+            {{ graphBuildDescription }}
           </p>
           
           <!-- Stats Cards -->
@@ -156,8 +154,7 @@
         </div>
         
         <div class="card-content">
-          <p class="api-note">POST /api/simulation/create</p>
-          <p class="description">{{ $t('step1.buildCompleteDesc') }}</p>
+          <p class="description">{{ buildCompleteDescription }}</p>
           <button 
             class="action-btn" 
             :disabled="currentPhase < 2 || creatingSimulation"
@@ -211,6 +208,27 @@ defineEmits(['next-step'])
 const selectedOntologyItem = ref(null)
 const logContent = ref(null)
 const creatingSimulation = ref(false)
+
+const ontologyDescription = computed(() =>
+  t(
+    'step1.ontologyDescFriendly',
+    'El sistema interpreta tus documentos y detecta automáticamente los actores, temas y relaciones que darán forma al mundo.'
+  )
+)
+
+const graphBuildDescription = computed(() =>
+  t(
+    'step1.graphBuildDescFriendly',
+    'Con esa estructura, YouWorld conecta los elementos clave y arma la base del entorno que luego usarás para simular escenarios.'
+  )
+)
+
+const buildCompleteDescription = computed(() =>
+  t(
+    'step1.buildCompleteDescFriendly',
+    'La base del mundo ya está lista. El siguiente paso es definir cómo se comportará el entorno antes de lanzar la simulación.'
+  )
+)
 
 // Entrar a configuración del entorno - crear simulation y navegar
 const handleEnterEnvSetup = async () => {
@@ -708,8 +726,8 @@ watch(() => props.systemLogs.length, () => {
 }
 
 .scroll-container {
-  padding: 0 0 14px;
-  gap: 16px;
+  padding: 0 0 18px;
+  gap: 20px;
 }
 
 .step-card {
@@ -718,7 +736,7 @@ watch(() => props.systemLogs.length, () => {
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035));
   box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08);
-  padding: 26px;
+  padding: 28px 30px;
   overflow: hidden;
 }
 
@@ -746,7 +764,8 @@ watch(() => props.systemLogs.length, () => {
 .step-title {
   color: rgba(244, 255, 251, 0.92);
   font-family: 'Inter', sans-serif;
-  font-size: 1rem;
+  font-size: 1.08rem;
+  font-weight: 700;
   letter-spacing: -0.02em;
 }
 
@@ -772,14 +791,17 @@ watch(() => props.systemLogs.length, () => {
   color: rgba(235, 255, 251, 0.46);
 }
 
-.api-note {
-  color: rgba(235, 255, 251, 0.42);
-  font-family: 'Inter', sans-serif;
-}
-
 .description {
   color: rgba(235, 255, 251, 0.64);
-  font-size: 0.92rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  max-width: 92%;
+}
+
+.card-content {
+  display: grid;
+  gap: 12px;
 }
 
 .progress-section {
@@ -795,6 +817,7 @@ watch(() => props.systemLogs.length, () => {
   background: rgba(255, 255, 255, 0.045);
   border-radius: 22px;
   box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.07);
+  margin-top: 8px;
 }
 
 .stat-value {
@@ -868,6 +891,12 @@ watch(() => props.systemLogs.length, () => {
   color: rgba(235, 255, 251, 0.7);
   font-family: 'Inter', sans-serif;
   backdrop-filter: blur(14px);
+}
+
+@media (max-width: 1200px) {
+  .description {
+    max-width: 100%;
+  }
 }
 
 .log-header {

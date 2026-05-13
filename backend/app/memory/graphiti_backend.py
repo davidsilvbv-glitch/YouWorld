@@ -83,6 +83,16 @@ _loop = None
 _loop_thread = None
 
 
+def _normalize_iso_datetime(value: str | None) -> str | None:
+    """Normalizar ISO datetimes problemáticos como `...+00:00Z`."""
+    if not value or not isinstance(value, str):
+        return value
+    normalized = value.strip()
+    if normalized.endswith("Z") and ("+" in normalized[10:] or "-" in normalized[10:]):
+        normalized = normalized[:-1]
+    return normalized
+
+
 def _get_shared_loop():
     """Obtener (o crear) el event loop compartido en thread dedicado."""
     global _loop, _loop_thread
@@ -824,7 +834,9 @@ class GraphitiBackend(MemoryBackend):
                 ref_time = None
                 if reference_time:
                     try:
-                        ref_time = datetime.fromisoformat(reference_time)
+                        ref_time = datetime.fromisoformat(
+                            _normalize_iso_datetime(reference_time)
+                        )
                         if ref_time.tzinfo is None:
                             ref_time = ref_time.replace(tzinfo=timezone.utc)
                     except (ValueError, TypeError):
