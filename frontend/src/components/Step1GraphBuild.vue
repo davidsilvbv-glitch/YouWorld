@@ -730,8 +730,8 @@ watch(() => props.systemLogs.length, () => {
 }
 
 .scroll-container {
-  padding: 0 0 18px;
-  gap: 20px;
+  padding: 0 0 10px;
+  gap: 14px;
 }
 
 .step-card {
@@ -740,7 +740,7 @@ watch(() => props.systemLogs.length, () => {
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035));
   box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08);
-  padding: 28px 30px;
+  padding: 22px 24px;
   overflow: hidden;
 }
 
@@ -768,7 +768,7 @@ watch(() => props.systemLogs.length, () => {
 .step-title {
   color: rgba(244, 255, 251, 0.92);
   font-family: 'Inter', sans-serif;
-  font-size: 1.08rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
@@ -797,15 +797,15 @@ watch(() => props.systemLogs.length, () => {
 
 .description {
   color: rgba(235, 255, 251, 0.64);
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 20px;
+  font-size: 0.94rem;
+  line-height: 1.48;
+  margin-bottom: 10px;
   max-width: 92%;
 }
 
 .card-content {
   display: grid;
-  gap: 12px;
+  gap: 8px;
 }
 
 .progress-section {
@@ -822,16 +822,28 @@ watch(() => props.systemLogs.length, () => {
   border-radius: 22px;
   box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.07);
   margin-top: 8px;
+  padding: 12px;
+  gap: 8px;
 }
 
 .stat-value {
   color: rgba(244, 255, 251, 0.92);
   font-family: 'Inter', sans-serif;
+  font-size: 1.75rem;
 }
 
 .stat-label,
 .tag-label {
   color: rgba(235, 255, 251, 0.42);
+}
+
+.tag-label {
+  margin-bottom: 6px;
+  font-size: 0.72rem;
+}
+
+.stat-label {
+  font-size: 0.64rem;
 }
 
 .entity-tag,
@@ -845,6 +857,31 @@ watch(() => props.systemLogs.length, () => {
   font-family: 'Inter', sans-serif;
 }
 
+.tags-container {
+  margin-top: 4px;
+}
+
+.tags-list {
+  max-height: 70px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.tags-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.tags-list::-webkit-scrollbar-thumb {
+  background: rgba(119, 221, 213, 0.18);
+  border-radius: 999px;
+}
+
+.entity-tag {
+  padding: 5px 10px;
+  font-size: 0.72rem;
+  line-height: 1.15;
+}
+
 .entity-tag.clickable:hover {
   background: rgba(119, 221, 213, 0.14);
 }
@@ -854,6 +891,8 @@ watch(() => props.systemLogs.length, () => {
   background: linear-gradient(90deg, #78ddd5, #a7eee8);
   color: #06100f;
   font-family: 'Inter', sans-serif;
+  padding: 12px 18px;
+  font-size: 0.92rem;
 }
 
 .action-btn:disabled {
