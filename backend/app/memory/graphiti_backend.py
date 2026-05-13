@@ -93,6 +93,21 @@ def _normalize_iso_datetime(value: str | None) -> str | None:
     return normalized
 
 
+def _extract_neo4j_records(result):
+    """Extraer records de execute_query para evitar verificaciones frágiles."""
+    if result is None:
+        return []
+    if hasattr(result, "records"):
+        return result.records or []
+    if isinstance(result, (list, tuple)) and result:
+        first = result[0]
+        if isinstance(first, list):
+            return first
+        if hasattr(first, "records"):
+            return first.records or []
+    return []
+
+
 def _get_shared_loop():
     """Obtener (o crear) el event loop compartido en thread dedicado."""
     global _loop, _loop_thread
@@ -309,8 +324,8 @@ class GraphitiBackend(MemoryBackend):
         try:
             check_cypher = "SHOW INDEXES YIELD name, type, labelsOrTypes, properties WHERE name = 'entity_name_embedding_idx' RETURN name"
             result = _run_async(graphiti.driver.execute_query(check_cypher))
-            result_data = _run_async(result.data())
-            if result_data and len(result_data) > 0:
+            records = _extract_neo4j_records(result)
+            if records:
                 logger.info(
                     "Vector index 'entity_name_embedding_idx' ya existe, omitiendo creación"
                 )
