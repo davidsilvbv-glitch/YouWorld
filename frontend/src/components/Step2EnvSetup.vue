@@ -159,22 +159,22 @@
                 <div class="period-item">
                   <span class="period-label">{{ $t('step2.peakHours') }}</span>
                   <span class="period-hours">{{ simulationConfig.time_config?.peak_hours?.join(':00, ') }}:00</span>
-                  <span class="period-multiplier">Ã—{{ simulationConfig.time_config?.peak_activity_multiplier }}</span>
+                  <span class="period-multiplier">x{{ simulationConfig.time_config?.peak_activity_multiplier }}</span>
                 </div>
                 <div class="period-item">
                   <span class="period-label">{{ $t('step2.workHours') }}</span>
                   <span class="period-hours">{{ simulationConfig.time_config?.work_hours?.[0] }}:00-{{ simulationConfig.time_config?.work_hours?.slice(-1)[0] }}:00</span>
-                  <span class="period-multiplier">Ã—{{ simulationConfig.time_config?.work_activity_multiplier }}</span>
+                  <span class="period-multiplier">x{{ simulationConfig.time_config?.work_activity_multiplier }}</span>
                 </div>
                 <div class="period-item">
                   <span class="period-label">{{ $t('step2.morningHours') }}</span>
                   <span class="period-hours">{{ simulationConfig.time_config?.morning_hours?.[0] }}:00-{{ simulationConfig.time_config?.morning_hours?.slice(-1)[0] }}:00</span>
-                  <span class="period-multiplier">Ã—{{ simulationConfig.time_config?.morning_activity_multiplier }}</span>
+                  <span class="period-multiplier">x{{ simulationConfig.time_config?.morning_activity_multiplier }}</span>
                 </div>
                 <div class="period-item">
                   <span class="period-label">{{ $t('step2.offPeakHours') }}</span>
                   <span class="period-hours">{{ simulationConfig.time_config?.off_peak_hours?.[0] }}:00-{{ simulationConfig.time_config?.off_peak_hours?.slice(-1)[0] }}:00</span>
-                  <span class="period-multiplier">Ã—{{ simulationConfig.time_config?.off_peak_activity_multiplier }}</span>
+                  <span class="period-multiplier">x{{ simulationConfig.time_config?.off_peak_activity_multiplier }}</span>
                 </div>
               </div>
             </div>
@@ -501,7 +501,7 @@
                       </span>
                     </div>
                     <div class="auto-desc">
-                      <p class="highlight-tip" @click="useCustomRounds = true">{{ $t('step2.customTip') }} âž</p>
+                      <p class="highlight-tip" @click="useCustomRounds = true">{{ $t('step2.customTip') }} -></p>
                     </div>
                   </div>
                 </div>
@@ -514,14 +514,14 @@
               class="action-btn secondary"
               @click="$emit('go-back')"
             >
-              â† {{ $t('step2.backToGraphBuild') }}
+              {{ $t('step2.backToGraphBuild') }}
             </button>
             <button 
               class="action-btn primary"
               :disabled="phase < 4"
               @click="handleStartSimulation"
             >
-              {{ $t('step2.startDualWorldSim') }} âž
+              {{ $t('step2.startDualWorldSim') }} ->
             </button>
           </div>
         </div>
@@ -540,7 +540,7 @@
             </div>
             <span class="modal-profession">{{ selectedProfile.profession }}</span>
           </div>
-          <button class="close-btn" @click="selectedProfile = null">Ã—</button>
+          <button class="close-btn" @click="selectedProfile = null">×</button>
         </div>
         
         <div class="modal-body">
@@ -834,6 +834,7 @@ const startPrepareSimulation = async () => {
 }
 
 const startPolling = () => {
+  stopPolling()
   pollTimer = setInterval(pollPrepareStatus, 2000)
 }
 
@@ -845,6 +846,7 @@ const stopPolling = () => {
 }
 
 const startProfilesPolling = () => {
+  stopProfilesPolling()
   profilesTimer = setInterval(fetchProfilesRealtime, 3000)
 }
 
@@ -963,6 +965,7 @@ const fetchProfilesRealtime = async () => {
 
 // Consulta de rondas configuradas
 const startConfigPolling = () => {
+  stopConfigPolling()
   configTimer = setInterval(fetchConfigRealtime, 2000)
 }
 
@@ -1003,7 +1006,7 @@ const fetchConfigRealtime = async () => {
           addLog(t('log.configSummaryHours', { hours: data.summary.simulation_hours }))
           addLog(t('log.configSummaryPosts', { count: data.summary.initial_posts_count }))
           addLog(t('log.configSummaryTopics', { count: data.summary.hot_topics_count }))
-          addLog(t('log.configSummaryPlatforms', { twitter: data.summary.has_twitter_config ? 'âœ“' : 'âœ—', reddit: data.summary.has_reddit_config ? 'âœ“' : 'âœ—' }))
+          addLog(t('log.configSummaryPlatforms', { twitter: data.summary.has_twitter_config ? 'OK' : 'No', reddit: data.summary.has_reddit_config ? 'OK' : 'No' }))
         }
         
         // Mostrar detalles de ConfiguraciÃ³n de tiempo
@@ -1067,6 +1070,64 @@ const loadPreparedData = async () => {
   }
 }
 
+const resumeExistingPreparation = async () => {
+  if (!props.simulationId) return false
+
+  try {
+    const res = await getPrepareStatus({
+      simulation_id: props.simulationId
+    })
+
+    if (!res.success || !res.data) {
+      return false
+    }
+
+    const data = res.data
+    prepareProgress.value = data.progress || 0
+    progressMessage.value = data.message || ''
+
+    if (data.expected_entities_count) {
+      expectedTotal.value = data.expected_entities_count
+    }
+
+    if (data.progress_detail?.current_stage_name) {
+      currentStage.value = data.progress_detail.current_stage_name
+    }
+
+    if (data.task_id) {
+      taskId.value = data.task_id
+    }
+
+    if (data.status === 'completed' || data.status === 'ready' || data.already_prepared) {
+      addLog(t('log.detectedExistingPrep'))
+      await loadPreparedData()
+      return true
+    }
+
+    if (data.status === 'failed') {
+      addLog(t('log.prepareFailedWithError', { error: data.error || t('common.unknownError') }))
+      emit('update-status', 'error')
+      return true
+    }
+
+    if (data.status === 'processing' || data.status === 'running' || data.status === 'pending') {
+      addLog(t('log.detectedExistingPrep'))
+      phase.value = currentStage.value === 'Generando configuración de simulación' || currentStage.value === 'generating_config' ? 2 : 1
+      emit('update-status', 'processing')
+      startPolling()
+      startProfilesPolling()
+      if (phase.value >= 2) {
+        startConfigPolling()
+      }
+      return true
+    }
+  } catch (err) {
+    console.warn('Resume prepare failed:', err)
+  }
+
+  return false
+}
+
 // Scroll log to bottom
 const logContent = ref(null)
 watch(() => props.systemLogs?.length, () => {
@@ -1077,11 +1138,14 @@ watch(() => props.systemLogs?.length, () => {
   })
 })
 
-onMounted(() => {
+onMounted(async () => {
   // Inicio automÃ¡tico del proceso de preparaciÃ³n
   if (props.simulationId) {
     addLog(t('log.step2Init'))
-    startPrepareSimulation()
+    const resumed = await resumeExistingPreparation()
+    if (!resumed) {
+      startPrepareSimulation()
+    }
   }
 })
 
@@ -2730,6 +2794,21 @@ onUnmounted(() => {
 .api-note {
   display: none !important;
 }
+.step-card {
+  border-radius: 28px;
+}
+.info-card,
+.config-block,
+.platform-card,
+.agent-card,
+.narrative-box,
+.reasoning-item,
+.timeline-content,
+.stats-grid,
+.profiles-preview,
+.profile-card {
+  border-radius: 20px;
+}
 .card-content {
   gap: 14px;
 }
@@ -2775,6 +2854,17 @@ onUnmounted(() => {
 .system-logs {
   margin-top: 10px;
   border-radius: 18px;
+}
+.profile-card:hover {
+  background: rgba(110, 208, 200, 0.12) !important;
+  border-color: rgba(110, 208, 200, 0.22) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+}
+.agent-card:hover,
+.platform-card:hover,
+.dimension-card:hover,
+.reasoning-item:hover {
+  background: rgba(110, 208, 200, 0.08) !important;
 }
 </style>
 

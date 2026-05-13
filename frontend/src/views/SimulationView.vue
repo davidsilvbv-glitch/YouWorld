@@ -126,6 +126,11 @@ const addLog = (msg) => {
   }
 }
 
+const rememberProjectRoute = (projectId) => {
+  if (!projectId || !currentSimulationId.value) return
+  localStorage.setItem(`youworld:last-project-route:${projectId}`, `/simulation/${currentSimulationId.value}`)
+}
+
 const updateStatus = (status) => {
   currentStatus.value = status
 }
@@ -252,6 +257,7 @@ const loadSimulationData = async () => {
         const projRes = await getProject(simData.project_id)
         if (projRes.success && projRes.data) {
           projectData.value = projRes.data
+          rememberProjectRoute(projRes.data.project_id)
           addLog(t('log.projectLoadSuccess', { id: projRes.data.project_id }))
 
           // Obtener datos de grÃ¡fico

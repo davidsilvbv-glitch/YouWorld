@@ -101,6 +101,12 @@ const graphLoading = ref(false)
 const systemLogs = ref([])
 const currentStatus = ref('processing') // processing | completed | error
 
+const rememberProjectRoute = (projectId) => {
+  if (!projectId || !currentSimulationId.value) return
+  const query = maxRounds.value ? `?maxRounds=${maxRounds.value}` : ''
+  localStorage.setItem(`youworld:last-project-route:${projectId}`, `/simulation/${currentSimulationId.value}/start${query}`)
+}
+
 // --- Computed Layout Styles ---
 const leftPanelStyle = computed(() => {
   if (viewMode.value === 'graph') return { width: '100%', opacity: 1, transform: 'translateX(0)' }
@@ -229,6 +235,7 @@ const loadSimulationData = async () => {
         const projRes = await getProject(simData.project_id)
         if (projRes.success && projRes.data) {
           projectData.value = projRes.data
+          rememberProjectRoute(projRes.data.project_id)
           addLog(t('log.projectLoadSuccess', { id: projRes.data.project_id }))
 
           // Obtener datos del gráfico
@@ -449,4 +456,3 @@ onUnmounted(() => {
   border-right: 1px solid #EAEAEA;
 }
 </style>
-

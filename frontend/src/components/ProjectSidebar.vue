@@ -136,6 +136,11 @@ const fetchProjects = async () => {
 }
 
 const openProject = (projectId) => {
+  const savedRoute = localStorage.getItem(`youworld:last-project-route:${projectId}`)
+  if (savedRoute) {
+    router.push(savedRoute)
+    return
+  }
   router.push({ name: 'Process', params: { projectId } })
 }
 

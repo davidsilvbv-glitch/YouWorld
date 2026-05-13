@@ -150,6 +150,11 @@ const addLog = (msg) => {
   }
 }
 
+const rememberProjectRoute = (projectId, path = route.fullPath) => {
+  if (!projectId) return
+  localStorage.setItem(`youworld:last-project-route:${projectId}`, path)
+}
+
 // --- Layout Methods ---
 const toggleMaximize = (target) => {
   if (viewMode.value === target) {
@@ -212,6 +217,7 @@ const handleNewProject = async () => {
       clearPendingUpload()
       currentProjectId.value = res.data.project_id
       projectData.value = res.data
+      rememberProjectRoute(res.data.project_id, `/process/${res.data.project_id}`)
       window.dispatchEvent(new CustomEvent('youworld:projects-changed'))
       
       router.replace({ name: 'Process', params: { projectId: res.data.project_id } })
@@ -237,6 +243,7 @@ const loadProject = async () => {
     const res = await getProject(currentProjectId.value)
     if (res.success) {
       projectData.value = res.data
+      rememberProjectRoute(res.data.project_id || currentProjectId.value, `/process/${currentProjectId.value}`)
       updatePhaseByStatus(res.data.status)
       addLog(t('mainView.projectLoaded', { status: res.data.status }))
       
