@@ -1667,8 +1667,9 @@ const startSimulation = () => {
 }
 
 .main-content {
-  max-width: 980px;
-  padding: clamp(18px, 3vw, 36px) clamp(18px, 5vw, 44px) 72px;
+  width: 100%;
+  max-width: none;
+  padding: clamp(20px, 3vw, 34px) clamp(30px, 4vw, 56px) 72px;
 }
 
 .section-page {
@@ -1851,20 +1852,21 @@ const startSimulation = () => {
 
 .dashboard-layout.with-projects {
   display: grid;
-  grid-template-columns: 290px minmax(0, 1fr);
-  gap: 26px;
+  grid-template-columns: 320px minmax(780px, 1fr);
+  gap: 36px;
   align-items: start;
 }
 
 .home-project-sidebar {
   position: sticky;
   top: 92px;
+  align-self: start;
 }
 
 .right-panel {
   width: 100%;
-  max-width: 860px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
   padding: 0;
   border: 0;
   background: transparent;
@@ -1882,6 +1884,7 @@ const startSimulation = () => {
   box-shadow: none;
   backdrop-filter: none;
   padding: 0;
+  width: 100%;
 }
 
 .upload-zone,
@@ -1892,7 +1895,7 @@ const startSimulation = () => {
 }
 
 .upload-zone {
-  height: 250px;
+  height: 265px;
   background: rgba(255, 255, 255, 0.045);
   border: 0;
   box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08);
@@ -1902,6 +1905,7 @@ const startSimulation = () => {
   background: rgba(255, 255, 255, 0.045);
   border: 0;
   box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08);
+  min-height: 182px;
 }
 
 .start-engine-btn {

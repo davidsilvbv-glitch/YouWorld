@@ -189,7 +189,9 @@ onBeforeUnmount(() => {
 .project-sidebar.embedded {
   min-height: auto;
   height: auto;
-  padding: 4px 14px 16px 0;
+  width: 100%;
+  min-width: 0;
+  padding: 2px 0 16px;
   background: transparent;
   box-shadow: none;
 }
@@ -217,7 +219,8 @@ onBeforeUnmount(() => {
 }
 
 .sidebar-new-btn {
-  padding: 12px 14px;
+  width: 100%;
+  padding: 13px 16px;
   border-radius: 16px;
   background: rgba(119, 221, 213, 0.12);
   color: rgba(245, 255, 252, 0.92);
@@ -263,7 +266,8 @@ onBeforeUnmount(() => {
 .sidebar-item {
   display: grid;
   gap: 8px;
-  padding: 12px 12px 11px;
+  width: 100%;
+  padding: 14px 14px 13px;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.035);
   color: rgba(245, 255, 252, 0.88);
@@ -328,7 +332,8 @@ onBeforeUnmount(() => {
   grid-template-columns: 42px 1fr;
   gap: 12px;
   align-items: center;
-  padding: 12px;
+  width: 100%;
+  padding: 12px 14px;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.04);
 }
