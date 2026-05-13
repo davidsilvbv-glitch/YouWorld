@@ -68,3 +68,11 @@ export function getProject(projectId) {
     method: 'get'
   })
 }
+
+export function listProjects(limit = 50) {
+  return service({
+    url: '/api/graph/project/list',
+    method: 'get',
+    params: { limit }
+  })
+}

@@ -1,9 +1,28 @@
 <template>
-  <router-view />
+  <div class="app-frame" :class="{ 'has-sidebar': showSidebar }">
+    <ProjectSidebar v-if="showSidebar" />
+    <main class="app-page">
+      <router-view />
+    </main>
+  </div>
 </template>
 
 <script setup>
-// Vue Router page management
+import { computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import ProjectSidebar from './components/ProjectSidebar.vue'
+import { initializeAuthSession, useAuthSession } from './store/authSession'
+
+const route = useRoute()
+const { state, isAuthenticated } = useAuthSession()
+
+const showSidebar = computed(() => {
+  return state.initialized && isAuthenticated.value && route.name !== 'Auth'
+})
+
+onMounted(() => {
+  initializeAuthSession()
+})
 </script>
 
 <style>
@@ -15,11 +34,22 @@
 }
 
 #app {
+  min-height: 100vh;
   font-family: 'JetBrains Mono', 'Space Grotesk', 'Noto Sans SC', monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #000000;
   background-color: #ffffff;
+}
+
+.app-frame {
+  min-height: 100vh;
+  display: flex;
+}
+
+.app-page {
+  flex: 1;
+  min-width: 0;
 }
 
 /* Estilos de barra de desplazamiento */
@@ -43,5 +73,11 @@
 /* Estilos de botón global */
 button {
   font-family: inherit;
+}
+
+@media (max-width: 1100px) {
+  .app-frame {
+    display: block;
+  }
 }
 </style>

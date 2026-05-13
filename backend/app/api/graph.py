@@ -73,10 +73,12 @@ def list_projects():
     """
     limit = request.args.get("limit", 50, type=int)
     current_user = get_current_user()
+    if not current_user:
+        return jsonify({"success": True, "data": [], "count": 0})
+
     projects = ProjectManager.list_projects(limit=500)
-    owned_ids = get_user_project_ids(current_user.user_id) if current_user else None
-    if owned_ids is not None:
-        projects = [p for p in projects if p.project_id in owned_ids]
+    owned_ids = get_user_project_ids(current_user.user_id) or []
+    projects = [p for p in projects if p.project_id in owned_ids]
     projects = projects[:limit]
 
     return jsonify(
