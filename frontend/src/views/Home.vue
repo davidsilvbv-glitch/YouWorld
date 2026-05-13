@@ -142,6 +142,9 @@
       </section>
 
       <section v-if="!activeInfoPanel" class="dashboard-section">
+        <div class="dashboard-layout" :class="{ 'with-projects': isAuthenticated }">
+        <ProjectSidebar v-if="isAuthenticated" embedded class="home-project-sidebar" />
+
         <!-- Columna izquierda: estado y pasos -->
         <div v-if="false" class="left-panel">
           <div class="panel-header">
@@ -290,6 +293,7 @@
             </div>
           </div>
         </div>
+        </div>
       </section>
 
     </div>
@@ -303,6 +307,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { availableLocales } from '@/i18n'
+import ProjectSidebar from '../components/ProjectSidebar.vue'
 import { getPendingUpload, setPendingUpload } from '../store/pendingUpload'
 import { initializeAuthSession, useAuthSession } from '../store/authSession'
 
@@ -1840,6 +1845,22 @@ const startSimulation = () => {
   border-top: 0;
 }
 
+.dashboard-layout {
+  display: block;
+}
+
+.dashboard-layout.with-projects {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: 26px;
+  align-items: start;
+}
+
+.home-project-sidebar {
+  position: sticky;
+  top: 92px;
+}
+
 .right-panel {
   width: 100%;
   max-width: 860px;
@@ -1963,6 +1984,14 @@ const startSimulation = () => {
 @media (max-width: 720px) {
   .section-split {
     grid-template-columns: 1fr;
+  }
+
+  .dashboard-layout.with-projects {
+    grid-template-columns: 1fr;
+  }
+
+  .home-project-sidebar {
+    position: static;
   }
 
   .world-preview-placeholder {

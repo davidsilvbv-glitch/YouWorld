@@ -1,7 +1,7 @@
 <template>
-  <aside class="project-sidebar">
+  <aside class="project-sidebar" :class="{ embedded }">
     <div class="sidebar-top">
-      <button class="sidebar-brand" @click="router.push('/')">YouWorld</button>
+      <button v-if="!embedded" class="sidebar-brand" @click="router.push('/')">YouWorld</button>
       <button class="sidebar-new-btn" @click="router.push('/')">+ Nuevo proyecto</button>
     </div>
 
@@ -54,6 +54,13 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { listProjects } from '../api/graph'
 import { useAuthSession } from '../store/authSession'
+
+const props = defineProps({
+  embedded: {
+    type: Boolean,
+    default: false
+  }
+})
 
 const router = useRouter()
 const route = useRoute()
@@ -177,6 +184,14 @@ onBeforeUnmount(() => {
     linear-gradient(180deg, rgba(8, 8, 17, 0.86), rgba(8, 7, 18, 0.74));
   border-right: 0;
   box-shadow: inset -18px 0 36px rgba(18, 13, 33, 0.18);
+}
+
+.project-sidebar.embedded {
+  min-height: auto;
+  height: auto;
+  padding: 4px 14px 16px 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .sidebar-top {
@@ -316,6 +331,10 @@ onBeforeUnmount(() => {
   padding: 12px;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.04);
+}
+
+.project-sidebar.embedded .sidebar-user {
+  margin-top: 14px;
 }
 
 .sidebar-avatar {

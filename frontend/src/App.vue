@@ -17,7 +17,7 @@ const route = useRoute()
 const { state, isAuthenticated } = useAuthSession()
 
 const showSidebar = computed(() => {
-  return state.initialized && isAuthenticated.value && route.name !== 'Auth'
+  return state.initialized && isAuthenticated.value && route.name !== 'Auth' && route.name !== 'Home'
 })
 
 onMounted(() => {
