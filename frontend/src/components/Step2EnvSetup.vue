@@ -2866,5 +2866,108 @@ onUnmounted(() => {
 .reasoning-item:hover {
   background: rgba(110, 208, 200, 0.08) !important;
 }
+.config-detail-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 18px;
+}
+.config-block {
+  margin-top: 0 !important;
+  padding: 18px !important;
+  border: 1px solid rgba(118, 163, 157, 0.12) !important;
+  border-radius: 22px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  overflow: hidden;
+}
+.config-block:first-child {
+  padding-top: 18px !important;
+}
+.config-grid,
+.platforms-grid,
+.agents-cards,
+.reasoning-content,
+.time-periods {
+  gap: 12px !important;
+}
+.config-item,
+.period-item,
+.platform-card,
+.reasoning-item,
+.agent-card,
+.timeline-content,
+.narrative-box,
+.auto-info-card,
+.stats-grid,
+.profiles-preview {
+  background: rgba(255, 255, 255, 0.035) !important;
+  border: 1px solid rgba(118, 163, 157, 0.1) !important;
+  box-shadow: none !important;
+}
+.config-item,
+.platform-card,
+.reasoning-item,
+.agent-card,
+.timeline-content {
+  border-radius: 18px !important;
+}
+.period-item {
+  border-radius: 16px !important;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.config-item-value,
+.param-value,
+.period-hours,
+.reasoning-text,
+.narrative-text,
+.section-bio,
+.section-persona,
+.profile-bio,
+.auto-desc p,
+.info-value,
+.post-text {
+  color: #d8e6e2 !important;
+}
+.config-item-label,
+.param-label,
+.period-label,
+.stat-label,
+.profile-username,
+.profile-profession,
+.box-label,
+.section-label,
+.info-label {
+  color: #8ea7a2 !important;
+}
+.stat-card {
+  padding: 10px 4px;
+}
+.profile-card,
+.agent-card {
+  border-radius: 20px !important;
+}
+.profile-card:hover,
+.agent-card:hover,
+.platform-card:hover,
+.reasoning-item:hover,
+.config-item:hover,
+.period-item:hover {
+  transform: none;
+}
+.action-group.dual {
+  gap: 12px;
+}
+.action-group.dual .action-btn {
+  min-height: 62px;
+  border-radius: 18px;
+  white-space: normal;
+  text-align: center;
+  justify-content: center;
+  line-height: 1.35;
+}
+.switch-control:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
 </style>
 
