@@ -70,18 +70,21 @@ onUnmounted(() => {
   background: rgba(255, 255, 255, 0.08);
   color: #f6efff;
   border: 1px solid rgba(221, 196, 255, 0.22);
-  padding: 8px 13px;
+  padding: 10px 16px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.8rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: border-color 0.2s, opacity 0.2s;
+  border-radius: 999px;
+  transition: border-color 0.2s, opacity 0.2s, background 0.2s, transform 0.2s;
 }
 
 .switcher-trigger:hover {
   border-color: #72f6ff;
+  background: rgba(114, 246, 255, 0.12);
+  transform: translateY(-1px);
 }
 
 .caret {
@@ -95,15 +98,16 @@ onUnmounted(() => {
   margin-top: 4px;
   background: #120824;
   border: 1px solid rgba(221, 196, 255, 0.22);
+  border-radius: 16px;
   list-style: none;
-  padding: 4px 0;
+  padding: 6px 0;
   min-width: 100%;
   z-index: 1000;
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
 }
 
 .switcher-option {
-  padding: 6px 12px;
+  padding: 8px 14px;
   font-size: 0.8rem;
   color: #f6efff;
   cursor: pointer;

@@ -616,15 +616,21 @@
     </Transition>
 
     <!-- Bottom Info / Logs -->
-    <div class="system-logs">
-      <div class="log-header">
-        <span class="log-title">{{ $t('mainView.systemDashboard') }}</span>
-        <span class="log-id">{{ simulationId || 'NO_SIMULATION' }}</span>
-      </div>
-      <div class="log-content" ref="logContent">
-        <div class="log-line" v-for="(log, idx) in systemLogs" :key="idx">
-          <span class="log-time">{{ log.time }}</span>
-          <span class="log-msg">{{ translateLog(log.msg) }}</span>
+    <div class="system-log-toggle">
+      <button class="system-log-button" type="button" @click="showSystemLogs = !showSystemLogs">
+        <span>{{ $t('mainView.systemDashboard') }}</span>
+        <span>{{ showSystemLogs ? 'Ocultar' : 'Ver' }}</span>
+      </button>
+      <div v-if="showSystemLogs" class="system-logs">
+        <div class="log-header">
+          <span class="log-title">{{ $t('mainView.systemDashboard') }}</span>
+          <span class="log-id">{{ simulationId || 'NO_SIMULATION' }}</span>
+        </div>
+        <div class="log-content" ref="logContent">
+          <div class="log-line" v-for="(log, idx) in systemLogs" :key="idx">
+            <span class="log-time">{{ log.time }}</span>
+            <span class="log-msg">{{ translateLog(log.msg) }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -667,6 +673,7 @@ const expectedTotal = ref(null)
 const simulationConfig = ref(null)
 const selectedProfile = ref(null)
 const showProfilesDetail = ref(true)
+const showSystemLogs = ref(false)
 
 // DeduplicaciÃ³n de logs: registrar la Ãºltima informaciÃ³n clave de salida
 let lastLoggedMessage = ''
@@ -2609,10 +2616,12 @@ onUnmounted(() => {
 .env-setup-panel {
   background: transparent;
   color: #e9f3f0;
+  min-height: 100%;
 }
 .scroll-container {
   padding: 18px;
   gap: 16px;
+  background: transparent;
 }
 .step-card,
 .info-card,
@@ -2717,6 +2726,55 @@ onUnmounted(() => {
 }
 .minimal-slider {
   accent-color: #6ed0c8;
+}
+.api-note {
+  display: none !important;
+}
+.card-content {
+  gap: 14px;
+}
+.description {
+  font-size: 1rem;
+  line-height: 1.65;
+}
+.info-card,
+.config-block,
+.platform-card,
+.agent-card,
+.narrative-box,
+.reasoning-item,
+.timeline-content {
+  background: rgba(255, 255, 255, 0.035);
+}
+.info-row {
+  padding: 12px 0;
+}
+.system-log-toggle {
+  margin-top: 10px;
+}
+.system-log-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border: 1px solid rgba(118, 163, 157, 0.14);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #d8ece8;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.system-log-button:hover {
+  background: rgba(110, 208, 200, 0.1);
+  border-color: rgba(110, 208, 200, 0.24);
+}
+.system-logs {
+  margin-top: 10px;
+  border-radius: 18px;
 }
 </style>
 

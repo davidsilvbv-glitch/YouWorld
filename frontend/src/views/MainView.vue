@@ -2,9 +2,7 @@
   <div class="main-view">
     <!-- Header -->
     <header class="app-header">
-      <div class="header-left">
-        <div class="brand" @click="router.push('/')">YOUWORLD</div>
-      </div>
+      <div class="header-left header-spacer"></div>
       
       <div class="header-center">
         <div class="view-switcher">
@@ -439,14 +437,6 @@ onUnmounted(() => {
   transform: translateX(-50%);
 }
 
-.brand {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 800;
-  font-size: 18px;
-  letter-spacing: 1px;
-  cursor: pointer;
-}
-
 .view-switcher {
   display: flex;
   background: #F5F5F5;
@@ -559,12 +549,6 @@ onUnmounted(() => {
   backdrop-filter: blur(18px);
 }
 
-.brand {
-  color: #f6efff;
-  letter-spacing: 0.14em;
-  text-shadow: 0 0 28px rgba(114, 246, 255, 0.22);
-}
-
 .content-area {
   background: transparent;
 }
@@ -590,13 +574,9 @@ onUnmounted(() => {
   backdrop-filter: blur(18px);
 }
 
-.brand {
-  color: rgba(244, 255, 251, 0.92);
-  font-family: 'Inter', sans-serif;
-  font-size: 0.96rem;
-  font-weight: 800;
-  letter-spacing: 0.34em;
-  text-shadow: none;
+.header-spacer {
+  width: 140px;
+  min-width: 140px;
 }
 
 .view-switcher {
