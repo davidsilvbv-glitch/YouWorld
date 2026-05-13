@@ -172,9 +172,11 @@ onBeforeUnmount(() => {
   gap: 22px;
   padding: 18px 14px 16px;
   background:
-    radial-gradient(circle at top left, rgba(112, 37, 194, 0.18), transparent 34%),
-    linear-gradient(180deg, rgba(7, 11, 15, 0.98), rgba(8, 6, 18, 0.98));
-  border-right: 1px solid rgba(117, 221, 213, 0.12);
+    radial-gradient(circle at 12% 10%, rgba(112, 37, 194, 0.22), transparent 30%),
+    radial-gradient(circle at 85% 88%, rgba(35, 123, 110, 0.14), transparent 34%),
+    linear-gradient(180deg, rgba(8, 8, 17, 0.86), rgba(8, 7, 18, 0.74));
+  border-right: 0;
+  box-shadow: inset -18px 0 36px rgba(18, 13, 33, 0.18);
 }
 
 .sidebar-top {

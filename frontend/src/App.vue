@@ -45,11 +45,26 @@ onMounted(() => {
 .app-frame {
   min-height: 100vh;
   display: flex;
+  background:
+    radial-gradient(circle at 68% 14%, rgba(77, 203, 190, 0.14), transparent 28%),
+    radial-gradient(circle at 24% 12%, rgba(86, 36, 126, 0.18), transparent 26%),
+    linear-gradient(125deg, #050607 0%, #09120f 35%, #0b0715 72%, #05020a 100%);
 }
 
 .app-page {
   flex: 1;
   min-width: 0;
+  position: relative;
+}
+
+.app-page::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 44px;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(10, 10, 18, 0.16), transparent 78%);
+  opacity: 0.7;
 }
 
 /* Estilos de barra de desplazamiento */
