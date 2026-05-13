@@ -198,6 +198,9 @@ def generate_ontology():
         # Crear proyecto
         project = ProjectManager.create_project(name=project_name)
         project.simulation_requirement = simulation_requirement
+        current_user = get_current_user()
+        if current_user:
+            bind_project_to_user(project.project_id, current_user.user_id)
         logger.info(f"Proyecto creado: {project.project_id}")
 
         # Guardar archivo y extraer texto
@@ -343,7 +346,6 @@ def build_graph():
 
         # Verificar estado del proyecto
         force = data.get("force", False)  # Forzar reconstruir
-        project.status = ProjectStatus.GRAPH_BUILDING and not force
 
         if project.status == ProjectStatus.CREATED:
             return jsonify(
