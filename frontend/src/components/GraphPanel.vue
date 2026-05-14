@@ -327,6 +327,10 @@ const closeDetailPanel = () => {
 let currentSimulation = null
 let linkLabelsRef = null
 let linkLabelBgRef = null
+const BASE_EDGE_COLOR = 'rgba(255, 72, 134, 0.48)'
+const ACTIVE_EDGE_COLOR = '#ff2e7a'
+const BASE_EDGE_LABEL_COLOR = '#806876'
+const NODE_SELECTED_STROKE = '#111827'
 
 const renderGraph = () => {
   if (!graphSvg.value || !props.graphData) return
@@ -476,16 +480,16 @@ const renderGraph = () => {
     .force('link', d3.forceLink(edges).id(d => d.id).distance(d => {
       // Ajustar distancia dinámicamente según cantidad de bordes entre este par de nodos
       // Distancia base 150, agregar 40 por cada borde adicional
-      const baseDistance = 150
+      const baseDistance = 132
       const edgeCount = d.pairTotal || 1
-      return baseDistance + (edgeCount - 1) * 50
+      return baseDistance + (edgeCount - 1) * 44
     }))
-    .force('charge', d3.forceManyBody().strength(-400))
+    .force('charge', d3.forceManyBody().strength(-250))
     .force('center', d3.forceCenter(width / 2, height / 2))
-    .force('collide', d3.forceCollide(50))
+    .force('collide', d3.forceCollide(28))
     // Añadir fuerza hacia el centro, hacer que grupos de nodos independientes se aglomeren en el área central
-    .force('x', d3.forceX(width / 2).strength(0.04))
-    .force('y', d3.forceY(height / 2).strength(0.04))
+    .force('x', d3.forceX(width / 2).strength(0.03))
+    .force('y', d3.forceY(height / 2).strength(0.03))
   
   currentSimulation = simulation
 
@@ -574,18 +578,20 @@ const renderGraph = () => {
   const link = linkGroup.selectAll('path')
     .data(edges)
     .enter().append('path')
-    .attr('stroke', '#C0C0C0')
-    .attr('stroke-width', 1.5)
+    .attr('stroke', BASE_EDGE_COLOR)
+    .attr('stroke-width', d => d.isSelfLoop ? 1.35 : 1.1)
     .attr('fill', 'none')
+    .attr('stroke-linecap', 'round')
+    .attr('stroke-opacity', d => d.isSelfLoop ? 0.38 : 0.9)
     .style('cursor', 'pointer')
     .on('click', (event, d) => {
       event.stopPropagation()
       // Restablecer estilos de borde seleccionado anteriormente
-      linkGroup.selectAll('path').attr('stroke', '#C0C0C0').attr('stroke-width', 1.5)
+      linkGroup.selectAll('path').attr('stroke', BASE_EDGE_COLOR).attr('stroke-width', edge => edge.isSelfLoop ? 1.35 : 1.1)
       linkLabelBg.attr('fill', 'rgba(255,255,255,0.95)')
-      linkLabels.attr('fill', '#666')
+      linkLabels.attr('fill', BASE_EDGE_LABEL_COLOR)
       // Resaltar borde seleccionado actualmente
-      d3.select(event.target).attr('stroke', '#3498db').attr('stroke-width', 3)
+      d3.select(event.target).attr('stroke', ACTIVE_EDGE_COLOR).attr('stroke-width', 2.2)
       
       selectedItem.value = {
         type: 'edge',
@@ -598,19 +604,19 @@ const renderGraph = () => {
     .data(edges)
     .enter().append('rect')
     .attr('fill', 'rgba(255,255,255,0.95)')
-    .attr('rx', 3)
-    .attr('ry', 3)
+    .attr('rx', 5)
+    .attr('ry', 5)
     .style('cursor', 'pointer')
     .style('pointer-events', 'all')
     .style('display', showEdgeLabels.value ? 'block' : 'none')
     .on('click', (event, d) => {
       event.stopPropagation()
-      linkGroup.selectAll('path').attr('stroke', '#C0C0C0').attr('stroke-width', 1.5)
+      linkGroup.selectAll('path').attr('stroke', BASE_EDGE_COLOR).attr('stroke-width', edge => edge.isSelfLoop ? 1.35 : 1.1)
       linkLabelBg.attr('fill', 'rgba(255,255,255,0.95)')
-      linkLabels.attr('fill', '#666')
+      linkLabels.attr('fill', BASE_EDGE_LABEL_COLOR)
       // Resaltar borde correspondiente
-      link.filter(l => l === d).attr('stroke', '#3498db').attr('stroke-width', 3)
-      d3.select(event.target).attr('fill', 'rgba(52, 152, 219, 0.1)')
+      link.filter(l => l === d).attr('stroke', ACTIVE_EDGE_COLOR).attr('stroke-width', 2.2)
+      d3.select(event.target).attr('fill', 'rgba(255, 46, 122, 0.08)')
       
       selectedItem.value = {
         type: 'edge',
@@ -623,22 +629,23 @@ const renderGraph = () => {
     .data(edges)
     .enter().append('text')
     .text(d => d.name)
-    .attr('font-size', '9px')
-    .attr('fill', '#666')
+    .attr('font-size', '8.5px')
+    .attr('fill', BASE_EDGE_LABEL_COLOR)
     .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'middle')
     .style('cursor', 'pointer')
     .style('pointer-events', 'all')
-    .style('font-family', 'system-ui, sans-serif')
+    .style('font-family', 'Inter, system-ui, sans-serif')
+    .style('letter-spacing', '0.01em')
     .style('display', showEdgeLabels.value ? 'block' : 'none')
     .on('click', (event, d) => {
       event.stopPropagation()
-      linkGroup.selectAll('path').attr('stroke', '#C0C0C0').attr('stroke-width', 1.5)
+      linkGroup.selectAll('path').attr('stroke', BASE_EDGE_COLOR).attr('stroke-width', edge => edge.isSelfLoop ? 1.35 : 1.1)
       linkLabelBg.attr('fill', 'rgba(255,255,255,0.95)')
-      linkLabels.attr('fill', '#666')
+      linkLabels.attr('fill', BASE_EDGE_LABEL_COLOR)
       // Resaltar borde correspondiente
-      link.filter(l => l === d).attr('stroke', '#3498db').attr('stroke-width', 3)
-      d3.select(event.target).attr('fill', '#3498db')
+      link.filter(l => l === d).attr('stroke', ACTIVE_EDGE_COLOR).attr('stroke-width', 2.2)
+      d3.select(event.target).attr('fill', ACTIVE_EDGE_COLOR)
       
       selectedItem.value = {
         type: 'edge',
@@ -657,10 +664,10 @@ const renderGraph = () => {
   const node = nodeGroup.selectAll('circle')
     .data(nodes)
     .enter().append('circle')
-    .attr('r', 10)
+    .attr('r', 8.5)
     .attr('fill', d => getColor(d.type))
     .attr('stroke', '#fff')
-    .attr('stroke-width', 2.5)
+    .attr('stroke-width', 2.4)
     .style('cursor', 'pointer')
     .call(d3.drag()
       .on('start', (event, d) => {
@@ -702,13 +709,13 @@ const renderGraph = () => {
       event.stopPropagation()
       // Restablecer todos los estilos de nodos
       node.attr('stroke', '#fff').attr('stroke-width', 2.5)
-      linkGroup.selectAll('path').attr('stroke', '#C0C0C0').attr('stroke-width', 1.5)
+      linkGroup.selectAll('path').attr('stroke', BASE_EDGE_COLOR).attr('stroke-width', edge => edge.isSelfLoop ? 1.35 : 1.1)
       // Resaltar nodo seleccionado
-      d3.select(event.target).attr('stroke', '#E91E63').attr('stroke-width', 4)
+      d3.select(event.target).attr('stroke', NODE_SELECTED_STROKE).attr('stroke-width', 3.2)
       // Resaltar bordes conectados a este nodo
       link.filter(l => l.source.id === d.id || l.target.id === d.id)
-        .attr('stroke', '#E91E63')
-        .attr('stroke-width', 2.5)
+        .attr('stroke', ACTIVE_EDGE_COLOR)
+        .attr('stroke-width', 1.8)
       
       selectedItem.value = {
         type: 'node',
@@ -719,7 +726,7 @@ const renderGraph = () => {
     })
     .on('mouseenter', (event, d) => {
       if (!selectedItem.value || selectedItem.value.data?.uuid !== d.rawData.uuid) {
-        d3.select(event.target).attr('stroke', '#333').attr('stroke-width', 3)
+        d3.select(event.target).attr('stroke', '#2f3747').attr('stroke-width', 3)
       }
     })
     .on('mouseleave', (event, d) => {
@@ -732,14 +739,14 @@ const renderGraph = () => {
   const nodeLabels = nodeGroup.selectAll('text')
     .data(nodes)
     .enter().append('text')
-    .text(d => d.name.length > 8 ? d.name.substring(0, 8) + '…' : d.name)
-    .attr('font-size', '11px')
-    .attr('fill', '#333')
+    .text(d => d.name.length > 18 ? d.name.substring(0, 18) + '…' : d.name)
+    .attr('font-size', '9.5px')
+    .attr('fill', '#a3a8b3')
     .attr('font-weight', '500')
-    .attr('dx', 14)
-    .attr('dy', 4)
+    .attr('dx', 12)
+    .attr('dy', 3.5)
     .style('pointer-events', 'none')
-    .style('font-family', 'system-ui, sans-serif')
+    .style('font-family', 'Inter, system-ui, sans-serif')
 
   simulation.on('tick', () => {
     // Actualizar rutas de curva
@@ -780,9 +787,9 @@ const renderGraph = () => {
   svg.on('click', () => {
     selectedItem.value = null
     node.attr('stroke', '#fff').attr('stroke-width', 2.5)
-    linkGroup.selectAll('path').attr('stroke', '#C0C0C0').attr('stroke-width', 1.5)
+    linkGroup.selectAll('path').attr('stroke', BASE_EDGE_COLOR).attr('stroke-width', edge => edge.isSelfLoop ? 1.35 : 1.1)
     linkLabelBg.attr('fill', 'rgba(255,255,255,0.95)')
-    linkLabels.attr('fill', '#666')
+    linkLabels.attr('fill', BASE_EDGE_LABEL_COLOR)
   })
 }
 
@@ -1424,52 +1431,52 @@ input:checked + .slider:before {
   font-size: 9px;
 }
 
-/* YouWorld visual layer */
+/* MiroFish original-inspired visual layer */
 .graph-panel {
   border-radius: 28px;
-  background-color: rgba(255, 255, 255, 0.045);
+  background-color: #fbfbfd;
   background-image:
-    radial-gradient(rgba(119, 221, 213, 0.18) 1.2px, transparent 1.2px),
-    radial-gradient(circle at 28% 18%, rgba(77, 35, 111, 0.2), transparent 34%);
+    radial-gradient(rgba(207, 213, 223, 0.9) 1.15px, transparent 1.15px),
+    radial-gradient(circle at 34% 26%, rgba(255, 112, 156, 0.08), transparent 30%);
   background-size: 28px 28px, auto;
-  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(225, 229, 238, 0.9);
   overflow: hidden;
 }
 
 .panel-header {
   padding: 18px 20px;
-  background: linear-gradient(to bottom, rgba(5, 6, 7, 0.86), rgba(5, 6, 7, 0));
+  background: linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(255,255,255,0));
 }
 
 .panel-title {
-  color: rgba(244, 255, 251, 0.86);
+  color: #5a6272;
   font-family: 'Inter', sans-serif;
   font-weight: 700;
 }
 
 .tool-btn {
   height: 36px;
-  border: 0;
+  border: 1px solid rgba(223, 228, 236, 0.95);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.075);
-  color: rgba(235, 255, 251, 0.68);
-  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.09);
+  background: rgba(255, 255, 255, 0.96);
+  color: #7b8394;
+  box-shadow: 0 8px 18px rgba(32, 37, 46, 0.05);
   font-family: 'Inter', sans-serif;
 }
 
 .tool-btn:hover {
-  background: rgba(119, 221, 213, 0.14);
-  color: #f4fffb;
-  border-color: transparent;
+  background: #ffffff;
+  color: #364052;
+  border-color: rgba(255, 104, 150, 0.22);
 }
 
 .graph-state {
-  color: rgba(235, 255, 251, 0.58);
+  color: #8991a2;
   font-family: 'Inter', sans-serif;
 }
 
 .empty-icon {
-  color: rgba(119, 221, 213, 0.5);
+  color: rgba(255, 92, 150, 0.28);
 }
 
 .graph-building-hint,
@@ -1477,53 +1484,69 @@ input:checked + .slider:before {
 .graph-legend,
 .edge-labels-toggle,
 .detail-panel {
-  border: 0;
+  border: 1px solid rgba(226, 231, 239, 0.96);
   border-radius: 22px;
-  background: rgba(8, 19, 16, 0.78);
-  color: rgba(235, 255, 251, 0.78);
-  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.1), 0 18px 50px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(18px);
+  background: rgba(255, 255, 255, 0.96);
+  color: #5d6575;
+  box-shadow: 0 20px 45px rgba(42, 49, 60, 0.08);
+  backdrop-filter: blur(12px);
 }
 
 .legend-title {
-  color: #77ddd5;
+  color: #ff4e8d;
   font-family: 'Inter', sans-serif;
 }
 
 .legend-item,
 .toggle-label {
-  color: rgba(235, 255, 251, 0.68);
+  color: #727b8d;
   font-family: 'Inter', sans-serif;
 }
 
 .slider {
-  background-color: rgba(235, 255, 251, 0.18);
+  background-color: #dbe0ea;
 }
 
 input:checked + .slider {
-  background-color: #77ddd5;
+  background-color: #ff5f98;
 }
 
 .detail-panel-header {
-  background: rgba(255, 255, 255, 0.045);
-  border-bottom-color: rgba(235, 255, 251, 0.1);
+  background: #ffffff;
+  border-bottom-color: rgba(229, 233, 240, 0.96);
 }
 
 .detail-title,
 .detail-value,
 .section-title {
-  color: rgba(244, 255, 251, 0.88);
+  color: #2a3140;
 }
 
 .detail-label,
 .property-key {
-  color: rgba(119, 221, 213, 0.72);
+  color: #7c8697;
 }
 
 .detail-content,
 .summary-text,
 .property-value,
 .fact-text {
-  color: rgba(235, 255, 251, 0.68);
+  color: #515968;
+}
+
+.label-tag,
+.episode-tag {
+  background: #f6f7fb;
+  border-color: #e4e8f0;
+  color: #667085;
+}
+
+.edge-relation-header,
+.self-loop-item,
+.self-loop-item-header,
+.self-loop-item.expanded .self-loop-item-header,
+.self-loop-item-content {
+  background: #fafbfe;
+  border-color: #e7ebf2;
 }
 </style>
