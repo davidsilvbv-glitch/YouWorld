@@ -6,10 +6,10 @@
     "error": "Error",
     "success": "Éxito",
     "completed": "Completado",
-    "processing": "Generando",
+    "processing": "Procesando",
     "pending": "Pendiente",
     "ready": "Listo",
-    "running": "Ejecutándose",
+    "running": "Ejecut?ndose",
     "failed": "Fallido",
     "unknown": "Desconocido",
     "unknownError": "Error desconocido",
@@ -25,7 +25,10 @@
     "minutes": "minutos",
     "rounds": "rondas",
     "items": "elementos",
-    "files": "archivos"
+    "files": "archivos",
+    "generating": "Generando",
+    "preparing": "Preparando",
+    "waiting": "Esperando"
   },
   "meta": {
     "title": "YouWorld",
@@ -99,7 +102,8 @@
       "Iniciar simulación",
       "Generación de informes",
       "Interacción profunda"
-    ]
+    ],
+    "stepCounter": "Paso {current}/5"
   },
   "step1": {
     "ontologyGeneration": "Generación de ontología",
@@ -345,7 +349,47 @@
     "label": "Etiqueta",
     "showEdgeLabels": "Mostrar etiquetas de relaciones",
     "selfRelations": "Autorelaciones",
-    "entityTypes": "Tipos de entidad"
+    "entityTypes": "Tipos de entidad",
+    "entityTypeNames": {
+      "Entity": "Entidad",
+      "Person": "Persona",
+      "Organization": "Organizaci?n",
+      "Company": "Empresa",
+      "GovernmentAgency": "Agencia gubernamental",
+      "GovernmentRegulator": "Regulador gubernamental",
+      "GovernmentOfficial": "Funcionario gubernamental",
+      "RegulatoryBody": "Organismo regulador",
+      "PolicyMaker": "Responsable de pol?ticas",
+      "DeveloperCommunity": "Comunidad desarrolladora",
+      "TechExecutive": "Ejecutivo tecnol?gico",
+      "MediaOutlet": "Medio de comunicaci?n",
+      "Student": "Estudiante",
+      "Professor": "Profesor",
+      "Journalist": "Periodista",
+      "Celebrity": "Celebridad",
+      "Executive": "Ejecutivo",
+      "Official": "Funcionario",
+      "Lawyer": "Abogado",
+      "Doctor": "Doctor",
+      "University": "Universidad",
+      "School": "Escuela",
+      "Hospital": "Hospital",
+      "NGO": "ONG",
+      "Investor": "Inversionista",
+      "InvestorInstitution": "Instituci?n inversionista",
+      "PublicFigure": "Figura p?blica",
+      "CommunityLeader": "L?der comunitario",
+      "SmallBusinessOwner": "Peque?o empresario",
+      "LocalBusiness": "Negocio local",
+      "CompetitorPlatform": "Plataforma competidora",
+      "PlatformOwner": "Propietario de plataforma",
+      "PaymentProcessor": "Procesador de pagos",
+      "PaymentProviderRep": "Representante de proveedor de pagos",
+      "StartupIncubator": "Incubadora de startups",
+      "TechInfluencer": "Influencer tecnol?gico",
+      "SocialMediaInfluencer": "Influencer de redes sociales",
+      "RegularUser": "Usuario regular"
+    }
   },
   "history": {
     "title": "Registros de simulación",

@@ -53,7 +53,7 @@
           <div class="detail-panel-header">
             <span class="detail-title">{{ selectedItem.type === 'node' ? $t('graph.nodeDetails') : $t('graph.relationship') }}</span>
             <span v-if="selectedItem.type === 'node'" class="detail-type-badge" :style="{ background: selectedItem.color, color: '#fff' }">
-              {{ selectedItem.entityType }}
+              {{ getEntityTypeLabel(selectedItem.entityType) }}
             </span>
             <button class="detail-close" @click="closeDetailPanel">×</button>
           </div>
@@ -69,7 +69,7 @@
               <span class="detail-value uuid-text">{{ selectedItem.data.uuid }}</span>
             </div>
             <div class="detail-row" v-if="selectedItem.data.created_at">
-              <span class="detail-label">Created:</span>
+              <span class="detail-label">{{ $t('graph.created') }}:</span>
               <span class="detail-value">{{ formatDateTime(selectedItem.data.created_at) }}</span>
             </div>
             
@@ -95,7 +95,7 @@
               <div class="section-title">{{ $t('graph.labels') }}</div>
               <div class="labels-list">
                 <span v-for="label in selectedItem.data.labels" :key="label" class="label-tag">
-                  {{ label }}
+                  {{ getEntityTypeLabel(label) }}
                 </span>
               </div>
             </div>
@@ -219,7 +219,7 @@
       <div class="legend-items">
         <div class="legend-item" v-for="type in entityTypes" :key="type.name">
           <span class="legend-dot" :style="{ background: type.color }"></span>
-          <span class="legend-label">{{ type.name }}</span>
+          <span class="legend-label">{{ type.label }}</span>
         </div>
       </div>
     </div>
@@ -240,7 +240,7 @@ import { ref, onMounted, onUnmounted, watch, nextTick, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import * as d3 from 'd3'
 
-const { t } = useI18n({ useScope: 'global' })
+const { t, te, locale } = useI18n({ useScope: 'global' })
 
 const props = defineProps({
   graphData: Object,
@@ -262,6 +262,21 @@ const wasSimulating = ref(false) // Rastrear si estaba en simulación anteriorme
 // Cerrar indicador de fin de simulación
 const dismissFinishedHint = () => {
   showSimulationFinishedHint.value = false
+}
+
+const splitEntityType = (type) => {
+  if (!type) return t('common.unknown')
+  return String(type)
+    .replace(/_/g, ' ')
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .trim()
+}
+
+const getEntityTypeLabel = (type) => {
+  if (!type) return t('common.unknown')
+  const key = `graph.entityTypeNames.${type}`
+  if (te(key)) return t(key)
+  return splitEntityType(type)
 }
 
 // Escuchar cambios en isSimulating, detectar fin de simulación
@@ -294,7 +309,12 @@ const entityTypes = computed(() => {
   props.graphData.nodes.forEach(node => {
     const type = node.entity_type || node.labels?.find(l => l !== 'Entity') || 'Entity'
     if (!typeMap[type]) {
-      typeMap[type] = { name: type, count: 0, color: colors[Object.keys(typeMap).length % colors.length] }
+      typeMap[type] = {
+        name: type,
+        label: getEntityTypeLabel(type),
+        count: 0,
+        color: colors[Object.keys(typeMap).length % colors.length]
+      }
     }
     typeMap[type].count++
   })
@@ -306,7 +326,7 @@ const formatDateTime = (dateStr) => {
   if (!dateStr) return ''
   try {
     const date = new Date(dateStr)
-    return date.toLocaleString('en-US', { 
+    return date.toLocaleString(locale.value === 'es' ? 'es-ES' : 'en-US', { 
       month: 'short', 
       day: 'numeric', 
       year: 'numeric',

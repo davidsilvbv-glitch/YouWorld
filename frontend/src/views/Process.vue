@@ -215,7 +215,7 @@
         <div v-if="graphData" class="graph-legend">
           <div class="legend-item" v-for="type in entityTypes" :key="type.name">
             <span class="legend-dot" :style="{ background: type.color }"></span>
-            <span class="legend-label">{{ type.name }}</span>
+            <span class="legend-label">{{ type.label }}</span>
             <span class="legend-count">{{ type.count }}</span>
           </div>
         </div>
@@ -454,6 +454,20 @@ const statusText = computed(() => {
   return t('process.initializing')
 })
 
+const splitEntityType = (type) => {
+  if (!type) return t('common.unknown')
+  return String(type)
+    .replace(/_/g, ' ')
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .trim()
+}
+
+const getEntityTypeLabel = (type) => {
+  if (!type) return t('common.unknown')
+  const key = `graph.entityTypeNames.${type}`
+  return tm('graph.entityTypeNames')?.[type] ? t(key) : splitEntityType(type)
+}
+
 const entityTypes = computed(() => {
   if (!graphData.value?.nodes) return []
   
@@ -463,7 +477,12 @@ const entityTypes = computed(() => {
   graphData.value.nodes.forEach(node => {
     const type = node.entity_type || node.labels?.find(l => l !== 'Entity') || 'Entity'
     if (!typeMap[type]) {
-      typeMap[type] = { name: type, count: 0, color: colors[Object.keys(typeMap).length % colors.length] }
+      typeMap[type] = {
+        name: type,
+        label: getEntityTypeLabel(type),
+        count: 0,
+        color: colors[Object.keys(typeMap).length % colors.length]
+      }
     }
     typeMap[type].count++
   })
@@ -517,7 +536,7 @@ const selectNode = (nodeData, color) => {
     type: 'node',
     data: nodeData,
     color: color,
-    entityType: nodeData.entity_type || nodeData.labels?.find(l => l !== 'Entity' && l !== 'Node') || 'Entity'
+    entityType: getEntityTypeLabel(nodeData.entity_type || nodeData.labels?.find(l => l !== 'Entity' && l !== 'Node') || 'Entity')
   }
 }
 

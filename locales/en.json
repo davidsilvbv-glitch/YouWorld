@@ -6,7 +6,7 @@
     "error": "Error",
     "success": "Success",
     "completed": "Completed",
-    "processing": "Generating",
+    "processing": "Processing",
     "pending": "Pending",
     "ready": "Ready",
     "running": "Running",
@@ -25,7 +25,10 @@
     "minutes": "minutes",
     "rounds": "rounds",
     "items": "items",
-    "files": "files"
+    "files": "files",
+    "generating": "Generating",
+    "preparing": "Preparing",
+    "waiting": "Waiting"
   },
   "meta": {
     "title": "YouWorld",
@@ -93,7 +96,14 @@
     "layoutGraph": "Graph",
     "layoutSplit": "Split",
     "layoutWorkbench": "Workbench",
-    "stepNames": ["Graph Build", "Env Setup", "Run Simulation", "Report Generation", "Deep Interaction"]
+    "stepNames": [
+      "Graph Build",
+      "Env Setup",
+      "Run Simulation",
+      "Report Generation",
+      "Deep Interaction"
+    ],
+    "stepCounter": "Step {current}/5"
   },
   "step1": {
     "ontologyGeneration": "Ontology Generation",
@@ -329,7 +339,47 @@
     "label": "Label",
     "showEdgeLabels": "Show edge labels",
     "selfRelations": "Self-relations",
-    "entityTypes": "Entity Types"
+    "entityTypes": "Entity Types",
+    "entityTypeNames": {
+      "Entity": "Entity",
+      "Person": "Person",
+      "Organization": "Organization",
+      "Company": "Company",
+      "GovernmentAgency": "Government Agency",
+      "GovernmentRegulator": "Government Regulator",
+      "GovernmentOfficial": "Government Official",
+      "RegulatoryBody": "Regulatory Body",
+      "PolicyMaker": "Policy Maker",
+      "DeveloperCommunity": "Developer Community",
+      "TechExecutive": "Tech Executive",
+      "MediaOutlet": "Media Outlet",
+      "Student": "Student",
+      "Professor": "Professor",
+      "Journalist": "Journalist",
+      "Celebrity": "Celebrity",
+      "Executive": "Executive",
+      "Official": "Official",
+      "Lawyer": "Lawyer",
+      "Doctor": "Doctor",
+      "University": "University",
+      "School": "School",
+      "Hospital": "Hospital",
+      "NGO": "NGO",
+      "Investor": "Investor",
+      "InvestorInstitution": "Investor Institution",
+      "PublicFigure": "Public Figure",
+      "CommunityLeader": "Community Leader",
+      "SmallBusinessOwner": "Small Business Owner",
+      "LocalBusiness": "Local Business",
+      "CompetitorPlatform": "Competitor Platform",
+      "PlatformOwner": "Platform Owner",
+      "PaymentProcessor": "Payment Processor",
+      "PaymentProviderRep": "Payment Provider Representative",
+      "StartupIncubator": "Startup Incubator",
+      "TechInfluencer": "Tech Influencer",
+      "SocialMediaInfluencer": "Social Media Influencer",
+      "RegularUser": "Regular User"
+    }
   },
   "history": {
     "title": "Simulation History",

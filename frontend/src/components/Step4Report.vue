@@ -1703,9 +1703,9 @@ const statusClass = computed(() => {
 })
 
 const statusText = computed(() => {
-  if (isComplete.value) return 'Completed'
-  if (agentLogs.value.length > 0) return 'Generating...'
-  return 'Waiting'
+  if (isComplete.value) return t('common.completed')
+  if (agentLogs.value.length > 0) return t('common.generating')
+  return t('common.waiting')
 })
 
 const totalSections = computed(() => {
