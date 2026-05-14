@@ -2,9 +2,7 @@
   <div class="main-view">
     <!-- Header -->
     <header class="app-header">
-      <div class="header-left">
-        <div class="brand" @click="router.push('/')">MIROFISH</div>
-      </div>
+      <div class="header-left header-spacer"></div>
       
       <div class="header-center">
         <div class="view-switcher">
@@ -327,22 +325,26 @@ onUnmounted(() => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #FFF;
   overflow: hidden;
-  font-family: 'Space Grotesk', 'Noto Sans SC', system-ui, sans-serif;
+  font-family: 'Inter', 'Space Grotesk', 'Noto Sans SC', system-ui, sans-serif;
+  background:
+    radial-gradient(circle at 72% 8%, rgba(91, 203, 190, 0.2), transparent 30%),
+    radial-gradient(circle at 18% 10%, rgba(77, 35, 111, 0.32), transparent 34%),
+    linear-gradient(125deg, #050607 0%, #081310 34%, #0b0715 72%, #05020a 100%);
 }
 
 /* Header */
 .app-header {
-  height: 60px;
-  border-bottom: 1px solid #EAEAEA;
+  height: 72px;
+  border-bottom: 1px solid rgba(235, 255, 251, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
-  background: #FFF;
+  padding: 0 30px;
+  background: rgba(5, 4, 12, 0.72);
   z-index: 100;
   position: relative;
+  backdrop-filter: blur(18px);
 }
 
 .header-center {
@@ -351,38 +353,31 @@ onUnmounted(() => {
   transform: translateX(-50%);
 }
 
-.brand {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 800;
-  font-size: 18px;
-  letter-spacing: 1px;
-  cursor: pointer;
-}
-
 .view-switcher {
   display: flex;
-  background: #F5F5F5;
-  padding: 4px;
-  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 5px;
+  border-radius: 999px;
   gap: 4px;
+  border: 1px solid rgba(235, 255, 251, 0.1);
 }
 
 .switch-btn {
   border: none;
   background: transparent;
-  padding: 6px 16px;
-  font-size: 12px;
+  padding: 8px 18px;
+  font-size: 0.78rem;
   font-weight: 600;
-  color: #666;
-  border-radius: 4px;
+  color: #8fa5a1;
+  border-radius: 999px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .switch-btn.active {
-  background: #FFF;
-  color: #000;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  background: rgba(119, 221, 213, 0.18);
+  color: #edf6f2;
+  box-shadow: none;
 }
 
 .header-right {
@@ -401,18 +396,18 @@ onUnmounted(() => {
 .step-num {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
-  color: #999;
+  color: #6ed0c8;
 }
 
 .step-name {
   font-weight: 700;
-  color: #000;
+  color: #edf6f2;
 }
 
 .step-divider {
   width: 1px;
   height: 14px;
-  background-color: #E0E0E0;
+  background-color: rgba(255,255,255,0.12);
 }
 
 .status-indicator {
@@ -420,7 +415,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: #666;
+  color: #8fa5a1;
   font-weight: 500;
 }
 
@@ -431,9 +426,9 @@ onUnmounted(() => {
   background: #CCC;
 }
 
-.status-indicator.processing .dot { background: #FF5722; animation: pulse 1s infinite; }
-.status-indicator.completed .dot { background: #4CAF50; }
-.status-indicator.error .dot { background: #F44336; }
+.status-indicator.processing .dot { background: #f6a04d; animation: pulse 1s infinite; }
+.status-indicator.completed .dot { background: #6ed0c8; }
+.status-indicator.error .dot { background: #ff7a7a; }
 
 @keyframes pulse { 50% { opacity: 0.5; } }
 
@@ -443,6 +438,7 @@ onUnmounted(() => {
   display: flex;
   position: relative;
   overflow: hidden;
+  background: transparent;
 }
 
 .panel-wrapper {
@@ -450,9 +446,23 @@ onUnmounted(() => {
   overflow: hidden;
   transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease, transform 0.3s ease;
   will-change: width, opacity, transform;
+  padding: 14px;
 }
 
 .panel-wrapper.left {
-  border-right: 1px solid #EAEAEA;
+  border-right: 0;
+  padding-right: 7px;
+}
+
+.panel-wrapper.right {
+  padding-left: 7px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+}
+
+.header-spacer {
+  width: 140px;
+  min-width: 140px;
 }
 </style>

@@ -270,12 +270,17 @@
     </div>
 
     <!-- Bottom Info / Logs -->
-    <div class="system-logs">
-      <div class="log-header">
-        <span class="log-title">{{ $t('mainView.simulationMonitor') }}</span>
-        <span class="log-id">{{ simulationId || 'NO_SIMULATION' }}</span>
+    <div class="system-logs" :class="{ collapsed: logsCollapsed }">
+      <div class="log-header" @click="logsCollapsed = !logsCollapsed">
+        <div class="log-header-main">
+          <span class="log-title">{{ $t('mainView.simulationMonitor') }}</span>
+          <span class="log-id">{{ simulationId || 'NO_SIMULATION' }}</span>
+        </div>
+        <button class="log-toggle-btn" type="button" :aria-expanded="(!logsCollapsed).toString()">
+          <span>{{ logsCollapsed ? '▲' : '▼' }}</span>
+        </button>
       </div>
-      <div class="log-content" ref="logContent">
+      <div v-show="!logsCollapsed" class="log-content" ref="logContent">
         <div class="log-line" v-for="(log, idx) in systemLogs" :key="idx">
           <span class="log-time">{{ log.time }}</span>
           <span class="log-msg">{{ translateLog(log.msg) }}</span>
@@ -327,6 +332,7 @@ const runStatus = ref({})
   const allActions = ref([]) // todas las acciones (acumulado incrementalmente）
   const actionIds = ref(new Set()) // Conjunto de IDs de acciones para deduplicación
 const scrollContainer = ref(null)
+const logsCollapsed = ref(true)
 
 // Computed
 // Mostrar acciones en orden cronológico (más reciente al final, es decir, al fondo)
@@ -1265,6 +1271,303 @@ onUnmounted(() => {
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   margin-right: 6px;
+}
+
+/* --- YouWorld Dark Overrides --- */
+.simulation-panel {
+  background:
+    radial-gradient(circle at 78% 12%, rgba(91, 203, 190, 0.14), transparent 28%),
+    radial-gradient(circle at 12% 18%, rgba(77, 35, 111, 0.24), transparent 34%),
+    linear-gradient(145deg, #0b0f12 0%, #0d1317 40%, #110b18 100%);
+  color: #edf6f2;
+  gap: 14px;
+  padding: 10px 0 0;
+}
+
+.control-bar {
+  height: auto;
+  margin: 0 18px;
+  padding: 16px 18px;
+  border-radius: 28px;
+  border: 1px solid rgba(125, 205, 198, 0.18);
+  background: linear-gradient(135deg, rgba(20, 28, 36, 0.96), rgba(27, 18, 38, 0.94));
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.24);
+  align-items: stretch;
+  gap: 18px;
+}
+
+.status-group {
+  flex: 1;
+  gap: 14px;
+  min-width: 0;
+}
+
+.platform-status {
+  min-width: 0;
+  flex: 1 1 0;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  opacity: 1;
+  overflow: hidden;
+}
+
+.platform-status.active {
+  border-color: rgba(110, 208, 200, 0.36);
+  background: linear-gradient(135deg, rgba(23, 33, 40, 0.98), rgba(21, 27, 37, 0.98));
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+}
+
+.platform-status.completed {
+  border-color: rgba(110, 208, 200, 0.42);
+  background: linear-gradient(135deg, rgba(19, 35, 33, 0.96), rgba(18, 25, 35, 0.96));
+}
+
+.platform-status.twitter .platform-icon,
+.platform-status.reddit .platform-icon,
+.platform-indicator,
+.icon-small,
+.icon-small.filled {
+  color: #87d6d1;
+}
+
+.platform-name,
+.total-count,
+.agent-name,
+.content-text.main-text {
+  color: #edf6f2;
+}
+
+.stat-label,
+.timeline-stats,
+.quote-header,
+.repost-info,
+.like-info,
+.search-info,
+.follow-info,
+.vote-info,
+.idle-info,
+.comment-context,
+.card-footer,
+.log-title,
+.log-id {
+  color: #8ea5a1;
+}
+
+.stat-value,
+.content-text,
+.quote-text,
+.repost-content,
+.liked-content,
+.voted-content,
+.search-query,
+.log-msg {
+  color: #d8e8e4;
+}
+
+.stat-total,
+.stat-unit,
+.breakdown-divider,
+.log-time {
+  color: rgba(208, 230, 226, 0.45);
+}
+
+.action-btn {
+  border-radius: 999px;
+  padding: 14px 24px;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+}
+
+.action-btn.primary {
+  background: linear-gradient(135deg, #67d7cd, #6f96ff);
+  color: #071112;
+  box-shadow: 0 10px 26px rgba(103, 215, 205, 0.2);
+}
+
+.action-btn.primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #7ce1d8, #86a8ff);
+}
+
+.action-btn:disabled {
+  opacity: 0.45;
+}
+
+.main-content-area {
+  margin: 0 18px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(145deg, rgba(14, 19, 26, 0.98), rgba(18, 12, 28, 0.96));
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+}
+
+.timeline-header {
+  top: 0;
+  background: rgba(8, 11, 16, 0.78);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.timeline-stats {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+}
+
+.timeline-feed {
+  max-width: 980px;
+  padding: 28px 18px 40px;
+}
+
+.timeline-axis {
+  background: linear-gradient(to bottom, rgba(113, 149, 255, 0.12), rgba(110, 208, 200, 0.18), rgba(255, 255, 255, 0.08));
+}
+
+.timeline-marker {
+  width: 14px;
+  height: 14px;
+  background: #10161d;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.marker-dot,
+.timeline-item.twitter .marker-dot,
+.timeline-item.reddit .marker-dot {
+  width: 6px;
+  height: 6px;
+  background: #67d7cd;
+}
+
+.timeline-item.twitter .timeline-marker,
+.timeline-item.reddit .timeline-marker {
+  border-color: rgba(103, 215, 205, 0.35);
+}
+
+.timeline-card {
+  background: linear-gradient(145deg, rgba(21, 28, 36, 0.98), rgba(28, 18, 40, 0.98));
+  border-radius: 26px;
+  padding: 18px 20px;
+  border: 1px solid rgba(132, 219, 212, 0.12);
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.18);
+}
+
+.timeline-card:hover {
+  border-color: rgba(132, 219, 212, 0.24);
+  box-shadow: 0 22px 38px rgba(0, 0, 0, 0.24);
+}
+
+.card-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.avatar-placeholder {
+  background: linear-gradient(135deg, #67d7cd, #6f96ff);
+  color: #071112;
+}
+
+.action-badge {
+  border-radius: 999px;
+  padding: 4px 8px;
+}
+
+.badge-post,
+.badge-comment,
+.badge-action,
+.badge-meta,
+.badge-idle {
+  background: rgba(255, 255, 255, 0.05);
+  color: #d8e8e4;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.quoted-block,
+.repost-content,
+.search-query {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+}
+
+.waiting-state {
+  color: rgba(221, 238, 235, 0.72);
+}
+
+.pulse-ring {
+  border-color: rgba(111, 150, 255, 0.2);
+}
+
+.system-logs {
+  margin: 0 18px 14px;
+  padding: 0;
+  border-radius: 24px;
+  border: 1px solid rgba(110, 208, 200, 0.18);
+  background: linear-gradient(145deg, rgba(11, 14, 20, 0.98), rgba(16, 10, 24, 0.96));
+  overflow: hidden;
+}
+
+.log-header {
+  margin: 0;
+  padding: 14px 18px;
+  border-bottom: 0;
+  cursor: pointer;
+  align-items: center;
+  gap: 12px;
+}
+
+.log-header-main {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.log-toggle-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #8ea5a1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.log-content {
+  height: 170px;
+  padding: 0 18px 16px;
+}
+
+.system-logs.collapsed .log-content {
+  display: none;
+}
+
+.system-logs.collapsed {
+  margin-bottom: 10px;
+}
+
+@media (max-width: 1200px) {
+  .control-bar {
+    flex-direction: column;
+  }
+
+  .status-group {
+    width: 100%;
+  }
+
+  .action-controls {
+    width: 100%;
+  }
+
+  .action-btn.primary {
+    width: 100%;
+    justify-content: center;
+  }
 }
 </style>
 
