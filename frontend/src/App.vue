@@ -85,8 +85,8 @@ onMounted(() => {
 }
 
 .sidebar-shell.collapsed {
-  width: 28px;
-  min-width: 28px;
+  width: 0;
+  min-width: 0;
   overflow: visible;
 }
 
@@ -95,7 +95,7 @@ onMounted(() => {
 }
 
 .sidebar-shell.collapsed :deep(.project-sidebar) {
-  transform: translateX(calc(-100% + 18px));
+  transform: translateX(-100%);
   opacity: 0;
   pointer-events: none;
 }
@@ -103,7 +103,7 @@ onMounted(() => {
 .sidebar-toggle {
   position: absolute;
   top: 96px;
-  right: -12px;
+  right: -14px;
   z-index: 30;
   width: 32px;
   height: 68px;
@@ -125,7 +125,7 @@ onMounted(() => {
 }
 
 .sidebar-toggle.collapsed {
-  right: -12px;
+  right: 10px;
 }
 
 .sidebar-toggle-icon {
