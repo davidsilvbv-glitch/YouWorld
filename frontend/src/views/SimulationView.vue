@@ -442,6 +442,9 @@ onMounted(async () => {
 
 .panel-wrapper.right {
   padding-left: 7px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
 }
 
 .header-spacer {

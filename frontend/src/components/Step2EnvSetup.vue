@@ -3031,3 +3031,49 @@ onUnmounted(() => {
 }
 </style>
 
+<style>
+/* Let phase two breathe vertically instead of squeezing all steps into one viewport */
+.env-setup-panel {
+  height: auto !important;
+  min-height: 100%;
+}
+
+.scroll-container {
+  flex: 0 0 auto !important;
+  overflow: visible !important;
+  padding: 28px 24px 88px !important;
+  gap: 28px !important;
+}
+
+.step-card {
+  min-height: auto !important;
+  padding: 28px !important;
+}
+
+.card-header {
+  margin-bottom: 18px !important;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.description {
+  margin-bottom: 0 !important;
+}
+
+.info-card,
+.config-block,
+.platform-card,
+.agent-card,
+.narrative-box,
+.reasoning-item,
+.timeline-content,
+.stats-grid,
+.profiles-preview {
+  margin-top: 0 !important;
+}
+</style>
+
