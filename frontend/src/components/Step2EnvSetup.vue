@@ -529,9 +529,10 @@
     </div>
 
     <!-- Profile Detail Modal -->
-    <Transition name="modal">
-      <div v-if="selectedProfile" class="profile-modal-overlay" @click.self="selectedProfile = null">
-        <div class="profile-modal">
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="selectedProfile" class="profile-modal-overlay" @click.self="selectedProfile = null">
+          <div class="profile-modal">
           <div class="modal-header">
           <div class="modal-header-info">
             <div class="modal-name-row">
@@ -611,9 +612,10 @@
             </div>
           </div>
         </div>
-      </div>
-      </div>
-    </Transition>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
 
     <!-- Bottom Info / Logs -->
     <div class="system-log-toggle">
@@ -3074,6 +3076,100 @@ onUnmounted(() => {
 .stats-grid,
 .profiles-preview {
   margin-top: 0 !important;
+}
+
+.profile-modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  padding: 28px !important;
+  display: grid !important;
+  place-items: center !important;
+  background: rgba(4, 6, 10, 0.72) !important;
+  backdrop-filter: blur(12px) !important;
+  z-index: 3000 !important;
+}
+
+.profile-modal {
+  width: min(760px, calc(100vw - 56px)) !important;
+  max-height: min(78vh, 860px) !important;
+  overflow: hidden !important;
+  border-radius: 28px !important;
+  background: linear-gradient(180deg, rgba(17, 23, 31, 0.98), rgba(16, 15, 28, 0.97)) !important;
+  border: 1px solid rgba(118, 163, 157, 0.16) !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42) !important;
+}
+
+.modal-header {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.modal-body {
+  background: transparent !important;
+}
+
+.modal-realname,
+.modal-username,
+.modal-profession,
+.info-value,
+.info-value.mbti,
+.section-bio,
+.section-persona,
+.dim-title,
+.dim-desc {
+  color: #edf6f2 !important;
+}
+
+.modal-profession,
+.section-bio,
+.dimension-card,
+.info-item {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: none !important;
+}
+
+.modal-profession {
+  display: inline-flex !important;
+  border-radius: 999px !important;
+  padding: 6px 12px !important;
+}
+
+.modal-info-grid {
+  gap: 14px !important;
+}
+
+.info-item {
+  padding: 14px 16px !important;
+  border-radius: 18px !important;
+}
+
+.section-bio,
+.persona-content {
+  border-radius: 18px !important;
+}
+
+.section-bio,
+.section-persona {
+  background: rgba(255, 255, 255, 0.05) !important;
+  padding: 18px !important;
+}
+
+.persona-dimensions {
+  gap: 14px !important;
+}
+
+.dimension-card {
+  border-radius: 18px !important;
+}
+
+.close-btn {
+  color: rgba(235, 255, 251, 0.68) !important;
+}
+
+.close-btn:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.08) !important;
 }
 </style>
 

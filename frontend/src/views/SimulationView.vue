@@ -251,8 +251,9 @@ const loadSimulationData = async () => {
     const simRes = await getSimulation(currentSimulationId.value)
     if (simRes.success && simRes.data) {
       const simData = simRes.data
+      let graphIdToLoad = simData.graph_id || null
 
-      // Obtener informaciÃ³n de proyecto
+      // Obtener informaci?n de proyecto
       if (simData.project_id) {
         const projRes = await getProject(simData.project_id)
         if (projRes.success && projRes.data) {
@@ -260,11 +261,17 @@ const loadSimulationData = async () => {
           rememberProjectRoute(projRes.data.project_id)
           addLog(t('log.projectLoadSuccess', { id: projRes.data.project_id }))
 
-          // Obtener datos de grÃ¡fico
-          if (projRes.data.graph_id) {
-            await loadGraph(projRes.data.graph_id)
+          graphIdToLoad = projRes.data.graph_id || graphIdToLoad
+          if (!projectData.value.graph_id && graphIdToLoad) {
+            projectData.value.graph_id = graphIdToLoad
           }
         }
+      }
+
+      if (graphIdToLoad) {
+        await loadGraph(graphIdToLoad)
+      } else {
+        addLog('No se encontr? graph_id para esta simulaci?n.')
       }
     } else {
       addLog(t('log.loadSimDataFailed', { error: simRes.error || t('common.unknownError') }))
@@ -290,8 +297,9 @@ const loadGraph = async (graphId) => {
 }
 
 const refreshGraph = () => {
-  if (projectData.value?.graph_id) {
-    loadGraph(projectData.value.graph_id)
+  const graphId = projectData.value?.graph_id
+  if (graphId) {
+    loadGraph(graphId)
   }
 }
 
