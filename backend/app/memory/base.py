@@ -16,6 +16,7 @@ class EntityNode:
     labels: List[str]
     summary: str
     attributes: Dict[str, Any]
+    entity_type: Optional[str] = None
     # Información de bordes relacionados
     related_edges: List[Dict[str, Any]] = field(default_factory=list)
     # Información de otros nodos relacionados
@@ -28,12 +29,15 @@ class EntityNode:
             "labels": self.labels,
             "summary": self.summary,
             "attributes": self.attributes,
+            "entity_type": self.entity_type,
             "related_edges": self.related_edges,
             "related_nodes": self.related_nodes,
         }
 
     def get_entity_type(self) -> Optional[str]:
         """Obtener tipo de entidad (excluir etiqueta predeterminada Entity)"""
+        if self.entity_type:
+            return self.entity_type
         for label in self.labels:
             if label not in ["Entity", "Node"]:
                 return label

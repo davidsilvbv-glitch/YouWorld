@@ -572,6 +572,7 @@ class GraphitiBackend(MemoryBackend):
             # Build EntityNode objects with populated related_edges and related_nodes
             entities = []
             for uuid, data in entity_map.items():
+                sanitized_attributes = _sanitize_neo4j_attributes(data["attributes"])
                 # Collect related edges (outgoing + incoming)
                 rel_edges = outgoing.get(uuid, []) + incoming.get(uuid, [])
 
@@ -601,7 +602,11 @@ class GraphitiBackend(MemoryBackend):
                     name=data["name"],
                     labels=data["labels"],
                     summary=data["summary"],
-                    attributes=_sanitize_neo4j_attributes(data["attributes"]),
+                    attributes=sanitized_attributes,
+                    entity_type=(
+                        sanitized_attributes.get("entity_type")
+                        or sanitized_attributes.get("type")
+                    ),
                     related_edges=rel_edges,
                     related_nodes=rel_nodes,
                 )
@@ -685,6 +690,7 @@ class GraphitiBackend(MemoryBackend):
                 entity_type = custom_labels[0]
 
             entity_types_found.add(entity_type)
+            entity.entity_type = entity_type
             filtered_entities.append(entity)
 
         logger.info(

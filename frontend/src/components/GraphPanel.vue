@@ -292,7 +292,7 @@ const entityTypes = computed(() => {
   const colors = ['#FF6B35', '#004E89', '#7B2D8E', '#1A936F', '#C5283D', '#E9724C', '#3498db', '#9b59b6', '#27ae60', '#f39c12']
   
   props.graphData.nodes.forEach(node => {
-    const type = node.labels?.find(l => l !== 'Entity') || 'Entity'
+    const type = node.entity_type || node.labels?.find(l => l !== 'Entity') || 'Entity'
     if (!typeMap[type]) {
       typeMap[type] = { name: type, count: 0, color: colors[Object.keys(typeMap).length % colors.length] }
     }
@@ -363,7 +363,7 @@ const renderGraph = () => {
   const nodes = nodesData.map(n => ({
     id: n.uuid,
     name: n.name || 'Unnamed',
-    type: n.labels?.find(l => l !== 'Entity') || 'Entity',
+    type: n.entity_type || n.labels?.find(l => l !== 'Entity') || 'Entity',
     rawData: n
   }))
   
@@ -1431,52 +1431,52 @@ input:checked + .slider:before {
   font-size: 9px;
 }
 
-/* MiroFish original-inspired visual layer */
+/* Hybrid visual layer: original density with dark YouWorld shell */
 .graph-panel {
   border-radius: 28px;
-  background-color: #fbfbfd;
+  background-color: rgba(255, 255, 255, 0.045);
   background-image:
-    radial-gradient(rgba(207, 213, 223, 0.9) 1.15px, transparent 1.15px),
-    radial-gradient(circle at 34% 26%, rgba(255, 112, 156, 0.08), transparent 30%);
+    radial-gradient(rgba(119, 221, 213, 0.18) 1.15px, transparent 1.15px),
+    radial-gradient(circle at 28% 18%, rgba(77, 35, 111, 0.2), transparent 34%);
   background-size: 28px 28px, auto;
-  box-shadow: inset 0 0 0 1px rgba(225, 229, 238, 0.9);
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08);
   overflow: hidden;
 }
 
 .panel-header {
   padding: 18px 20px;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(255,255,255,0));
+  background: linear-gradient(to bottom, rgba(5, 6, 7, 0.86), rgba(5, 6, 7, 0));
 }
 
 .panel-title {
-  color: #5a6272;
+  color: rgba(244, 255, 251, 0.86);
   font-family: 'Inter', sans-serif;
   font-weight: 700;
 }
 
 .tool-btn {
   height: 36px;
-  border: 1px solid rgba(223, 228, 236, 0.95);
+  border: 0;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.96);
-  color: #7b8394;
-  box-shadow: 0 8px 18px rgba(32, 37, 46, 0.05);
+  background: rgba(255, 255, 255, 0.075);
+  color: rgba(235, 255, 251, 0.68);
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.09);
   font-family: 'Inter', sans-serif;
 }
 
 .tool-btn:hover {
-  background: #ffffff;
-  color: #364052;
-  border-color: rgba(255, 104, 150, 0.22);
+  background: rgba(119, 221, 213, 0.14);
+  color: #f4fffb;
+  border-color: transparent;
 }
 
 .graph-state {
-  color: #8991a2;
+  color: rgba(235, 255, 251, 0.58);
   font-family: 'Inter', sans-serif;
 }
 
 .empty-icon {
-  color: rgba(255, 92, 150, 0.28);
+  color: rgba(119, 221, 213, 0.5);
 }
 
 .graph-building-hint,

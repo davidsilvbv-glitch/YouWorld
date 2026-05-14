@@ -7,10 +7,12 @@ funcione indistintamente con Zep Cloud o Graphiti según MEMORY_BACKEND.
 """
 
 import uuid
+import re
 from typing import Dict, Any, List, Optional, Callable
 
 from ..memory.factory import get_memory_backend
 from ..memory.base import GraphInfo
+from ..models.project import ProjectManager
 from ..services.text_processor import TextProcessor
 from ..services.graph_serializers import build_graph_data_response
 from ..utils.logger import get_logger
@@ -31,6 +33,139 @@ class GraphitiGraphBuilder:
 
     def __init__(self, backend=None):
         self._backend = backend or get_memory_backend()
+
+    @staticmethod
+    def _normalize_text(value: Any) -> str:
+        if value is None:
+            return ""
+        if isinstance(value, dict):
+            return " ".join(GraphitiGraphBuilder._normalize_text(v) for v in value.values())
+        if isinstance(value, list):
+            return " ".join(GraphitiGraphBuilder._normalize_text(v) for v in value)
+        return str(value).strip().lower()
+
+    @staticmethod
+    def _split_pascal_case(value: str) -> List[str]:
+        return [part.lower() for part in re.findall(r"[A-Z][a-z0-9]*", value or "")]
+
+    @staticmethod
+    def _project_for_graph(graph_id: str):
+        for project in ProjectManager.list_projects(limit=500):
+            if project.graph_id == graph_id:
+                return project
+        return None
+
+    def _derive_entity_type(
+        self,
+        entity,
+        ontology_entity_types: List[Dict[str, Any]],
+    ) -> str:
+        explicit_keys = [
+            "entity_type",
+            "type",
+            "category",
+            "classification",
+            "kind",
+            "persona_type",
+        ]
+        attributes = entity.attributes or {}
+        labels = entity.labels or []
+        label_candidates = [label for label in labels if label not in ["Entity", "Node"]]
+        valid_type_names = {
+            str(spec.get("name", "")).strip(): spec for spec in ontology_entity_types if spec.get("name")
+        }
+        lowered_name_map = {name.lower(): name for name in valid_type_names}
+
+        for key in explicit_keys:
+            raw_value = attributes.get(key)
+            if not raw_value:
+                continue
+            normalized_value = str(raw_value).strip().lower()
+            if normalized_value in lowered_name_map:
+                return lowered_name_map[normalized_value]
+
+        for label in label_candidates:
+            if label in valid_type_names:
+                return label
+
+        haystack = " ".join(
+            filter(
+                None,
+                [
+                    self._normalize_text(entity.name),
+                    self._normalize_text(entity.summary),
+                    self._normalize_text(attributes),
+                ],
+            )
+        )
+        attr_keys = {str(key).strip().lower() for key, value in attributes.items() if value not in [None, "", []]}
+
+        best_name = None
+        best_score = 0
+        for spec in ontology_entity_types:
+            name = str(spec.get("name", "")).strip()
+            if not name:
+                continue
+
+            score = 0
+            attr_names = {
+                str(attr.get("name", "")).strip().lower()
+                for attr in spec.get("attributes", [])
+                if attr.get("name")
+            }
+            if attr_names:
+                score += len(attr_keys.intersection(attr_names)) * 3
+
+            for example in spec.get("examples", []) or []:
+                example_text = self._normalize_text(example)
+                if example_text and (example_text in haystack or haystack in example_text):
+                    score += 5
+
+            type_tokens = self._split_pascal_case(name)
+            if type_tokens and all(token in haystack for token in type_tokens):
+                score += 3
+            elif type_tokens and any(token in haystack for token in type_tokens):
+                score += 1
+
+            description = self._normalize_text(spec.get("description"))
+            if description:
+                desc_tokens = [token for token in re.findall(r"[a-zA-Z]{4,}", description)[:6]]
+                overlap = sum(1 for token in desc_tokens if token.lower() in haystack)
+                score += overlap
+
+            if score > best_score:
+                best_name = name
+                best_score = score
+
+        if best_name and best_score > 0:
+            return best_name
+
+        if "organization" in valid_type_names:
+            org_markers = [
+                "university",
+                "company",
+                "agency",
+                "media",
+                "hospital",
+                "school",
+                "platform",
+                "foundation",
+                "association",
+                "group",
+                "institut",
+                "corp",
+                "inc",
+                "ltd",
+            ]
+            if any(marker in haystack for marker in org_markers):
+                return "Organization"
+
+        if "person" in lowered_name_map:
+            return lowered_name_map["person"]
+        if "organization" in lowered_name_map:
+            return lowered_name_map["organization"]
+
+        return entity.get_entity_type() or "Entity"
 
     def create_graph(self, name: str) -> str:
         """
@@ -157,11 +292,14 @@ class GraphitiGraphBuilder:
 
         entities = self._backend.get_entities(graph_id=graph_id)
         edges = self._backend.get_edges(graph_id=graph_id)
+        project = self._project_for_graph(graph_id)
+        ontology_entity_types = ((project.ontology or {}).get("entity_types", []) if project else [])
 
         # Serializar nodos desde EntityNode objects
         nodes_data = []
-        entity_types = set()
         for entity in entities:
+            entity_type = self._derive_entity_type(entity, ontology_entity_types)
+            entity.entity_type = entity_type
             nodes_data.append(
                 {
                     "uuid": entity.uuid,
@@ -169,12 +307,10 @@ class GraphitiGraphBuilder:
                     "labels": entity.labels or [],
                     "summary": entity.summary or "",
                     "attributes": entity.attributes or {},
+                    "entity_type": entity_type,
                     "created_at": None,
                 }
             )
-            for label in entity.labels:
-                if label not in ["Entity", "Node"]:
-                    entity_types.add(label)
 
         # Serializar bordes desde dicts
         edges_data = [

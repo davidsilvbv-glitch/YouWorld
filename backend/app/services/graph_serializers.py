@@ -28,6 +28,7 @@ def serialize_nodes(nodes_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
                 "labels": n.get("labels") or [],
                 "summary": n.get("summary") or "",
                 "attributes": n.get("attributes") or {},
+                "entity_type": n.get("entity_type") or "",
                 "created_at": created,
             }
         )
