@@ -299,16 +299,20 @@ watch(() => props.systemLogs.length, () => {
 <style scoped>
 .workbench-panel {
   height: 100%;
+  min-height: 0;
   background-color: #FAFAFA;
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .scroll-container {
-  flex: 1;
-  overflow-y: auto;
+  flex: 0 0 auto;
+  min-height: auto;
+  overflow: visible;
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -732,6 +736,15 @@ watch(() => props.systemLogs.length, () => {
 .scroll-container {
   padding: 0 0 10px;
   gap: 14px;
+}
+
+.workbench-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.workbench-panel::-webkit-scrollbar-thumb {
+  background: rgba(119, 221, 213, 0.18);
+  border-radius: 999px;
 }
 
 .step-card {
