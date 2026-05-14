@@ -13,13 +13,16 @@
         Cuando crees un mundo aparecerá aquí.
       </div>
       <div v-else class="sidebar-list">
-        <button
+        <div
           v-for="project in projects"
           :key="project.project_id"
           class="sidebar-item"
           :class="{ active: activeProjectId === project.project_id }"
-          @click="openProject(project.project_id)"
         >
+          <button
+            class="sidebar-item-main"
+            @click="openProject(project.project_id)"
+          >
           <span class="sidebar-item-name">{{ project.name || 'Proyecto sin nombre' }}</span>
           <span class="sidebar-item-meta">
             <span class="sidebar-status" :class="statusClass(project.status)">
@@ -27,7 +30,16 @@
             </span>
             <span>{{ formatDate(project.updated_at || project.created_at) }}</span>
           </span>
-        </button>
+          </button>
+          <button
+            class="sidebar-delete-btn"
+            :disabled="deletingProjectId === project.project_id"
+            @click.stop="removeProject(project)"
+            :title="deletingProjectId === project.project_id ? 'Eliminando...' : 'Eliminar proyecto'"
+          >
+            {{ deletingProjectId === project.project_id ? '…' : '×' }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -52,7 +64,7 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { listProjects } from '../api/graph'
+import { deleteProject, listProjects } from '../api/graph'
 import { useAuthSession } from '../store/authSession'
 
 const props = defineProps({
@@ -68,6 +80,7 @@ const { state, isAuthenticated } = useAuthSession()
 
 const loading = ref(false)
 const projects = ref([])
+const deletingProjectId = ref(null)
 
 const activeProjectId = computed(() => {
   if (route.name === 'Process') return route.params.projectId
@@ -148,6 +161,28 @@ const handleProjectsChanged = () => {
   fetchProjects()
 }
 
+const removeProject = async (project) => {
+  const accepted = window.confirm(`Eliminar "${project.name || 'Proyecto sin nombre'}"?`)
+  if (!accepted) return
+
+  deletingProjectId.value = project.project_id
+  try {
+    await deleteProject(project.project_id)
+    localStorage.removeItem(`youworld:last-project-route:${project.project_id}`)
+    projects.value = projects.value.filter(item => item.project_id !== project.project_id)
+    window.dispatchEvent(new CustomEvent('youworld:projects-changed'))
+
+    if (activeProjectId.value === project.project_id) {
+      router.push('/')
+    }
+  } catch (error) {
+    console.warn('Could not delete project:', error)
+    window.alert('No se pudo eliminar el proyecto.')
+  } finally {
+    deletingProjectId.value = null
+  }
+}
+
 watch(
   () => state.user?.user_id,
   () => {
@@ -208,7 +243,7 @@ onBeforeUnmount(() => {
 
 .sidebar-brand,
 .sidebar-new-btn,
-.sidebar-item {
+.sidebar-item-main {
   border: 0;
   background: transparent;
   cursor: pointer;
@@ -269,14 +304,25 @@ onBeforeUnmount(() => {
 }
 
 .sidebar-item {
+  position: relative;
   display: grid;
-  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
   width: 100%;
-  padding: 14px 14px 13px;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.035);
   color: rgba(245, 255, 252, 0.88);
   transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.sidebar-item-main {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 12px 13px 14px;
+  color: inherit;
+  border-radius: 16px 0 0 16px;
+  border: 0;
 }
 
 .sidebar-item:hover {
@@ -287,6 +333,29 @@ onBeforeUnmount(() => {
 .sidebar-item.active {
   background: rgba(119, 221, 213, 0.16);
   box-shadow: inset 0 0 0 1px rgba(119, 221, 213, 0.2);
+}
+
+.sidebar-delete-btn {
+  width: 38px;
+  border: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0 16px 16px 0;
+  background: transparent;
+  color: rgba(255, 180, 180, 0.8);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-delete-btn:hover:not(:disabled) {
+  background: rgba(255, 120, 120, 0.12);
+  color: #ffd4d4;
+}
+
+.sidebar-delete-btn:disabled {
+  cursor: wait;
+  opacity: 0.65;
 }
 
 .sidebar-item-name {

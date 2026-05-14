@@ -76,3 +76,10 @@ export function listProjects(limit = 50) {
     params: { limit }
   })
 }
+
+export function deleteProject(projectId) {
+  return service({
+    url: `/api/graph/project/${projectId}`,
+    method: 'delete'
+  })
+}

@@ -101,10 +101,10 @@ onMounted(() => {
 }
 
 .sidebar-toggle {
-  position: absolute;
+  position: fixed;
   top: 96px;
-  right: -14px;
-  z-index: 30;
+  left: 262px;
+  z-index: 100;
   width: 32px;
   height: 68px;
   border: 0;
@@ -125,7 +125,7 @@ onMounted(() => {
 }
 
 .sidebar-toggle.collapsed {
-  right: 10px;
+  left: 0;
 }
 
 .sidebar-toggle-icon {
