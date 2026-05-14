@@ -2971,3 +2971,63 @@ onUnmounted(() => {
 }
 </style>
 
+<style>
+/* Remove legacy square wrapper lines and bright inner blocks */
+.scroll-container,
+.step-card,
+.step-card.active,
+.step-card.completed,
+.config-block,
+.profiles-preview,
+.stats-grid,
+.timeline-content,
+.range-wrapper,
+.system-logs,
+.config-detail-panel {
+  outline: none !important;
+}
+
+.step-card,
+.step-card.active,
+.step-card.completed,
+.config-block,
+.profiles-preview,
+.stats-grid,
+.timeline-content,
+.range-wrapper,
+.config-detail-panel {
+  box-shadow: none !important;
+}
+
+.config-block,
+.profiles-preview,
+.stats-grid,
+.timeline-content,
+.range-wrapper,
+.narrative-box,
+.auto-info-card,
+.platform-card,
+.reasoning-item,
+.agent-card,
+.config-item,
+.period-item {
+  background: rgba(255, 255, 255, 0.035) !important;
+}
+
+.config-block,
+.profiles-preview,
+.stats-grid,
+.range-wrapper {
+  border: 0 !important;
+}
+
+.step-card {
+  overflow: hidden;
+}
+
+.system-logs {
+  border-top: 0 !important;
+  box-shadow: none !important;
+}
+</style>
+

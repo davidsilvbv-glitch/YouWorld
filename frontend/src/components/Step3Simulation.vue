@@ -1267,3 +1267,25 @@ onUnmounted(() => {
   margin-right: 6px;
 }
 </style>
+
+<style>
+/* Remove square borders from legacy blocks */
+.quoted-block,
+.repost-content,
+.search-query,
+.system-logs {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.quoted-block,
+.repost-content,
+.search-query {
+  border: 0 !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.system-logs {
+  border-top: 0 !important;
+}
+</style>

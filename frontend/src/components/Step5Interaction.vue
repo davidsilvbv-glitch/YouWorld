@@ -2705,6 +2705,62 @@ watch(() => props.simulationId, (newId) => {
 </style>
 
 <style>
+/* Remove square wrapper lines in interaction stage */
+.left-panel.report-style,
+.report-content-wrapper,
+.action-bar,
+.report-agent-tools-card,
+.agent-profile-card,
+.chat-messages,
+.chat-input-area,
+.dropdown-menu,
+.survey-results,
+.result-card,
+.agent-checkbox,
+.survey-input,
+.chat-input,
+.tools-card-body,
+.profile-card-body {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.left-panel.report-style,
+.report-content-wrapper,
+.action-bar,
+.report-agent-tools-card,
+.agent-profile-card,
+.chat-messages,
+.chat-input-area,
+.dropdown-menu,
+.survey-results,
+.result-card,
+.agent-checkbox,
+.survey-input,
+.chat-input,
+.tools-card-body,
+.profile-card-body {
+  border: 0 !important;
+}
+
+.action-bar,
+.report-agent-tools-card,
+.agent-profile-card,
+.chat-messages,
+.chat-input-area,
+.dropdown-menu,
+.survey-results,
+.result-card,
+.agent-checkbox,
+.survey-input,
+.chat-input,
+.tools-card-body,
+.profile-card-body {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+</style>
+
+<style>
 /* English locale: smaller report title */
 html[lang="en"] .report-header-block .main-title {
   font-size: 28px;

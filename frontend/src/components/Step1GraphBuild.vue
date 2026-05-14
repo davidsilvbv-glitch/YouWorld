@@ -990,3 +990,35 @@ watch(() => props.systemLogs.length, () => {
   color: rgba(235, 255, 251, 0.74);
 }
 </style>
+
+<style>
+/* Remove legacy square wrapper lines */
+.scroll-container {
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.step-card,
+.step-card.active,
+.step-card.completed,
+.tags-container,
+.stats-grid,
+.system-logs,
+.ontology-detail-overlay {
+  outline: none !important;
+}
+
+.step-card,
+.step-card.active,
+.step-card.completed,
+.tags-container,
+.stats-grid {
+  box-shadow: none !important;
+}
+
+.system-logs {
+  border-top: 0 !important;
+  box-shadow: none !important;
+}
+</style>

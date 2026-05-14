@@ -5151,3 +5151,45 @@ html[lang="en"] .report-header-block .main-title {
   font-size: 28px;
 }
 </style>
+
+<style>
+/* Remove square wrapper lines in report stage */
+.left-panel.report-style,
+.report-content-wrapper,
+.timeline-content,
+.result-wrapper,
+.console-logs {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.left-panel.report-style,
+.report-content-wrapper,
+.timeline-content,
+.result-wrapper {
+  border: 0 !important;
+}
+
+.timeline-content,
+.result-wrapper,
+:deep(.quick-search-display .fact-item),
+:deep(.quick-search-display .edge-item),
+:deep(.quick-search-display .node-tag),
+:deep(.quick-search-display .edge-source),
+:deep(.quick-search-display .edge-target) {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+:deep(.quick-search-display .fact-item),
+:deep(.quick-search-display .edge-item),
+:deep(.quick-search-display .node-tag),
+:deep(.quick-search-display .edge-source),
+:deep(.quick-search-display .edge-target) {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.console-logs {
+  border-top: 0 !important;
+}
+</style>
