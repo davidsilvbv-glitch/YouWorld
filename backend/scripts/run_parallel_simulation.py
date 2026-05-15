@@ -89,6 +89,7 @@ from typing import Dict, Any, List, Optional, Tuple
 PARALLEL_STARTUP_STAGGER_SECONDS = float(
     os.environ.get("PARALLEL_STARTUP_STAGGER_SECONDS", "8")
 )
+OASIS_LLM_SEMAPHORE = int(os.environ.get("OASIS_LLM_SEMAPHORE", "4"))
 
 
 # Global variable: for signal handling
@@ -1266,7 +1267,7 @@ async def run_twitter_simulation(
         agent_graph=result.agent_graph,
         platform=oasis.DefaultPlatformType.TWITTER,
         database_path=db_path,
-        semaphore=30,  # Limitar maximo de solicitudes LLM concurrentes para evitar sobrecarga de API
+        semaphore=OASIS_LLM_SEMAPHORE,
     )
 
     await result.env.reset()
@@ -1464,7 +1465,7 @@ async def run_reddit_simulation(
         agent_graph=result.agent_graph,
         platform=oasis.DefaultPlatformType.REDDIT,
         database_path=db_path,
-        semaphore=30,  # Limitar maximo de solicitudes LLM concurrentes para evitar sobrecarga de API
+        semaphore=OASIS_LLM_SEMAPHORE,
     )
 
     await result.env.reset()
