@@ -473,10 +473,12 @@ let statusTimer = null
 let detailTimer = null
 
 const startStatusPolling = () => {
+  fetchRunStatus()
   statusTimer = setInterval(fetchRunStatus, 2000)
 }
 
 const startDetailPolling = () => {
+  fetchRunStatusDetail()
   detailTimer = setInterval(fetchRunStatusDetail, 3000)
 }
 
@@ -505,6 +507,15 @@ const fetchRunStatus = async () => {
       const data = res.data
       
       runStatus.value = data
+
+      if (data.runner_status === 'failed') {
+        const backendError = data.error || t('common.unknownError')
+        addLog(t('log.startFailed', { error: backendError }))
+        startError.value = backendError
+        stopPolling()
+        emit('update-status', 'error')
+        return
+      }
       
       // Detectar cambios de rondas en cada plataforma y generar logs
       if (data.twitter_current_round > prevTwitterRound.value) {
@@ -1655,6 +1666,7 @@ onUnmounted(() => {
 
 .system-logs {
   border-top: 0 !important;
+  border-color: transparent !important;
 }
 
 /* Match phase one palette and system panel */
@@ -1664,19 +1676,17 @@ onUnmounted(() => {
 .timeline-stats {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035)) !important;
   border: 0 !important;
-  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08) !important;
+  box-shadow: none !important;
 }
 
 .control-bar {
-  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08) !important;
+  box-shadow: none !important;
 }
 
 .platform-status.active,
 .platform-status.completed {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035)) !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(119, 221, 213, 0.16),
-    0 18px 60px rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.12) !important;
 }
 
 .platform-name,

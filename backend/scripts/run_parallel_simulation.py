@@ -99,6 +99,8 @@ _project_root = os.path.abspath(os.path.join(_backend_dir, ".."))
 sys.path.insert(0, _scripts_dir)
 sys.path.insert(0, _backend_dir)
 
+STEP_TIMEOUT_SECONDS = float(os.environ.get("SIMULATION_STEP_TIMEOUT_SECONDS", "240"))
+
 # Load project root .env file (contains LLM_API_KEY etc. config)
 from dotenv import load_dotenv
 
@@ -1284,7 +1286,12 @@ async def run_twitter_simulation(
                 pass
 
         if initial_actions:
-            await result.env.step(initial_actions)
+            try:
+                await asyncio.wait_for(result.env.step(initial_actions), timeout=STEP_TIMEOUT_SECONDS)
+            except asyncio.TimeoutError as exc:
+                raise RuntimeError(
+                    f"Timeout ejecutando posts iniciales de Twitter tras {STEP_TIMEOUT_SECONDS:.0f}s"
+                ) from exc
             log_info(f"Publicados {len(initial_actions)} posts iniciales")
 
     # Registrar fin de round 0
@@ -1336,7 +1343,12 @@ async def run_twitter_simulation(
             continue
 
         actions = {agent: LLMAction() for _, agent in active_agents}
-        await result.env.step(actions)
+        try:
+            await asyncio.wait_for(result.env.step(actions), timeout=STEP_TIMEOUT_SECONDS)
+        except asyncio.TimeoutError as exc:
+            raise RuntimeError(
+                f"Timeout ejecutando ronda {round_num + 1} de Twitter tras {STEP_TIMEOUT_SECONDS:.0f}s"
+            ) from exc
 
         # Obtener y registrar acciones realmente ejecutadas de la base de datos
         actual_actions, last_rowid = fetch_new_actions_from_db(
@@ -1493,7 +1505,12 @@ async def run_reddit_simulation(
                 pass
 
         if initial_actions:
-            await result.env.step(initial_actions)
+            try:
+                await asyncio.wait_for(result.env.step(initial_actions), timeout=STEP_TIMEOUT_SECONDS)
+            except asyncio.TimeoutError as exc:
+                raise RuntimeError(
+                    f"Timeout ejecutando posts iniciales de Reddit tras {STEP_TIMEOUT_SECONDS:.0f}s"
+                ) from exc
             log_info(f"Publicados {len(initial_actions)} posts iniciales")
 
     # Registrar fin de round 0
@@ -1545,7 +1562,12 @@ async def run_reddit_simulation(
             continue
 
         actions = {agent: LLMAction() for _, agent in active_agents}
-        await result.env.step(actions)
+        try:
+            await asyncio.wait_for(result.env.step(actions), timeout=STEP_TIMEOUT_SECONDS)
+        except asyncio.TimeoutError as exc:
+            raise RuntimeError(
+                f"Timeout ejecutando ronda {round_num + 1} de Reddit tras {STEP_TIMEOUT_SECONDS:.0f}s"
+            ) from exc
 
         # Obtener y registrar acciones realmente ejecutadas de la base de datos
         actual_actions, last_rowid = fetch_new_actions_from_db(
