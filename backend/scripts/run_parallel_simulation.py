@@ -32,6 +32,14 @@ Log structure:
 import sys
 import os
 
+os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
+os.environ.setdefault("VECLIB_MAXIMUM_THREADS", "1")
+os.environ.setdefault("MALLOC_ARENA_MAX", "2")
+
 if sys.platform == "win32":
     # Set Python default I/O encoding to UTF-8
     # This affects all open() calls without specified encoding
@@ -192,6 +200,15 @@ except ImportError as e:
     print(f"Error: Faltan dependencias {e}")
     print("Por favor instale primero: pip install oasis-ai camel-ai")
     sys.exit(1)
+
+try:
+    import torch
+
+    torch.set_num_threads(1)
+    if hasattr(torch, "set_num_interop_threads"):
+        torch.set_num_interop_threads(1)
+except Exception:
+    pass
 
 
 # Twitter acciones disponibles (no incluye INTERVIEW, INTERVIEW solo se puede activar manualmente a traves de ManualAction)
