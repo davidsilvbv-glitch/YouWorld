@@ -233,7 +233,22 @@
     "forceStopSuccess": "Simulation force stopped",
     "forceStopFailed": "Force stop failed: {error}",
     "startGenerateReportBtn": "Generate Report",
-    "generatingReportBtn": "Starting..."
+    "generatingReportBtn": "Starting...",
+    "platformInfoPlaza": "Info Plaza",
+    "platformTopicCommunity": "Topic Community",
+    "roundShort": "ROUND",
+    "timeShort": "TIME",
+    "actsShort": "ACTS",
+    "availableActions": "Available Actions",
+    "totalEvents": "TOTAL EVENTS",
+    "repostedFrom": "Reposted from",
+    "likedPostOf": "Liked the post of",
+    "replyToPost": "Reply to post",
+    "searchQuery": "Search Query",
+    "followedUser": "Followed",
+    "upvotedPost": "Upvoted Post",
+    "downvotedPost": "Downvoted Post",
+    "actionSkipped": "Action Skipped"
   },
   "step4": {
     "generatingSection": "Generating {title}...",
@@ -745,5 +760,8 @@
     "llmSelectAgentFailed": "LLM agent selection failed, using default selection: {error}",
     "generateInterviewQuestionsFailed": "Failed to generate interview questions: {error}",
     "generateInterviewSummaryFailed": "Failed to generate interview summary: {error}"
+  },
+  "mainView": {
+    "systemDashboard": "SYSTEM PANEL"
   }
 }

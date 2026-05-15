@@ -242,7 +242,22 @@
     "forceStopFailed": "Fallo al forzar detención: {error}",
     "startGenerateReportBtn": "Generar informe",
     "generatingReportBtn": "Iniciando...",
-    "waitingForAgentActions": "Esperando acciones del agente..."
+    "waitingForAgentActions": "Esperando acciones del agente...",
+    "platformInfoPlaza": "Plaza informativa",
+    "platformTopicCommunity": "Comunidad tem?tica",
+    "roundShort": "RONDA",
+    "timeShort": "TIEMPO",
+    "actsShort": "ACC.",
+    "availableActions": "Acciones disponibles",
+    "totalEvents": "EVENTOS TOTALES",
+    "repostedFrom": "Republicado desde",
+    "likedPostOf": "Le gust? la publicaci?n de",
+    "replyToPost": "Respuesta a la publicaci?n",
+    "searchQuery": "Consulta de b?squeda",
+    "followedUser": "Sigui? a",
+    "upvotedPost": "Vot? positivo",
+    "downvotedPost": "Vot? negativo",
+    "actionSkipped": "Acci?n omitida"
   },
   "step4": {
     "generatingSection": "Generando {title}...",

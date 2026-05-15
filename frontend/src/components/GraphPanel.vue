@@ -31,7 +31,7 @@
         </div>
         
         <!-- Indicador después de que termina la simulación -->
-        <div v-if="showSimulationFinishedHint" class="graph-building-hint finished-hint">
+        <div v-if="showSimulationFinishedHint && currentPhase !== 3" class="graph-building-hint finished-hint">
           <div class="hint-icon-wrapper">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hint-icon">
               <circle cx="12" cy="12" r="10"></circle>
