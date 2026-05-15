@@ -1285,6 +1285,7 @@ async def run_twitter_simulation(
         platform=oasis.DefaultPlatformType.TWITTER,
         database_path=db_path,
         semaphore=OASIS_LLM_SEMAPHORE,
+        recsys_type="twitter",
     )
 
     await result.env.reset()

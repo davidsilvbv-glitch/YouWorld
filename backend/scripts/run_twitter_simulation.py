@@ -610,6 +610,7 @@ class TwitterSimulationRunner:
             platform=oasis.DefaultPlatformType.TWITTER,
             database_path=db_path,
             semaphore=30,  # Limitar maximo de solicitudes LLM concurrentes, prevenir sobrecarga de API
+            recsys_type="twitter",
         )
 
         await self.env.reset()
