@@ -3031,6 +3031,156 @@ onUnmounted(() => {
   border-top: 0 !important;
   box-shadow: none !important;
 }
+
+/* Match phase one palette and surfaces */
+.step-card,
+.step-card.active,
+.step-card.completed,
+.info-card,
+.stats-grid,
+.profile-card,
+.config-detail-panel,
+.platform-card,
+.agent-card,
+.narrative-box,
+.topics-section,
+.initial-posts-section,
+.rounds-config-section,
+.auto-info-card,
+.profile-modal,
+.system-logs,
+.config-block,
+.reasoning-item,
+.timeline-content,
+.profiles-preview,
+.config-item,
+.period-item,
+.range-wrapper {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035)) !important;
+  border: 0 !important;
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08) !important;
+}
+
+.step-card.active {
+  box-shadow:
+    inset 0 0 0 1px rgba(119, 221, 213, 0.32),
+    0 18px 60px rgba(0, 0, 0, 0.2) !important;
+}
+
+.step-card.completed {
+  box-shadow: inset 0 0 0 1px rgba(119, 221, 213, 0.16) !important;
+}
+
+.stats-grid,
+.profiles-preview,
+.config-block,
+.platform-card,
+.agent-card,
+.narrative-box,
+.reasoning-item,
+.timeline-content,
+.config-item,
+.period-item,
+.range-wrapper {
+  background: rgba(255, 255, 255, 0.045) !important;
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.07) !important;
+}
+
+.description,
+.profile-bio,
+.info-value,
+.config-item-value,
+.period-hours,
+.param-value,
+.narrative-text,
+.post-text,
+.section-bio,
+.section-persona,
+.log-msg,
+.log-time,
+.modal-profession,
+.profile-profession,
+.reasoning-text,
+.auto-desc p {
+  color: rgba(235, 255, 251, 0.64) !important;
+}
+
+.step-title,
+.profile-realname,
+.config-block-title,
+.section-title,
+.modal-realname,
+.val-num,
+.stat-value,
+.agent-name,
+.platform-name,
+.post-role,
+.post-id {
+  color: rgba(244, 255, 251, 0.92) !important;
+}
+
+.step-num,
+.api-note,
+.preview-title,
+.stat-label,
+.info-label,
+.config-item-label,
+.period-label,
+.param-label,
+.box-label,
+.section-desc,
+.modal-username,
+.log-title,
+.log-id,
+.profile-username,
+.section-label {
+  color: rgba(235, 255, 251, 0.46) !important;
+}
+
+.badge.processing,
+.badge.accent,
+.topic-tag,
+.hot-topic-tag,
+.topic-item,
+.duration-badge {
+  background: rgba(119, 221, 213, 0.18) !important;
+  color: #77ddd5 !important;
+}
+
+.badge.success {
+  background: rgba(119, 221, 213, 0.14) !important;
+  color: #a7eee8 !important;
+}
+
+.badge.pending,
+.profile-profession,
+.agent-type {
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: rgba(235, 255, 251, 0.46) !important;
+}
+
+.action-btn.primary {
+  background: linear-gradient(90deg, #78ddd5, #a7eee8) !important;
+  color: #06100f !important;
+  border: 0 !important;
+}
+
+.action-btn.secondary,
+.system-log-button {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: rgba(244, 255, 251, 0.9) !important;
+  border: 1px solid rgba(235, 255, 251, 0.08) !important;
+}
+
+.system-log-button:hover {
+  background: rgba(119, 221, 213, 0.14) !important;
+}
+
+.system-logs {
+  background: rgba(0, 0, 0, 0.35) !important;
+  border-top: 1px solid rgba(235, 255, 251, 0.08) !important;
+  box-shadow: none !important;
+}
 </style>
 
 <style>

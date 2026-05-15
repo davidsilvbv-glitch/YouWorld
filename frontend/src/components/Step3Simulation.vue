@@ -1656,4 +1656,97 @@ onUnmounted(() => {
 .system-logs {
   border-top: 0 !important;
 }
+
+/* Match phase one palette and system panel */
+.control-bar,
+.timeline-card,
+.platform-status,
+.timeline-stats {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035)) !important;
+  border: 0 !important;
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08) !important;
+}
+
+.control-bar {
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08) !important;
+}
+
+.platform-status.active,
+.platform-status.completed {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(119, 221, 213, 0.16),
+    0 18px 60px rgba(0, 0, 0, 0.12) !important;
+}
+
+.platform-name,
+.total-count,
+.agent-name,
+.content-text.main-text,
+.timeline-card .content-text,
+.timeline-card .quote-text,
+.timeline-card .liked-content,
+.timeline-card .voted-content {
+  color: rgba(244, 255, 251, 0.92) !important;
+}
+
+.stat-label,
+.timeline-stats,
+.quote-header,
+.repost-info,
+.like-info,
+.search-info,
+.follow-info,
+.vote-info,
+.idle-info,
+.comment-context,
+.card-footer,
+.log-title,
+.log-id,
+.stat-total,
+.stat-unit,
+.breakdown-divider,
+.log-time {
+  color: rgba(235, 255, 251, 0.46) !important;
+}
+
+.stat-value,
+.content-text,
+.quote-text,
+.repost-content,
+.liked-content,
+.search-query,
+.log-msg {
+  color: rgba(235, 255, 251, 0.64) !important;
+}
+
+.action-btn.primary {
+  background: linear-gradient(90deg, #78ddd5, #a7eee8) !important;
+  color: #06100f !important;
+  border: 0 !important;
+}
+
+.action-btn.primary:hover:not(:disabled) {
+  background: linear-gradient(90deg, #78ddd5, #a7eee8) !important;
+  filter: brightness(1.03);
+}
+
+.badge-post,
+.badge-comment,
+.badge-action,
+.badge-meta,
+.badge-idle {
+  background: rgba(255, 255, 255, 0.065) !important;
+  color: rgba(235, 255, 251, 0.72) !important;
+  border-color: transparent !important;
+}
+
+.system-logs {
+  background: rgba(0, 0, 0, 0.35) !important;
+  border-top: 1px solid rgba(235, 255, 251, 0.08) !important;
+}
+
+.system-logs.collapsed {
+  background: rgba(0, 0, 0, 0.18) !important;
+}
 </style>
