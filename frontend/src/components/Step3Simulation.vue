@@ -1275,13 +1275,10 @@ onUnmounted(() => {
 
 /* --- YouWorld Dark Overrides --- */
 .simulation-panel {
-  background:
-    radial-gradient(circle at 78% 12%, rgba(91, 203, 190, 0.14), transparent 28%),
-    radial-gradient(circle at 12% 18%, rgba(77, 35, 111, 0.24), transparent 34%),
-    linear-gradient(145deg, #0b0f12 0%, #0d1317 40%, #110b18 100%);
+  background: transparent;
   color: #edf6f2;
   gap: 14px;
-  padding: 10px 0 0;
+  padding: 0;
 }
 
 .control-bar {
@@ -1504,20 +1501,19 @@ onUnmounted(() => {
 .system-logs {
   margin: 0 18px 14px;
   padding: 0;
-  border-radius: 24px;
-  border: 1px solid rgba(110, 208, 200, 0.12);
-  background: linear-gradient(145deg, rgba(11, 14, 20, 0.98), rgba(16, 10, 24, 0.96));
-  overflow: hidden;
+  border: 0;
+  background: transparent;
+  overflow: visible;
 }
 
 .log-header {
   margin: 0;
-  padding: 14px 18px;
+  padding: 16px 6px 10px;
   border-bottom: 0;
   cursor: pointer;
   align-items: center;
   gap: 12px;
-  min-height: 64px;
+  min-height: auto;
 }
 
 .log-header-main {
@@ -1529,16 +1525,17 @@ onUnmounted(() => {
 }
 
 .log-toggle-btn {
-  width: 32px;
-  height: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.04);
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: #8ea5a1;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
 }
 
 .log-content {
@@ -1550,12 +1547,29 @@ onUnmounted(() => {
   display: none;
 }
 
-.system-logs.collapsed {
-  margin-bottom: 10px;
+.system-logs:not(.collapsed) .log-header {
+  padding: 14px 18px;
+  min-height: 64px;
+  border: 1px solid rgba(110, 208, 200, 0.12);
+  border-bottom: 0;
+  border-radius: 24px 24px 0 0;
+  background: linear-gradient(145deg, rgba(11, 14, 20, 0.98), rgba(16, 10, 24, 0.96));
+}
+
+.system-logs:not(.collapsed) .log-content {
+  border: 1px solid rgba(110, 208, 200, 0.12);
+  border-top: 0;
+  border-radius: 0 0 24px 24px;
+  background: linear-gradient(145deg, rgba(11, 14, 20, 0.98), rgba(16, 10, 24, 0.96));
 }
 
 .system-logs.collapsed .log-header {
-  min-height: 72px;
+  padding: 18px 6px 8px;
+}
+
+.system-logs.collapsed .log-title,
+.system-logs.collapsed .log-id {
+  color: #8ea5a1;
 }
 
 @media (max-width: 1200px) {
