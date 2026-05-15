@@ -9,7 +9,7 @@
             <svg class="platform-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
-            <span class="platform-name">Info Plaza</span>
+            <span class="platform-name">{{ $t('step3.platformInfoPlaza') }}</span>
             <span v-if="runStatus.twitter_completed" class="status-badge">
               <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3">
                 <polyline points="20 6 9 17 4 12"></polyline>
@@ -18,21 +18,21 @@
           </div>
           <div class="platform-stats">
             <span class="stat">
-              <span class="stat-label">ROUND</span>
+              <span class="stat-label">{{ $t('step3.roundShort') }}</span>
               <span class="stat-value mono">{{ runStatus.twitter_current_round || 0 }}<span class="stat-total">/{{ runStatus.total_rounds || maxRounds || '-' }}</span></span>
             </span>
             <span class="stat">
-              <span class="stat-label">TIME</span>
+              <span class="stat-label">{{ $t('step3.timeShort') }}</span>
               <span class="stat-value mono">{{ twitterElapsedTime }}</span>
             </span>
             <span class="stat">
-              <span class="stat-label">ACTS</span>
+              <span class="stat-label">{{ $t('step3.actsShort') }}</span>
               <span class="stat-value mono">{{ runStatus.twitter_actions_count || 0 }}</span>
             </span>
           </div>
           <!-- sugerencia de acciones disponibles -->
           <div class="actions-tooltip">
-            <div class="tooltip-title">Available Actions</div>
+            <div class="tooltip-title">{{ $t('step3.availableActions') }}</div>
             <div class="tooltip-actions">
               <span class="tooltip-action">POST</span>
               <span class="tooltip-action">LIKE</span>
@@ -50,7 +50,7 @@
             <svg class="platform-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
             </svg>
-            <span class="platform-name">Topic Community</span>
+            <span class="platform-name">{{ $t('step3.platformTopicCommunity') }}</span>
             <span v-if="runStatus.reddit_completed" class="status-badge">
               <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3">
                 <polyline points="20 6 9 17 4 12"></polyline>
@@ -59,21 +59,21 @@
           </div>
           <div class="platform-stats">
             <span class="stat">
-              <span class="stat-label">ROUND</span>
+              <span class="stat-label">{{ $t('step3.roundShort') }}</span>
               <span class="stat-value mono">{{ runStatus.reddit_current_round || 0 }}<span class="stat-total">/{{ runStatus.total_rounds || maxRounds || '-' }}</span></span>
             </span>
             <span class="stat">
-              <span class="stat-label">TIME</span>
+              <span class="stat-label">{{ $t('step3.timeShort') }}</span>
               <span class="stat-value mono">{{ redditElapsedTime }}</span>
             </span>
             <span class="stat">
-              <span class="stat-label">ACTS</span>
+              <span class="stat-label">{{ $t('step3.actsShort') }}</span>
               <span class="stat-value mono">{{ runStatus.reddit_actions_count || 0 }}</span>
             </span>
           </div>
           <!-- sugerencia de acciones disponibles -->
           <div class="actions-tooltip">
-            <div class="tooltip-title">Available Actions</div>
+            <div class="tooltip-title">{{ $t('step3.availableActions') }}</div>
             <div class="tooltip-actions">
               <span class="tooltip-action">POST</span>
               <span class="tooltip-action">COMMENT</span>
@@ -108,7 +108,7 @@
       <!-- Timeline Header -->
       <div class="timeline-header" v-if="allActions.length > 0">
         <div class="timeline-stats">
-          <span class="total-count">TOTAL EVENTS: <span class="mono">{{ allActions.length }}</span></span>
+          <span class="total-count">{{ $t('step3.totalEvents') }}: <span class="mono">{{ allActions.length }}</span></span>
           <span class="platform-breakdown">
             <span class="breakdown-item twitter">
               <svg class="mini-icon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
@@ -182,7 +182,7 @@
                 <template v-if="action.action_type === 'REPOST'">
                   <div class="repost-info">
                     <svg class="icon-small" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
-                    <span class="repost-label">Reposted from @{{ action.action_args?.original_author_name || 'User' }}</span>
+                    <span class="repost-label">{{ $t('step3.repostedFrom') }} @{{ action.action_args?.original_author_name || $t('common.unknown') }}</span>
                   </div>
                   <div v-if="action.action_args?.original_content" class="repost-content">
                     {{ truncateContent(action.action_args.original_content, 200) }}
@@ -193,7 +193,7 @@
                 <template v-if="action.action_type === 'LIKE_POST'">
                   <div class="like-info">
                     <svg class="icon-small filled" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                    <span class="like-label">Liked @{{ action.action_args?.post_author_name || 'User' }}'s post</span>
+                    <span class="like-label">{{ $t('step3.likedPostOf') }} @{{ action.action_args?.post_author_name || $t('common.unknown') }}</span>
                   </div>
                   <div v-if="action.action_args?.post_content" class="liked-content">
                     "{{ truncateContent(action.action_args.post_content, 120) }}"
@@ -207,7 +207,7 @@
                   </div>
                   <div v-if="action.action_args?.post_id" class="comment-context">
                     <svg class="icon-small" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                    <span>Reply to post #{{ action.action_args.post_id }}</span>
+                    <span>{{ $t('step3.replyToPost') }} #{{ action.action_args.post_id }}</span>
                   </div>
                 </template>
 
@@ -215,7 +215,7 @@
                 <template v-if="action.action_type === 'SEARCH_POSTS'">
                   <div class="search-info">
                     <svg class="icon-small" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <span class="search-label">Search Query:</span>
+                    <span class="search-label">{{ $t('step3.searchQuery') }}:</span>
                     <span class="search-query">"{{ action.action_args?.query || '' }}"</span>
                   </div>
                 </template>
@@ -224,7 +224,7 @@
                 <template v-if="action.action_type === 'FOLLOW'">
                   <div class="follow-info">
                     <svg class="icon-small" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
-                    <span class="follow-label">Followed @{{ action.action_args?.target_user || action.action_args?.user_id || 'User' }}</span>
+                    <span class="follow-label">{{ $t('step3.followedUser') }} @{{ action.action_args?.target_user || action.action_args?.user_id || $t('common.unknown') }}</span>
                   </div>
                 </template>
 
@@ -233,7 +233,7 @@
                   <div class="vote-info">
                     <svg v-if="action.action_type === 'UPVOTE_POST'" class="icon-small" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"></polyline></svg>
                     <svg v-else class="icon-small" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    <span class="vote-label">{{ action.action_type === 'UPVOTE_POST' ? 'Upvoted' : 'Downvoted' }} Post</span>
+                    <span class="vote-label">{{ action.action_type === 'UPVOTE_POST' ? $t('step3.upvotedPost') : $t('step3.downvotedPost') }}</span>
                   </div>
                   <div v-if="action.action_args?.post_content" class="voted-content">
                     "{{ truncateContent(action.action_args.post_content, 120) }}"
@@ -244,7 +244,7 @@
                 <template v-if="action.action_type === 'DO_NOTHING'">
                   <div class="idle-info">
                     <svg class="icon-small" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                    <span class="idle-label">Action Skipped</span>
+                    <span class="idle-label">{{ $t('step3.actionSkipped') }}</span>
                   </div>
                 </template>
 
@@ -273,7 +273,7 @@
     <div class="system-logs" :class="{ collapsed: logsCollapsed }">
       <div class="log-header" @click="logsCollapsed = !logsCollapsed">
         <div class="log-header-main">
-          <span class="log-title">{{ $t('mainView.simulationMonitor') }}</span>
+        <span class="log-title">{{ $t('mainView.systemDashboard') }}</span>
           <span class="log-id">{{ simulationId || 'NO_SIMULATION' }}</span>
         </div>
         <button class="log-toggle-btn" type="button" :aria-expanded="(!logsCollapsed).toString()">
@@ -1289,9 +1289,9 @@ onUnmounted(() => {
   margin: 0 18px;
   padding: 16px 18px;
   border-radius: 28px;
-  border: 1px solid rgba(125, 205, 198, 0.18);
+  border: 1px solid rgba(125, 205, 198, 0.12);
   background: linear-gradient(135deg, rgba(20, 28, 36, 0.96), rgba(27, 18, 38, 0.94));
-  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
   align-items: stretch;
   gap: 18px;
 }
@@ -1308,21 +1308,21 @@ onUnmounted(() => {
   gap: 10px;
   padding: 14px 16px;
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   opacity: 1;
   overflow: hidden;
 }
 
 .platform-status.active {
-  border-color: rgba(110, 208, 200, 0.36);
+  border-color: rgba(110, 208, 200, 0.2);
   background: linear-gradient(135deg, rgba(23, 33, 40, 0.98), rgba(21, 27, 37, 0.98));
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
 }
 
 .platform-status.completed {
-  border-color: rgba(110, 208, 200, 0.42);
-  background: linear-gradient(135deg, rgba(19, 35, 33, 0.96), rgba(18, 25, 35, 0.96));
+  border-color: rgba(110, 208, 200, 0.22);
+  background: linear-gradient(135deg, rgba(24, 33, 36, 0.96), rgba(19, 22, 32, 0.96));
 }
 
 .platform-status.twitter .platform-icon,
@@ -1382,13 +1382,14 @@ onUnmounted(() => {
 }
 
 .action-btn.primary {
-  background: linear-gradient(135deg, #67d7cd, #6f96ff);
-  color: #071112;
-  box-shadow: 0 10px 26px rgba(103, 215, 205, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  color: #edf6f2;
+  border: 1px solid rgba(110, 208, 200, 0.18);
+  box-shadow: none;
 }
 
 .action-btn.primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #7ce1d8, #86a8ff);
+  background: rgba(255, 255, 255, 0.09);
 }
 
 .action-btn:disabled {
@@ -1398,8 +1399,8 @@ onUnmounted(() => {
 .main-content-area {
   margin: 0 18px;
   border-radius: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: linear-gradient(145deg, rgba(14, 19, 26, 0.98), rgba(18, 12, 28, 0.96));
+  border: 0;
+  background: transparent;
   overflow-y: auto;
   overflow-x: hidden;
   min-height: 0;
@@ -1407,19 +1408,20 @@ onUnmounted(() => {
 
 .timeline-header {
   top: 0;
-  background: rgba(8, 11, 16, 0.78);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  background: transparent;
+  border-bottom: 0;
+  padding-bottom: 6px;
 }
 
 .timeline-stats {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 999px;
 }
 
 .timeline-feed {
   max-width: 980px;
-  padding: 28px 18px 40px;
+  padding: 12px 18px 40px;
 }
 
 .timeline-axis {
@@ -1450,13 +1452,13 @@ onUnmounted(() => {
   background: linear-gradient(145deg, rgba(21, 28, 36, 0.98), rgba(28, 18, 40, 0.98));
   border-radius: 26px;
   padding: 18px 20px;
-  border: 1px solid rgba(132, 219, 212, 0.12);
-  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(132, 219, 212, 0.08);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.14);
 }
 
 .timeline-card:hover {
-  border-color: rgba(132, 219, 212, 0.24);
-  box-shadow: 0 22px 38px rgba(0, 0, 0, 0.24);
+  border-color: rgba(132, 219, 212, 0.14);
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.18);
 }
 
 .card-header {
@@ -1464,8 +1466,8 @@ onUnmounted(() => {
 }
 
 .avatar-placeholder {
-  background: linear-gradient(135deg, #67d7cd, #6f96ff);
-  color: #071112;
+  background: rgba(111, 150, 255, 0.18);
+  color: #d8e8e4;
 }
 
 .action-badge {
@@ -1478,9 +1480,9 @@ onUnmounted(() => {
 .badge-action,
 .badge-meta,
 .badge-idle {
-  background: rgba(255, 255, 255, 0.05);
-  color: #d8e8e4;
-  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: #cfe0dc;
+  border-color: rgba(255, 255, 255, 0.06);
 }
 
 .quoted-block,
@@ -1503,7 +1505,7 @@ onUnmounted(() => {
   margin: 0 18px 14px;
   padding: 0;
   border-radius: 24px;
-  border: 1px solid rgba(110, 208, 200, 0.18);
+  border: 1px solid rgba(110, 208, 200, 0.12);
   background: linear-gradient(145deg, rgba(11, 14, 20, 0.98), rgba(16, 10, 24, 0.96));
   overflow: hidden;
 }
@@ -1515,6 +1517,7 @@ onUnmounted(() => {
   cursor: pointer;
   align-items: center;
   gap: 12px;
+  min-height: 64px;
 }
 
 .log-header-main {
@@ -1528,7 +1531,7 @@ onUnmounted(() => {
 .log-toggle-btn {
   width: 32px;
   height: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.04);
   color: #8ea5a1;
@@ -1549,6 +1552,10 @@ onUnmounted(() => {
 
 .system-logs.collapsed {
   margin-bottom: 10px;
+}
+
+.system-logs.collapsed .log-header {
+  min-height: 72px;
 }
 
 @media (max-width: 1200px) {
