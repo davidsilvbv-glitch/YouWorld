@@ -271,15 +271,13 @@
 
     <!-- Bottom Info / Logs -->
     <div class="system-logs" :class="{ collapsed: logsCollapsed }">
-      <div class="log-header" @click="logsCollapsed = !logsCollapsed">
-        <div class="log-header-main">
-        <span class="log-title">{{ $t('mainView.systemDashboard') }}</span>
+      <button class="log-header log-toggle" type="button" @click="logsCollapsed = !logsCollapsed">
+        <div class="log-header-left">
+          <span class="log-title">{{ $t('mainView.systemDashboard') }}</span>
           <span class="log-id">{{ simulationId || 'NO_SIMULATION' }}</span>
         </div>
-        <button class="log-toggle-btn" type="button" :aria-expanded="(!logsCollapsed).toString()">
-          <span>{{ logsCollapsed ? '▲' : '▼' }}</span>
-        </button>
-      </div>
+        <span class="log-toggle-icon" :class="{ open: !logsCollapsed }">⌄</span>
+      </button>
       <div v-show="!logsCollapsed" class="log-content" ref="logContent">
         <div class="log-line" v-for="(log, idx) in systemLogs" :key="idx">
           <span class="log-time">{{ log.time }}</span>
@@ -1401,6 +1399,8 @@ onUnmounted(() => {
   overflow-y: auto;
   overflow-x: hidden;
   min-height: 0;
+  padding-right: 8px;
+  scrollbar-gutter: stable;
 }
 
 .timeline-header {
@@ -1411,8 +1411,8 @@ onUnmounted(() => {
 }
 
 .timeline-stats {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 999px;
 }
 
@@ -1446,16 +1446,16 @@ onUnmounted(() => {
 }
 
 .timeline-card {
-  background: linear-gradient(145deg, rgba(21, 28, 36, 0.98), rgba(28, 18, 40, 0.98));
+  background: linear-gradient(145deg, rgba(21, 28, 36, 0.96), rgba(28, 18, 40, 0.94));
   border-radius: 26px;
   padding: 18px 20px;
-  border: 1px solid rgba(132, 219, 212, 0.08);
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.14);
+  border: 1px solid rgba(125, 205, 198, 0.08);
+  box-shadow: none;
 }
 
 .timeline-card:hover {
-  border-color: rgba(132, 219, 212, 0.14);
-  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.18);
+  border-color: rgba(125, 205, 198, 0.12);
+  box-shadow: none;
 }
 
 .card-header {
@@ -1508,39 +1508,46 @@ onUnmounted(() => {
 
 .log-header {
   margin: 0;
-  padding: 16px 6px 10px;
-  border-bottom: 0;
-  cursor: pointer;
+  width: 100%;
+  display: flex;
   align-items: center;
+  padding: 0 0 8px;
+  border: 0;
+  border-bottom: 1px solid rgba(235, 255, 251, 0.08);
+  background: transparent;
+  cursor: pointer;
   gap: 12px;
   min-height: auto;
+  color: rgba(235, 255, 251, 0.46);
 }
 
-.log-header-main {
+.log-toggle {
+  appearance: none;
+}
+
+.log-header-left {
   flex: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
-.log-toggle-btn {
-  width: auto;
-  height: auto;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  color: #8ea5a1;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
+.log-toggle-icon {
+  color: rgba(119, 221, 213, 0.72);
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.log-toggle-icon.open {
+  transform: rotate(180deg);
 }
 
 .log-content {
   height: 170px;
-  padding: 0 18px 16px;
+  padding: 8px 0 0;
 }
 
 .system-logs.collapsed .log-content {
@@ -1548,28 +1555,65 @@ onUnmounted(() => {
 }
 
 .system-logs:not(.collapsed) .log-header {
-  padding: 14px 18px;
-  min-height: 64px;
-  border: 1px solid rgba(110, 208, 200, 0.12);
-  border-bottom: 0;
-  border-radius: 24px 24px 0 0;
-  background: linear-gradient(145deg, rgba(11, 14, 20, 0.98), rgba(16, 10, 24, 0.96));
+  padding: 0 0 10px;
 }
 
 .system-logs:not(.collapsed) .log-content {
-  border: 1px solid rgba(110, 208, 200, 0.12);
-  border-top: 0;
-  border-radius: 0 0 24px 24px;
-  background: linear-gradient(145deg, rgba(11, 14, 20, 0.98), rgba(16, 10, 24, 0.96));
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .system-logs.collapsed .log-header {
-  padding: 18px 6px 8px;
+  padding: 0 0 8px;
 }
 
 .system-logs.collapsed .log-title,
 .system-logs.collapsed .log-id {
   color: #8ea5a1;
+}
+
+.log-title,
+.log-id {
+  color: rgba(235, 255, 251, 0.46);
+}
+
+.log-time {
+  color: rgba(119, 221, 213, 0.52);
+}
+
+.log-msg {
+  color: rgba(235, 255, 251, 0.74);
+}
+
+.quoted-block,
+.repost-content,
+.search-query {
+  background: rgba(255, 255, 255, 0.04);
+  border: 0 !important;
+  border-radius: 18px;
+}
+
+.timeline-feed > .timeline-item,
+.timeline-feed > .waiting-state {
+  margin-inline: auto;
+}
+
+.main-content-area::-webkit-scrollbar {
+  width: 8px;
+}
+
+.main-content-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.main-content-area::-webkit-scrollbar-thumb {
+  background: rgba(235, 255, 251, 0.18);
+  border-radius: 999px;
+}
+
+.main-content-area::-webkit-scrollbar-thumb:hover {
+  background: rgba(235, 255, 251, 0.28);
 }
 
 @media (max-width: 1200px) {

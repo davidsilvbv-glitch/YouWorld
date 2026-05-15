@@ -456,8 +456,7 @@ onUnmounted(() => {
 
 .panel-wrapper.right {
   padding-left: 7px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   overscroll-behavior: contain;
 }
 
