@@ -86,6 +86,10 @@ import warnings
 from datetime import datetime
 from typing import Dict, Any, List, Optional, Tuple
 
+PARALLEL_STARTUP_STAGGER_SECONDS = float(
+    os.environ.get("PARALLEL_STARTUP_STAGGER_SECONDS", "8")
+)
+
 
 # Global variable: for signal handling
 _shutdown_event = None
@@ -1180,6 +1184,30 @@ class PlatformSimulation:
         self.total_actions = 0
 
 
+async def run_reddit_simulation_with_stagger(
+    config: Dict[str, Any],
+    simulation_dir: str,
+    action_logger: Optional[PlatformActionLogger] = None,
+    main_logger: Optional[SimulationLogManager] = None,
+    max_rounds: Optional[int] = None,
+    startup_delay_seconds: float = PARALLEL_STARTUP_STAGGER_SECONDS,
+) -> PlatformSimulation:
+    """Retrasa Reddit al arrancar en paralelo para bajar el pico inicial de carga."""
+    if startup_delay_seconds > 0:
+        if main_logger:
+            main_logger.info(
+                f"[Reddit] Esperando {startup_delay_seconds:.0f}s antes de iniciar para evitar picos de carga en paralelo"
+            )
+        await asyncio.sleep(startup_delay_seconds)
+    return await run_reddit_simulation(
+        config,
+        simulation_dir,
+        action_logger,
+        main_logger,
+        max_rounds,
+    )
+
+
 async def run_twitter_simulation(
     config: Dict[str, Any],
     simulation_dir: str,
@@ -1689,7 +1717,7 @@ async def main():
             run_twitter_simulation(
                 config, simulation_dir, twitter_logger, log_manager, args.max_rounds
             ),
-            run_reddit_simulation(
+            run_reddit_simulation_with_stagger(
                 config, simulation_dir, reddit_logger, log_manager, args.max_rounds
             ),
         )
