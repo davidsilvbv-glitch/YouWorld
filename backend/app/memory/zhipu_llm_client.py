@@ -391,6 +391,11 @@ def _normalize_response(result: Any, response_model: type) -> Any:
                 for item in result[field_name]:
                     if isinstance(item, dict):
                         item = _normalize_dict_keys(item, item_fields)
+                        for if_name, if_info in item_fields.items():
+                            if if_name in item and _is_plain_int(if_info.annotation):
+                                item[if_name] = _coerce_int_value(
+                                    item[if_name], if_name
+                                )
                         # Auto-fill missing or None required str fields in list items
                         for if_name, if_info in item_fields.items():
                             if if_info.is_required():
@@ -426,10 +431,8 @@ def _normalize_response(result: Any, response_model: type) -> Any:
             continue
         # Only process fields typed as plain int (not Optional[int])
         annotation = field_info.annotation
-        if _is_plain_int(annotation) and isinstance(result[field_name], str):
-            if result[field_name].isdigit():
-                result[field_name] = int(result[field_name])
-                logger.debug(f"Coerced {field_name}: str â†’ int")
+        if _is_plain_int(annotation):
+            result[field_name] = _coerce_int_value(result[field_name], field_name)
 
     # Step 6: Auto-fill missing required list fields with empty defaults
     # Covers list[int], list[str], list[BaseModel] â€” all safe to default to []
@@ -552,6 +555,31 @@ def _is_plain_int(annotation) -> bool:
         # Check if it's exactly int
         return annotation is int
     return False
+
+
+def _coerce_int_value(value: Any, field_name: str) -> Any:
+    """
+    Coaccionar strings problemáticos a int cuando el schema lo exige.
+
+    Graphiti a veces recibe etiquetas como "Entity" en `entity_type_id`.
+    Eso rompe Pydantic aunque conceptualmente sea solo un tipo genérico.
+    En ese caso degradamos a 0 para permitir que continúe la construcción.
+    """
+    if not isinstance(value, str):
+        return value
+
+    candidate = value.strip()
+    if candidate.isdigit():
+        logger.debug(f"Coerced {field_name}: str -> int")
+        return int(candidate)
+
+    if candidate:
+        logger.warning(
+            f"Coercing non-numeric int field '{field_name}' from {candidate!r} to 0"
+        )
+        return 0
+
+    return value
 
 
 def _is_list_of_primitives(annotation) -> bool:
