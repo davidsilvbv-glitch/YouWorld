@@ -2835,29 +2835,42 @@ html[lang="en"] .report-header-block .main-title {
   font-size: 28px;
 }
 
-/* YouWorld dark visual override */
+/* Phase 5 should inherit the same left-side visual system as phase 4 */
+.interaction-panel {
+  --phase-surface: linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035));
+  --phase-border: rgba(235, 255, 251, 0.08);
+  --phase-border-strong: rgba(119, 221, 213, 0.28);
+  --phase-text: rgba(244, 255, 251, 0.92);
+  --phase-muted: rgba(235, 255, 251, 0.56);
+  --phase-accent: #77ddd5;
+  --phase-accent-strong: #a7eee8;
+  background: transparent !important;
+  color: var(--phase-text);
+}
+
 .interaction-panel,
 .right-panel {
   background:
-    radial-gradient(circle at 14% 12%, rgba(116, 66, 168, 0.18), transparent 28%),
-    radial-gradient(circle at 82% 8%, rgba(91, 203, 190, 0.14), transparent 24%),
-    radial-gradient(circle at 50% 100%, rgba(198, 113, 67, 0.12), transparent 26%),
-    linear-gradient(135deg, #07080b 0%, #0a1513 34%, #0d0a18 70%, #060409 100%);
-  color: #e9f3f0;
+    radial-gradient(circle at 72% 8%, rgba(91, 203, 190, 0.2), transparent 30%),
+    radial-gradient(circle at 18% 10%, rgba(77, 35, 111, 0.32), transparent 34%),
+    linear-gradient(125deg, #050607 0%, #081310 34%, #0b0715 72%, #05020a 100%) !important;
+  color: var(--phase-text);
 }
 .left-panel.report-style {
-  flex: 1.18 1 0 !important;
+  flex: 1.65 1 0 !important;
   width: auto !important;
-  min-width: 560px;
-  padding: 20px 20px 30px 0 !important;
+  min-width: 440px;
+  padding: 18px 18px 28px 0 !important;
   background: transparent !important;
   border-right: 0 !important;
+  box-shadow: none !important;
 }
 
 .right-panel {
-  flex: 0.92 1 0 !important;
+  flex: 0.75 1 0 !important;
   width: auto !important;
-  min-width: 360px;
+  min-width: 320px;
+  max-width: 520px;
 }
 .report-tag,
 .tab-pill.active,
@@ -2868,7 +2881,8 @@ html[lang="en"] .report-header-block .main-title {
 }
 .main-split-layout {
   gap: 16px;
-  padding: 0 0 10px;
+  padding: 0 0 12px;
+  align-items: stretch;
 }
 .report-id,
 .sub-title,
@@ -2894,22 +2908,24 @@ html[lang="en"] .report-header-block .main-title {
 .report-content-wrapper {
   max-width: none !important;
   width: 100% !important;
-  padding: 28px 30px 34px !important;
-  border-radius: 0 !important;
-  background: transparent !important;
+  padding: 24px 24px 28px !important;
+  border-radius: 28px !important;
+  background: var(--phase-surface) !important;
   border: 0 !important;
-  box-shadow: none !important;
+  box-shadow: inset 0 0 0 1px var(--phase-border) !important;
 }
 .report-header-block {
   margin-bottom: 34px;
 }
 .report-tag {
+  background: rgba(119, 221, 213, 0.18) !important;
+  color: var(--phase-accent) !important;
   box-shadow: none !important;
 }
 .header-divider {
   height: 2px;
   border: 0 !important;
-  background: linear-gradient(90deg, rgba(120, 221, 213, 0.75), rgba(120, 221, 213, 0.08)) !important;
+  background: linear-gradient(90deg, rgba(119, 221, 213, 0.7), rgba(119, 221, 213, 0.08)) !important;
   border-radius: 999px;
 }
 .sections-list {
@@ -2918,17 +2934,39 @@ html[lang="en"] .report-header-block .main-title {
 .report-section-item {
   padding: 18px 18px 14px;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(235, 255, 251, 0.07);
+  background: var(--phase-surface) !important;
+  border: 0 !important;
+  box-shadow: inset 0 0 0 1px var(--phase-border) !important;
 }
 .section-header-row.clickable:hover {
-  background: rgba(120, 221, 213, 0.08) !important;
+  background: rgba(119, 221, 213, 0.08) !important;
 }
 .section-number {
-  color: #8ea6a2 !important;
+  color: var(--phase-muted) !important;
 }
 .report-section-item.is-pending .section-title {
   color: rgba(237, 246, 242, 0.42) !important;
+}
+.report-section-item.is-active,
+.report-section-item.is-completed {
+  background: linear-gradient(145deg, rgba(119, 221, 213, 0.12), rgba(255, 255, 255, 0.04)) !important;
+  box-shadow: inset 0 0 0 1px var(--phase-border-strong) !important;
+}
+.main-title,
+.section-title {
+  font-family: 'Inter', sans-serif !important;
+  color: var(--phase-text) !important;
+}
+.main-title {
+  font-size: 2.25rem !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.04em !important;
+}
+.sub-title,
+.generated-content,
+.waiting-text {
+  color: rgba(235, 255, 251, 0.72) !important;
+  font-family: 'Inter', sans-serif !important;
 }
 .generated-content :deep(.md-h2) {
   border-bottom: 1px solid rgba(235, 255, 251, 0.08) !important;
