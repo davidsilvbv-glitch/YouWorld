@@ -371,7 +371,7 @@ onMounted(() => {
 .panel-wrapper {
   height: 100%;
   overflow: hidden;
-  padding: 14px;
+  padding: 0 14px 14px;
   transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease, transform 0.3s ease;
   will-change: width, opacity, transform;
 }
