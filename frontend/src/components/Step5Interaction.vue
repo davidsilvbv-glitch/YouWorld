@@ -8,7 +8,7 @@
           <!-- Report Header -->
           <div class="report-header-block">
             <div class="report-meta">
-              <span class="report-tag">Prediction Report</span>
+              <span class="report-tag">Informe de Predicción</span>
               <span class="report-id">ID: {{ reportId || 'REF-2024-X92' }}</span>
             </div>
             <h1 class="main-title">{{ reportOutline.title }}</h1>
@@ -2587,6 +2587,75 @@ watch(() => props.simulationId, (newId) => {
 .left-panel.report-style {
   background: linear-gradient(180deg, rgba(11, 15, 21, 0.96), rgba(14, 18, 27, 0.96));
   border-right: 1px solid rgba(118, 163, 157, 0.16);
+}
+.report-content-wrapper,
+.action-bar,
+.report-agent-tools-card,
+.agent-profile-card,
+.chat-messages,
+.chat-input-area,
+.dropdown-menu,
+.survey-setup,
+.survey-results,
+.result-card,
+.agent-checkbox,
+.survey-input,
+.chat-input,
+.tools-card-body,
+.profile-card-body {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(118, 163, 157, 0.14) !important;
+  box-shadow: none !important;
+}
+
+.report-content-wrapper,
+.action-bar,
+.report-agent-tools-card,
+.agent-profile-card,
+.chat-messages,
+.chat-input-area,
+.dropdown-menu,
+.survey-setup,
+.survey-results {
+  border-radius: 28px !important;
+}
+
+.action-bar,
+.report-agent-tools-card,
+.agent-profile-card,
+.survey-setup,
+.survey-results {
+  backdrop-filter: blur(14px);
+}
+
+.chat-input,
+.survey-input {
+  color: #edf6f2 !important;
+}
+
+.chat-input::placeholder,
+.survey-input::placeholder {
+  color: #86a19c !important;
+}
+
+.tools-card-toggle,
+.profile-card-toggle,
+.dropdown-header,
+.section-title,
+.results-title,
+.tools-card-name,
+.profile-card-name,
+.profile-card-label,
+.result-name {
+  color: #edf6f2 !important;
+}
+
+.action-bar-header,
+.tools-card-header,
+.profile-card-header,
+.results-header,
+.section-header {
+  border-color: rgba(118, 163, 157, 0.14) !important;
 }
 .report-tag,
 .tab-pill.active,

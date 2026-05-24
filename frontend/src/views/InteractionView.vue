@@ -242,20 +242,24 @@ onMounted(() => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #FFF;
+  background:
+    radial-gradient(circle at 72% 8%, rgba(91, 203, 190, 0.2), transparent 30%),
+    radial-gradient(circle at 18% 10%, rgba(77, 35, 111, 0.32), transparent 34%),
+    linear-gradient(125deg, #050607 0%, #081310 34%, #0b0715 72%, #05020a 100%);
   overflow: hidden;
-  font-family: 'Space Grotesk', 'Noto Sans SC', system-ui, sans-serif;
+  font-family: 'Inter', 'Space Grotesk', 'Noto Sans SC', system-ui, sans-serif;
 }
 
 /* Header */
 .app-header {
-  height: 60px;
-  border-bottom: 1px solid #EAEAEA;
+  height: 72px;
+  border-bottom: 1px solid rgba(235, 255, 251, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
-  background: #FFF;
+  padding: 0 30px;
+  background: rgba(5, 4, 12, 0.72);
+  backdrop-filter: blur(18px);
   z-index: 100;
   position: relative;
 }
@@ -272,11 +276,13 @@ onMounted(() => {
   font-size: 18px;
   letter-spacing: 1px;
   cursor: pointer;
+  color: #edf6f2;
 }
 
 .view-switcher {
   display: flex;
-  background: rgba(255,255,255,0.04);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(235, 255, 251, 0.08);
   padding: 5px;
   border-radius: 999px;
   gap: 4px;
@@ -295,9 +301,9 @@ onMounted(() => {
 }
 
 .switch-btn.active {
-  background: #FFF;
-  color: #edf6f2;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  background: rgba(119, 221, 213, 0.16);
+  color: #eafffb;
+  box-shadow: inset 0 0 0 1px rgba(119, 221, 213, 0.22);
 }
 
 .header-right {
@@ -359,17 +365,24 @@ onMounted(() => {
   display: flex;
   position: relative;
   overflow: hidden;
+  background: transparent;
 }
 
 .panel-wrapper {
   height: 100%;
   overflow: hidden;
+  padding: 14px;
   transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease, transform 0.3s ease;
   will-change: width, opacity, transform;
 }
 
 .panel-wrapper.left {
-  border-right: 1px solid rgba(118, 163, 157, 0.12);
+  border-right: 0;
+  padding-right: 7px;
+}
+
+.panel-wrapper.right {
+  padding-left: 7px;
 }
 </style>
 
