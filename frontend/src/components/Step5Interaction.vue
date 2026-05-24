@@ -2865,7 +2865,7 @@ html[lang="en"] .report-header-block .main-title {
   color: var(--phase-text);
 }
 .left-panel.report-style {
-  flex: 1.65 1 0 !important;
+  flex: 1.35 1 0 !important;
   width: auto !important;
   min-width: 440px;
   padding: 18px 18px 28px 0 !important;
@@ -2875,10 +2875,10 @@ html[lang="en"] .report-header-block .main-title {
 }
 
 .right-panel {
-  flex: 0.75 1 0 !important;
+  flex: 1.05 1 0 !important;
   width: auto !important;
-  min-width: 320px;
-  max-width: 520px;
+  min-width: 430px;
+  max-width: 700px;
   background: transparent !important;
 }
 .report-tag,
@@ -2925,6 +2925,49 @@ html[lang="en"] .report-header-block .main-title {
 }
 .report-header-block {
   margin-bottom: 34px;
+}
+.action-bar {
+  display: grid !important;
+  grid-template-columns: minmax(136px, 168px) minmax(0, 1fr) !important;
+  align-items: start !important;
+  gap: 16px !important;
+}
+.action-bar-header {
+  min-width: 0;
+  padding-right: 2px;
+}
+.action-bar-tabs {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-width: 0;
+}
+.action-bar-tabs .tab-pill,
+.action-bar-tabs .agent-dropdown {
+  flex: 0 1 auto;
+}
+.tab-pill {
+  min-height: 46px;
+  padding: 10px 16px !important;
+}
+.agent-dropdown {
+  min-width: 0;
+}
+.agent-pill {
+  min-width: 220px !important;
+  max-width: 100%;
+}
+.agent-pill span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.survey-pill {
+  margin-left: 0 !important;
+}
+.tab-divider {
+  display: none !important;
 }
 .report-tag {
   background: rgba(119, 221, 213, 0.18) !important;
@@ -3058,6 +3101,7 @@ html[lang="en"] .report-header-block .main-title {
 .report-agent-tools-card,
 .agent-profile-card {
   overflow: hidden;
+  margin-bottom: 14px !important;
 }
 .tab-pill,
 .agent-pill,
@@ -3108,6 +3152,9 @@ html[lang="en"] .report-header-block .main-title {
 .survey-setup,
 .survey-results {
   background: var(--phase-surface) !important;
+}
+.chat-messages {
+  min-height: 360px;
 }
 .action-bar {
   padding: 16px 18px !important;
@@ -3177,6 +3224,10 @@ html[lang="en"] .report-header-block .main-title {
 
   .left-panel.report-style {
     padding-right: 0 !important;
+  }
+
+  .action-bar {
+    grid-template-columns: 1fr !important;
   }
 }
 .dropdown-item:hover,

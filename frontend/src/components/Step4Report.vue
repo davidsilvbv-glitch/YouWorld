@@ -5671,17 +5671,17 @@ html[lang="en"] .report-header-block .main-title {
 }
 
 .left-panel.report-style {
-  flex: 1.65 1 0 !important;
+  flex: 1.4 1 0 !important;
   width: auto !important;
   min-width: 440px;
   padding: 18px 18px 28px 0;
 }
 
 .right-panel {
-  flex: 0.75 1 0 !important;
+  flex: 1 1 0 !important;
   width: auto !important;
-  min-width: 320px;
-  max-width: 520px;
+  min-width: 420px;
+  max-width: 660px;
   padding-right: 0;
 }
 

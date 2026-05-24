@@ -302,10 +302,10 @@
     "world2": "Mundo 2"
   },
   "step5": {
-    "interactiveTools": "Herramientas interactivas",
+    "interactiveTools": "Interactuar",
     "agentsAvailable": "{count} agentes disponibles",
-    "chatWithReportAgent": "Conversar con agente de informes",
-    "chatWithAgent": "Conversar con cualquier individuo del mundo",
+    "chatWithReportAgent": "Conversar con Report Agent",
+    "chatWithAgent": "Conversar con alguien",
     "selectChatTarget": "Seleccionar interlocutor",
     "sendSurvey": "Enviar encuesta al mundo",
     "reportAgentChat": "Agente de informes - Chat",
