@@ -2839,21 +2839,36 @@ html[lang="en"] .report-header-block .main-title {
 .interaction-panel,
 .right-panel {
   background:
-    radial-gradient(circle at 16% 14%, rgba(90, 58, 143, 0.16), transparent 30%),
-    radial-gradient(circle at 84% 10%, rgba(63, 145, 137, 0.12), transparent 24%),
-    linear-gradient(180deg, #0b0f15 0%, #10131d 48%, #0c1218 100%);
+    radial-gradient(circle at 14% 12%, rgba(116, 66, 168, 0.18), transparent 28%),
+    radial-gradient(circle at 82% 8%, rgba(91, 203, 190, 0.14), transparent 24%),
+    radial-gradient(circle at 50% 100%, rgba(198, 113, 67, 0.12), transparent 26%),
+    linear-gradient(135deg, #07080b 0%, #0a1513 34%, #0d0a18 70%, #060409 100%);
   color: #e9f3f0;
 }
 .left-panel.report-style {
-  background: linear-gradient(180deg, rgba(11, 15, 21, 0.96), rgba(14, 18, 27, 0.96));
-  border-right: 1px solid rgba(118, 163, 157, 0.16);
+  flex: 1.18 1 0 !important;
+  width: auto !important;
+  min-width: 560px;
+  padding: 20px 20px 30px 0 !important;
+  background: transparent !important;
+  border-right: 0 !important;
+}
+
+.right-panel {
+  flex: 0.92 1 0 !important;
+  width: auto !important;
+  min-width: 360px;
 }
 .report-tag,
 .tab-pill.active,
 .send-btn,
 .survey-submit-btn {
-  background: linear-gradient(135deg, #67d1c7, #80a8ff);
+  background: linear-gradient(135deg, #78ddd5, #a6efe8);
   color: #071013;
+}
+.main-split-layout {
+  gap: 16px;
+  padding: 0 0 10px;
 }
 .report-id,
 .sub-title,
@@ -2875,6 +2890,53 @@ html[lang="en"] .report-header-block .main-title {
 .tools-card-name,
 .result-name {
   color: #edf6f2;
+}
+.report-content-wrapper {
+  max-width: none !important;
+  width: 100% !important;
+  padding: 28px 30px 34px !important;
+  border-radius: 28px !important;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(126, 64, 190, 0.1), transparent 28%),
+    radial-gradient(circle at 100% 0%, rgba(87, 207, 194, 0.08), transparent 26%),
+    linear-gradient(160deg, rgba(17, 21, 31, 0.96), rgba(13, 18, 26, 0.94)) !important;
+  border: 1px solid rgba(235, 255, 251, 0.08) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+    0 22px 40px rgba(2, 4, 10, 0.28) !important;
+}
+.report-header-block {
+  margin-bottom: 34px;
+}
+.report-tag {
+  box-shadow: none !important;
+}
+.header-divider {
+  height: 2px;
+  border: 0 !important;
+  background: linear-gradient(90deg, rgba(120, 221, 213, 0.75), rgba(120, 221, 213, 0.08)) !important;
+  border-radius: 999px;
+}
+.sections-list {
+  gap: 22px !important;
+}
+.report-section-item {
+  padding: 18px 18px 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(235, 255, 251, 0.07);
+}
+.section-header-row.clickable:hover {
+  background: rgba(120, 221, 213, 0.08) !important;
+}
+.section-number {
+  color: #8ea6a2 !important;
+}
+.report-section-item.is-pending .section-title {
+  color: rgba(237, 246, 242, 0.42) !important;
+}
+.generated-content :deep(.md-h2) {
+  border-bottom: 1px solid rgba(235, 255, 251, 0.08) !important;
 }
 .generated-content,
 .profile-card-bio p,
@@ -2932,6 +2994,67 @@ html[lang="en"] .report-header-block .main-title {
   background: rgba(255,255,255,0.04);
   color: #d4e3df;
   border: 1px solid rgba(255,255,255,0.08);
+}
+.action-bar,
+.report-agent-tools-card,
+.agent-profile-card,
+.survey-setup,
+.survey-results {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.035)) !important;
+}
+.action-bar {
+  padding: 16px 18px !important;
+}
+.action-bar-icon {
+  color: rgba(120, 221, 213, 0.78) !important;
+}
+.tool-item,
+.result-card,
+.agent-checkbox,
+.chat-message.assistant .message-text,
+.chat-input,
+.survey-input {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+.tool-item {
+  border: 1px solid rgba(235, 255, 251, 0.07) !important;
+  border-radius: 18px !important;
+}
+.chat-message.user .message-text {
+  background: linear-gradient(135deg, rgba(120, 221, 213, 0.2), rgba(185, 130, 255, 0.16)) !important;
+}
+.tools-card-avatar,
+.profile-card-avatar,
+.result-avatar,
+.checkbox-avatar,
+.agent-avatar {
+  background:
+    linear-gradient(135deg, rgba(120, 221, 213, 0.2), rgba(185, 130, 255, 0.16)) !important;
+}
+.chat-empty {
+  background: transparent !important;
+}
+.empty-icon,
+.empty-text {
+  color: rgba(201, 215, 212, 0.72) !important;
+}
+
+@media (max-width: 1200px) {
+  .main-split-layout {
+    flex-direction: column;
+  }
+
+  .left-panel.report-style,
+  .right-panel {
+    flex: 1 1 auto !important;
+    min-width: 0;
+    width: 100% !important;
+  }
+
+  .left-panel.report-style {
+    padding-right: 0 !important;
+  }
 }
 .dropdown-item:hover,
 .agent-checkbox.checked,
