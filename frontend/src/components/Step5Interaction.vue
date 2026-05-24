@@ -2895,15 +2895,10 @@ html[lang="en"] .report-header-block .main-title {
   max-width: none !important;
   width: 100% !important;
   padding: 28px 30px 34px !important;
-  border-radius: 28px !important;
-  background:
-    radial-gradient(circle at 10% 0%, rgba(126, 64, 190, 0.1), transparent 28%),
-    radial-gradient(circle at 100% 0%, rgba(87, 207, 194, 0.08), transparent 26%),
-    linear-gradient(160deg, rgba(17, 21, 31, 0.96), rgba(13, 18, 26, 0.94)) !important;
-  border: 1px solid rgba(235, 255, 251, 0.08) !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.02),
-    0 22px 40px rgba(2, 4, 10, 0.28) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
 }
 .report-header-block {
   margin-bottom: 34px;
