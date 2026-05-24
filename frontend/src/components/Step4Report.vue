@@ -5214,39 +5214,312 @@ html[lang="en"] .report-header-block .main-title {
 }
 </style>
 
-<style>
-/* Remove square wrapper lines in report stage */
-.timeline-content,
-.result-wrapper {
-  outline: none !important;
+<style scoped>
+/* Phase 4 should match the visual system from phases 1-3 */
+.report-panel {
+  --phase-surface: linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035));
+  --phase-border: rgba(235, 255, 251, 0.08);
+  --phase-border-strong: rgba(119, 221, 213, 0.28);
+  --phase-text: rgba(244, 255, 251, 0.92);
+  --phase-muted: rgba(235, 255, 251, 0.56);
+  --phase-accent: #77ddd5;
+  --phase-accent-soft: rgba(119, 221, 213, 0.18);
+  --phase-accent-strong: #a7eee8;
+  background: transparent !important;
+  color: var(--phase-text);
+  font-family: 'Inter', sans-serif !important;
+}
+
+.main-split-layout {
+  gap: 16px;
+  padding: 0 0 12px;
+}
+
+.left-panel.report-style,
+.right-panel {
+  background: transparent !important;
+  border: 0 !important;
   box-shadow: none !important;
 }
 
-.timeline-content,
-.result-wrapper {
-  border: 0 !important;
+.left-panel.report-style {
+  min-width: 440px;
+  padding: 18px 18px 28px 0;
 }
 
+.right-panel {
+  padding-right: 0;
+}
+
+.report-content-wrapper,
+.workflow-overview,
+.workflow-timeline,
+.console-logs {
+  border-radius: 28px;
+}
+
+.report-content-wrapper {
+  max-width: none;
+  border: 0 !important;
+  background: var(--phase-surface) !important;
+  box-shadow: inset 0 0 0 1px var(--phase-border) !important;
+  padding: 24px 24px 28px !important;
+}
+
+.report-tag {
+  background: rgba(119, 221, 213, 0.18) !important;
+  color: var(--phase-accent) !important;
+  box-shadow: none !important;
+}
+
+.report-id,
+.section-number,
+.metric-label,
+.action-time,
+.info-key,
+.elapsed-badge,
+.log-id {
+  color: var(--phase-muted) !important;
+}
+
+.main-title,
+.section-title,
+.wf-step-title,
+.header-title,
+.action-label,
+.tag-title,
+.result-tool,
+:deep(.panel-title) {
+  font-family: 'Inter', sans-serif !important;
+  color: var(--phase-text) !important;
+}
+
+.main-title {
+  font-size: 2.25rem !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.04em !important;
+}
+
+.sub-title,
+.generated-content,
+.timeline-body,
+.info-val,
+.log-msg,
+:deep(.empty-state),
+:deep(.fact-text),
+:deep(.node-name),
+:deep(.edge-name),
+:deep(.edge-fact) {
+  color: rgba(235, 255, 251, 0.72) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.header-divider,
+.workflow-divider {
+  background: linear-gradient(90deg, rgba(119, 221, 213, 0.7), rgba(119, 221, 213, 0.08)) !important;
+}
+
+.report-section-item,
+.wf-step,
+.timeline-item,
 .timeline-content,
 .result-wrapper,
-:deep(.quick-search-display .fact-item),
-:deep(.quick-search-display .edge-item),
-:deep(.quick-search-display .node-tag),
-:deep(.quick-search-display .edge-source),
-:deep(.quick-search-display .edge-target) {
-  background: rgba(255, 255, 255, 0.04) !important;
+:deep(.fact-item),
+:deep(.edge-item),
+:deep(.node-tag),
+:deep(.edge-source),
+:deep(.edge-target),
+:deep(.entity-item),
+:deep(.relation-item),
+:deep(.subquery-item),
+:deep(.fact-box),
+:deep(.stat-box) {
+  background: var(--phase-surface) !important;
+  border: 0 !important;
+  box-shadow: inset 0 0 0 1px var(--phase-border) !important;
+  color: var(--phase-text) !important;
 }
 
-:deep(.quick-search-display .fact-item),
-:deep(.quick-search-display .edge-item),
-:deep(.quick-search-display .node-tag),
-:deep(.quick-search-display .edge-source),
-:deep(.quick-search-display .edge-target) {
+.report-section-item.is-de,
+.wf-step--de,
+.timeline-item.node--de {
+  box-shadow: inset 0 0 0 1px var(--phase-border-strong) !important;
+  background: linear-gradient(145deg, rgba(119, 221, 213, 0.12), rgba(255, 255, 255, 0.04)) !important;
+}
+
+.report-section-item.is-completed,
+.wf-step--hecho,
+.timeline-item.node--hecho,
+.status-message.success,
+.section-tag.completed,
+.metric-pill.pill--completed,
+.complete-banner,
+.final-answer-hint,
+:deep(.stat-box.highlight) {
+  background: rgba(119, 221, 213, 0.14) !important;
+  color: var(--phase-accent-strong) !important;
+  border: 0 !important;
+  box-shadow: inset 0 0 0 1px rgba(119, 221, 213, 0.18) !important;
+}
+
+.report-section-item.is-pending .section-title,
+.wf-step--todo .wf-step-title,
+.wf-step--todo .wf-step-index,
+.tag-num,
+.raw-preview,
+.meta-tag,
+.result-size {
+  color: rgba(235, 255, 251, 0.48) !important;
+}
+
+.section-header-row.clickable:hover,
+.timeline-item:hover,
+.wf-step:hover {
+  background: rgba(255, 255, 255, 0.045) !important;
+}
+
+.panel-header,
+.system-log-header,
+.console-logs,
+.workflow-overview,
+.workflow-timeline {
+  background: transparent !important;
+}
+
+.panel-header {
+  border: 0 !important;
+  box-shadow: inset 0 0 0 1px var(--phase-border);
+  border-radius: 24px;
+  margin-bottom: 12px;
+}
+
+.header-dot,
+.wf-step--de .wf-step-dot,
+.dot-de {
+  background: var(--phase-accent) !important;
+  box-shadow: 0 0 0 3px rgba(119, 221, 213, 0.14) !important;
+}
+
+.wf-step-dot,
+.connector-dot {
+  border-color: #10161d !important;
+}
+
+.tool-badge,
+.section-tag,
+.metric-pill,
+.meta-tag,
+.outline-badge,
+.action-btn,
+:deep(.tab-btn),
+:deep(.query-label),
+:deep(.entity-fact-count),
+:deep(.qa-badge),
+:deep(.scenario-label) {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 0 !important;
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08) !important;
+  color: rgba(244, 255, 251, 0.82) !important;
+}
+
+.tool-badge.tool-purple,
+.tool-badge.tool-blue,
+.tool-badge.tool-green,
+.tool-badge.tool-orange,
+.tool-badge.tool-cyan,
+.tool-badge.tool-pink,
+.tool-badge.tool-gray,
+.status-message.planning,
+.section-tag.content-ready,
+.metric-pill.pill--processing,
+.meta-tag.de {
+  background: rgba(119, 221, 213, 0.12) !important;
+  color: var(--phase-accent) !important;
+  box-shadow: inset 0 0 0 1px rgba(119, 221, 213, 0.22) !important;
+}
+
+.next-step-btn,
+:deep(.expand-btn),
+:deep(.view-toggle-btn.active),
+:deep(.tab-btn.active) {
+  background: linear-gradient(90deg, #78ddd5, #a7eee8) !important;
+  color: #06100f !important;
   border: 0 !important;
   box-shadow: none !important;
+}
+
+.next-step-btn:hover,
+:deep(.expand-btn:hover),
+:deep(.view-toggle-btn.active:hover),
+:deep(.tab-btn.active:hover) {
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+}
+
+.loading-state,
+.waiting-text {
+  color: var(--phase-accent) !important;
+}
+
+.loading-icon svg path,
+.loading-icon svg circle {
+  stroke: var(--phase-accent) !important;
+}
+
+.waiting-ring {
+  border-color: rgba(119, 221, 213, 0.22) !important;
 }
 
 .console-logs {
+  margin-top: 0;
   border-top: 0 !important;
+  background: rgba(0, 0, 0, 0.35) !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.log-title {
+  color: var(--phase-accent) !important;
+}
+
+.log-content::-webkit-scrollbar-thumb,
+.left-panel::-webkit-scrollbar-thumb,
+.right-panel::-webkit-scrollbar-thumb {
+  background: rgba(119, 221, 213, 0.18) !important;
+}
+
+.generated-content :deep(.md-h2),
+.generated-content :deep(.md-h3),
+.generated-content :deep(.md-h4),
+.generated-content :deep(strong) {
+  font-family: 'Inter', sans-serif !important;
+  color: var(--phase-text) !important;
+}
+
+.generated-content :deep(.md-h2) {
+  border-bottom-color: rgba(119, 221, 213, 0.18) !important;
+}
+
+.generated-content :deep(.md-quote),
+.tool-params pre,
+.result-raw pre,
+.llm-content pre,
+:deep(.code-block) {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 0 !important;
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08) !important;
+  color: rgba(235, 255, 251, 0.74) !important;
+}
+
+@media (max-width: 1200px) {
+  .main-split-layout {
+    gap: 12px;
+  }
+
+  .left-panel.report-style {
+    min-width: 0;
+    width: 100%;
+    padding-right: 0;
+  }
 }
 </style>
