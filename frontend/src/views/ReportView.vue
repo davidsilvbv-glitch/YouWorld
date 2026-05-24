@@ -232,20 +232,24 @@ onMounted(() => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #FFF;
+  background:
+    radial-gradient(circle at 72% 8%, rgba(91, 203, 190, 0.2), transparent 30%),
+    radial-gradient(circle at 18% 10%, rgba(77, 35, 111, 0.32), transparent 34%),
+    linear-gradient(125deg, #050607 0%, #081310 34%, #0b0715 72%, #05020a 100%);
   overflow: hidden;
-  font-family: 'Space Grotesk', 'Noto Sans SC', system-ui, sans-serif;
+  font-family: 'Inter', 'Space Grotesk', 'Noto Sans SC', system-ui, sans-serif;
 }
 
 /* Header */
 .app-header {
-  height: 60px;
-  border-bottom: 1px solid #EAEAEA;
+  height: 72px;
+  border-bottom: 1px solid rgba(235, 255, 251, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
-  background: #FFF;
+  padding: 0 30px;
+  background: rgba(5, 4, 12, 0.72);
+  backdrop-filter: blur(18px);
   z-index: 100;
   position: relative;
 }
@@ -262,38 +266,42 @@ onMounted(() => {
   font-size: 18px;
   letter-spacing: 1px;
   cursor: pointer;
+  color: #f4fffb;
 }
 
 .view-switcher {
   display: flex;
-  background: #F5F5F5;
-  padding: 4px;
-  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 5px;
+  border-radius: 999px;
   gap: 4px;
+  border: 1px solid rgba(235, 255, 251, 0.1);
 }
 
 .switch-btn {
   border: none;
   background: transparent;
-  padding: 6px 16px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #666;
-  border-radius: 4px;
+  padding: 8px 18px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: rgba(235, 255, 251, 0.58);
+  border-radius: 999px;
   cursor: pointer;
   transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
 }
 
 .switch-btn.active {
-  background: #FFF;
-  color: #000;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  background: rgba(119, 221, 213, 0.18);
+  color: #f4fffb;
+  box-shadow: none;
 }
 
 .header-right {
   display: flex;
   align-items: center;
   gap: 16px;
+  color: rgba(235, 255, 251, 0.68);
 }
 
 .workflow-step {
@@ -301,23 +309,24 @@ onMounted(() => {
   align-items: center;
   gap: 8px;
   font-size: 14px;
+  color: rgba(235, 255, 251, 0.68);
 }
 
 .step-num {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
-  color: #999;
+  color: rgba(235, 255, 251, 0.7);
 }
 
 .step-name {
   font-weight: 700;
-  color: #000;
+  color: rgba(244, 255, 251, 0.86);
 }
 
 .step-divider {
   width: 1px;
-  height: 14px;
-  background-color: #E0E0E0;
+  height: 20px;
+  background-color: rgba(235, 255, 251, 0.16);
 }
 
 .status-indicator {
@@ -325,7 +334,7 @@ onMounted(() => {
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: #666;
+  color: rgba(235, 255, 251, 0.62);
   font-weight: 500;
 }
 
@@ -333,10 +342,10 @@ onMounted(() => {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #CCC;
+  background: rgba(235, 255, 251, 0.3);
 }
 
-.status-indicator.processing .dot { background: #FF9800; animation: pulse 1s infinite; }
+.status-indicator.processing .dot { background: #77ddd5; animation: pulse 1s infinite; }
 .status-indicator.completed .dot { background: #4CAF50; }
 .status-indicator.error .dot { background: #F44336; }
 
@@ -345,19 +354,28 @@ onMounted(() => {
 /* Content */
 .content-area {
   flex: 1;
+  min-height: 0;
   display: flex;
   position: relative;
   overflow: hidden;
+  background: transparent;
 }
 
 .panel-wrapper {
   height: 100%;
+  min-height: 0;
   overflow: hidden;
+  padding: 14px;
   transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease, transform 0.3s ease;
   will-change: width, opacity, transform;
 }
 
 .panel-wrapper.left {
-  border-right: 1px solid #EAEAEA;
+  border-right: 0;
+  padding-right: 7px;
+}
+
+.panel-wrapper.right {
+  padding-left: 7px;
 }
 </style>
