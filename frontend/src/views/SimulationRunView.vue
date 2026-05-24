@@ -102,6 +102,10 @@ const currentStatus = ref('processing') // processing | completed | error
 const rememberProjectRoute = (projectId) => {
   if (!projectId || !currentSimulationId.value) return
   const query = maxRounds.value ? `?maxRounds=${maxRounds.value}` : ''
+  localStorage.setItem(
+    `youworld:project-simulation:${projectId}`,
+    currentSimulationId.value
+  )
   localStorage.setItem(`youworld:last-project-route:${projectId}`, `/simulation/${currentSimulationId.value}/start${query}`)
 }
 

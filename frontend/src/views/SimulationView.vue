@@ -128,6 +128,10 @@ const addLog = (msg) => {
 
 const rememberProjectRoute = (projectId) => {
   if (!projectId || !currentSimulationId.value) return
+  localStorage.setItem(
+    `youworld:project-simulation:${projectId}`,
+    currentSimulationId.value
+  )
   localStorage.setItem(`youworld:last-project-route:${projectId}`, `/simulation/${currentSimulationId.value}`)
 }
 

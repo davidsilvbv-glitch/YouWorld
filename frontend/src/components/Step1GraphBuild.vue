@@ -252,6 +252,14 @@ const handleEnterEnvSetup = async () => {
     })
     
     if (res.success && res.data?.simulation_id) {
+      localStorage.setItem(
+        `youworld:project-simulation:${props.projectData.project_id}`,
+        res.data.simulation_id
+      )
+      localStorage.setItem(
+        `youworld:last-project-route:${props.projectData.project_id}`,
+        `/simulation/${res.data.simulation_id}`
+      )
       // navegar a la página de simulation
       router.push({
         name: 'Simulation',

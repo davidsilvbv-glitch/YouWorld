@@ -132,6 +132,15 @@ const updateStatus = (status) => {
   currentStatus.value = status
 }
 
+const rememberProjectRoute = (projectId) => {
+  if (!projectId || !currentReportId.value) return
+  localStorage.setItem(`youworld:project-report:${projectId}`, currentReportId.value)
+  localStorage.setItem(
+    `youworld:last-project-route:${projectId}`,
+    `/report/${currentReportId.value}`
+  )
+}
+
 // --- Layout Methods ---
 const toggleMaximize = (target) => {
   if (viewMode.value === target) {
@@ -163,6 +172,7 @@ const loadReportData = async () => {
             const projRes = await getProject(simData.project_id)
             if (projRes.success && projRes.data) {
               projectData.value = projRes.data
+              rememberProjectRoute(projRes.data.project_id)
               addLog(t('log.projectLoadSuccess', { id: projRes.data.project_id }))
 
               // obtener datos del grafo

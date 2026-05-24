@@ -670,6 +670,16 @@ const handleNextStep = async () => {
     if (res.success && res.data) {
       const reportId = res.data.report_id
       addLog(t('log.reportGenTaskStarted', { reportId }))
+      if (props.projectData?.project_id) {
+        localStorage.setItem(
+          `youworld:project-report:${props.projectData.project_id}`,
+          reportId
+        )
+        localStorage.setItem(
+          `youworld:last-project-route:${props.projectData.project_id}`,
+          `/report/${reportId}`
+        )
+      }
       
       // saltar a la página del informe
       router.push({ name: 'Report', params: { reportId } })

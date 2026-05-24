@@ -406,9 +406,38 @@ const closeModal = () => {
 // Navegar a página Construcción de grafo (Project)
 const goToProject = () => {
   if (selectedProject.value?.project_id) {
+    const projectId = selectedProject.value.project_id
+    const savedRoute = localStorage.getItem(`youworld:last-project-route:${projectId}`)
+    const savedReportId = localStorage.getItem(`youworld:project-report:${projectId}`)
+    const savedSimulationId = localStorage.getItem(`youworld:project-simulation:${projectId}`)
+
+    if (savedRoute && !savedRoute.startsWith(`/process/${projectId}`)) {
+      router.push(savedRoute)
+      closeModal()
+      return
+    }
+
+    if (savedReportId) {
+      router.push({
+        name: 'Report',
+        params: { reportId: savedReportId }
+      })
+      closeModal()
+      return
+    }
+
+    if (savedSimulationId) {
+      router.push({
+        name: 'Simulation',
+        params: { simulationId: savedSimulationId }
+      })
+      closeModal()
+      return
+    }
+
     router.push({
       name: 'Process',
-      params: { projectId: selectedProject.value.project_id }
+      params: { projectId }
     })
     closeModal()
   }

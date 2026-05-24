@@ -150,10 +150,29 @@ const fetchProjects = async () => {
 
 const openProject = (projectId) => {
   const savedRoute = localStorage.getItem(`youworld:last-project-route:${projectId}`)
+  const savedReportId = localStorage.getItem(`youworld:project-report:${projectId}`)
+  const savedSimulationId = localStorage.getItem(`youworld:project-simulation:${projectId}`)
+
+  if (savedRoute && !savedRoute.startsWith(`/process/${projectId}`)) {
+    router.push(savedRoute)
+    return
+  }
+
+  if (savedReportId) {
+    router.push({ name: 'Report', params: { reportId: savedReportId } })
+    return
+  }
+
+  if (savedSimulationId) {
+    router.push({ name: 'Simulation', params: { simulationId: savedSimulationId } })
+    return
+  }
+
   if (savedRoute) {
     router.push(savedRoute)
     return
   }
+
   router.push({ name: 'Process', params: { projectId } })
 }
 
@@ -169,6 +188,8 @@ const removeProject = async (project) => {
   try {
     await deleteProject(project.project_id)
     localStorage.removeItem(`youworld:last-project-route:${project.project_id}`)
+    localStorage.removeItem(`youworld:project-simulation:${project.project_id}`)
+    localStorage.removeItem(`youworld:project-report:${project.project_id}`)
     projects.value = projects.value.filter(item => item.project_id !== project.project_id)
     window.dispatchEvent(new CustomEvent('youworld:projects-changed'))
 
