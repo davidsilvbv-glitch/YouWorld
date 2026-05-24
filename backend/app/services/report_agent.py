@@ -33,6 +33,14 @@ from .zep_tools import (
 
 logger = get_logger("mirofish.report_agent")
 
+# Sufijo para la observación que se reinyecta al diálogo después de una tool call.
+# Mantiene al agente en modo de continuidad sin romper si la herramienta ya devolvió
+# suficiente contexto para responder directamente.
+CHAT_OBSERVATION_SUFFIX = (
+    "\n\nUsa esta observación para continuar. "
+    "Si ya tienes suficiente información, responde al usuario de forma directa y útil."
+)
+
 
 class ReportLogger:
     """
