@@ -5656,6 +5656,7 @@ html[lang="en"] .report-header-block .main-title {
 .main-split-layout {
   gap: 16px;
   padding: 0 0 12px;
+  align-items: stretch;
 }
 
 .left-panel.report-style,
@@ -5666,11 +5667,17 @@ html[lang="en"] .report-header-block .main-title {
 }
 
 .left-panel.report-style {
+  flex: 1.65 1 0 !important;
+  width: auto !important;
   min-width: 440px;
   padding: 18px 18px 28px 0;
 }
 
 .right-panel {
+  flex: 0.75 1 0 !important;
+  width: auto !important;
+  min-width: 320px;
+  max-width: 520px;
   padding-right: 0;
 }
 
@@ -5936,13 +5943,22 @@ html[lang="en"] .report-header-block .main-title {
 
 @media (max-width: 1200px) {
   .main-split-layout {
+    flex-direction: column;
     gap: 12px;
   }
 
   .left-panel.report-style {
+    flex: 1 1 auto !important;
     min-width: 0;
     width: 100%;
     padding-right: 0;
+  }
+
+  .right-panel {
+    flex: 1 1 auto !important;
+    min-width: 0;
+    max-width: none;
+    width: 100% !important;
   }
 }
 </style>
