@@ -5230,6 +5230,255 @@ html[lang="en"] .report-header-block .main-title {
   font-family: 'Inter', sans-serif !important;
 }
 
+/* Strong theme remap: keep phase 4 layout, replace only the visual language */
+.report-panel,
+.report-panel .main-split-layout,
+.report-panel .left-panel.report-style,
+.report-panel .right-panel,
+.report-panel .workflow-overview,
+.report-panel .workflow-timeline {
+  color: var(--phase-text) !important;
+}
+
+.report-panel .left-panel.report-style {
+  background: transparent !important;
+  border-right: 0 !important;
+  box-shadow: none !important;
+}
+
+.report-panel .right-panel {
+  background: transparent !important;
+}
+
+.report-panel .report-content-wrapper {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035)) !important;
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08) !important;
+}
+
+.report-panel .panel-header,
+.report-panel .workflow-overview,
+.report-panel .workflow-timeline,
+.report-panel .console-logs {
+  background: transparent !important;
+}
+
+.report-panel .panel-header {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035)) !important;
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08) !important;
+}
+
+.report-panel .report-tag,
+.report-panel .metric-pill,
+.report-panel .tool-badge,
+.report-panel .section-tag,
+.report-panel .outline-badge,
+.report-panel .meta-tag,
+.report-panel .action-btn,
+.report-panel :deep(.tab-btn),
+.report-panel :deep(.entity-fact-count),
+.report-panel :deep(.qa-badge),
+.report-panel :deep(.scenario-label),
+.report-panel :deep(.query-label) {
+  border-radius: 999px !important;
+}
+
+.report-panel .report-tag,
+.report-panel .metric-pill.pill--processing,
+.report-panel .tool-badge,
+.report-panel .tool-badge.tool-purple,
+.report-panel .tool-badge.tool-blue,
+.report-panel .tool-badge.tool-green,
+.report-panel .tool-badge.tool-orange,
+.report-panel .tool-badge.tool-cyan,
+.report-panel .tool-badge.tool-pink,
+.report-panel .tool-badge.tool-gray,
+.report-panel .status-message.planning,
+.report-panel .section-tag.content-ready,
+.report-panel .meta-tag.de {
+  background: rgba(119, 221, 213, 0.12) !important;
+  color: #77ddd5 !important;
+  box-shadow: inset 0 0 0 1px rgba(119, 221, 213, 0.22) !important;
+}
+
+.report-panel .metric-pill.pill--pending,
+.report-panel .outline-badge,
+.report-panel .meta-tag,
+.report-panel .action-btn,
+.report-panel .section-tag,
+.report-panel :deep(.tab-btn),
+.report-panel :deep(.query-label) {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: rgba(244, 255, 251, 0.8) !important;
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08) !important;
+}
+
+.report-panel .next-step-btn,
+.report-panel :deep(.tab-btn.active),
+.report-panel :deep(.expand-btn),
+.report-panel :deep(.view-toggle-btn.active) {
+  background: linear-gradient(90deg, #78ddd5, #a7eee8) !important;
+  color: #06100f !important;
+  box-shadow: none !important;
+}
+
+.report-panel .report-section-item,
+.report-panel .wf-step,
+.report-panel .timeline-item,
+.report-panel .tool-params pre,
+.report-panel .result-raw pre,
+.report-panel .llm-content pre,
+.report-panel :deep(.fact-item),
+.report-panel :deep(.edge-item),
+.report-panel :deep(.node-tag),
+.report-panel :deep(.entity-item),
+.report-panel :deep(.relation-item),
+.report-panel :deep(.subquery-item),
+.report-panel :deep(.facts-panel),
+.report-panel :deep(.entities-panel),
+.report-panel :deep(.relations-panel),
+.report-panel :deep(.subqueries-panel),
+.report-panel :deep(.edges-panel),
+.report-panel :deep(.nodes-panel),
+.report-panel :deep(.stat-box),
+.report-panel :deep(.interview-card),
+.report-panel :deep(.question-card) {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035)) !important;
+  box-shadow: inset 0 0 0 1px rgba(235, 255, 251, 0.08) !important;
+  border: 0 !important;
+}
+
+.report-panel .report-section-item.is-de,
+.report-panel .wf-step--de,
+.report-panel .timeline-item.node--de {
+  background: linear-gradient(145deg, rgba(119, 221, 213, 0.12), rgba(255, 255, 255, 0.04)) !important;
+  box-shadow: inset 0 0 0 1px rgba(119, 221, 213, 0.22) !important;
+}
+
+.report-panel .report-section-item.is-completed,
+.report-panel .wf-step--hecho,
+.report-panel .timeline-item.node--hecho,
+.report-panel .status-message.success,
+.report-panel .section-tag.completed,
+.report-panel .metric-pill.pill--completed,
+.report-panel .complete-banner,
+.report-panel .final-answer-hint,
+.report-panel :deep(.stat-box.highlight) {
+  background: rgba(119, 221, 213, 0.14) !important;
+  color: #a7eee8 !important;
+  box-shadow: inset 0 0 0 1px rgba(119, 221, 213, 0.18) !important;
+  border: 0 !important;
+}
+
+.report-panel .main-title,
+.report-panel .sub-title,
+.report-panel .report-id,
+.report-panel .section-number,
+.report-panel .section-title,
+.report-panel .header-title,
+.report-panel .header-meta,
+.report-panel .header-index,
+.report-panel .metric-label,
+.report-panel .metric-value,
+.report-panel .wf-step-index,
+.report-panel .wf-step-title,
+.report-panel .wf-step-meta,
+.report-panel .action-label,
+.report-panel .action-time,
+.report-panel .timeline-body,
+.report-panel .info-key,
+.report-panel .info-val,
+.report-panel .tag-num,
+.report-panel .tag-title,
+.report-panel .elapsed-badge,
+.report-panel .result-tool,
+.report-panel .result-size,
+.report-panel .raw-preview,
+.report-panel .loading-text,
+.report-panel .waiting-text,
+.report-panel .log-title,
+.report-panel .log-id,
+.report-panel .log-time,
+.report-panel .log-msg,
+.report-panel :deep(.panel-title),
+.report-panel :deep(.panel-count),
+.report-panel :deep(.fact-text),
+.report-panel :deep(.node-name),
+.report-panel :deep(.edge-name),
+.report-panel :deep(.edge-fact),
+.report-panel :deep(.empty-state),
+.report-panel :deep(.tab-label) {
+  font-family: 'Inter', sans-serif !important;
+}
+
+.report-panel .main-title,
+.report-panel .section-title,
+.report-panel .header-title,
+.report-panel .wf-step-title,
+.report-panel .action-label,
+.report-panel .tag-title,
+.report-panel .info-val,
+.report-panel :deep(.panel-title),
+.report-panel :deep(.node-name),
+.report-panel :deep(.edge-name) {
+  color: rgba(244, 255, 251, 0.92) !important;
+}
+
+.report-panel .sub-title,
+.report-panel .timeline-body,
+.report-panel .log-msg,
+.report-panel .report-id,
+.report-panel .section-number,
+.report-panel .action-time,
+.report-panel .info-key,
+.report-panel .elapsed-badge,
+.report-panel .header-meta,
+.report-panel .metric-label,
+.report-panel .wf-step-index,
+.report-panel .wf-step-meta,
+.report-panel .tag-num,
+.report-panel .result-size,
+.report-panel .raw-preview,
+.report-panel .waiting-text,
+.report-panel .log-id,
+.report-panel .log-time,
+.report-panel :deep(.panel-count),
+.report-panel :deep(.empty-state),
+.report-panel :deep(.tab-label) {
+  color: rgba(235, 255, 251, 0.56) !important;
+}
+
+.report-panel .generated-content,
+.report-panel .generated-content :deep(p),
+.report-panel .generated-content :deep(li),
+.report-panel .generated-content :deep(strong),
+.report-panel .generated-content :deep(.md-h2),
+.report-panel .generated-content :deep(.md-h3),
+.report-panel .generated-content :deep(.md-h4),
+.report-panel .generated-content :deep(.md-quote),
+.report-panel .generated-content :deep(.code-block),
+.report-panel :deep(.fact-text),
+.report-panel :deep(.edge-fact),
+.report-panel :deep(.query-label) {
+  color: rgba(235, 255, 251, 0.72) !important;
+  background: transparent !important;
+  border-color: rgba(235, 255, 251, 0.08) !important;
+}
+
+.report-panel .generated-content :deep(.md-h2),
+.report-panel .generated-content :deep(.md-h3),
+.report-panel .generated-content :deep(.md-h4),
+.report-panel .generated-content :deep(strong) {
+  color: rgba(244, 255, 251, 0.92) !important;
+}
+
+.report-panel .generated-content :deep(.md-h2) {
+  border-bottom-color: rgba(119, 221, 213, 0.18) !important;
+}
+
+.report-panel .console-logs {
+  background: rgba(0, 0, 0, 0.35) !important;
+}
+
 .main-split-layout {
   gap: 16px;
   padding: 0 0 12px;
