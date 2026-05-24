@@ -772,6 +772,20 @@ class ZhipuAILLMClient(OpenAIGenericClient):
                 return result
 
             except ValueError as e:
+                retryable_errors = [
+                    "API returned empty choices array",
+                    "El LLM devolvió una respuesta vacía",
+                ]
+                if attempt < max_retries and any(msg in str(e) for msg in retryable_errors):
+                    logger.warning(
+                        "Retrying LLM call after recoverable error "
+                        "(attempt %s/%s): %s",
+                        attempt + 2,
+                        max_retries + 1,
+                        str(e),
+                    )
+                    continue
+
                 # Bug A fix: Handle GLM plain text responses
                 if response_model is not None and "No se pudo extraer JSON" in str(e):
                     schema_fields = response_model.model_fields
