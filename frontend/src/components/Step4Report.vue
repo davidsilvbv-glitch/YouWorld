@@ -139,7 +139,7 @@
           <div class="workflow-divider"></div>
         </div>
 
-        <div class="workflow-timeline">
+        <div v-if="showTechnicalTimeline" class="workflow-timeline">
           <TransitionGroup name="timeline-item">
             <div 
               v-for="(log, idx) in displayLogs" 
@@ -418,6 +418,7 @@ const agentLogs = ref([])
 const consoleLogs = ref([])
 const agentLogLine = ref(0)
 const consoleLogLine = ref(0)
+const showTechnicalTimeline = ref(false)
 const reportOutline = ref(null)
 const currentSectionIndex = ref(null)
 const generatedSections = ref({})
