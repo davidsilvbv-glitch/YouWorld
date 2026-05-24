@@ -371,18 +371,20 @@
             <span>Esperando actividad del agente...</span>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Bottom Console Logs -->
-    <div class="console-logs">
-      <div class="log-header">
-        <span class="log-title">SALIDA DE CONSOLA</span>
-        <span class="log-id">{{ reportId || 'NO_REPORT' }}</span>
-      </div>
-      <div class="log-content" ref="logContent">
-        <div class="log-line" v-for="(log, idx) in consoleLogs" :key="idx">
-          <span class="log-msg" :class="getLogLevelClass(log)">{{ log }}</span>
+        <div class="console-logs" :class="{ collapsed: logsCollapsed }">
+          <button class="log-header log-toggle" type="button" @click="logsCollapsed = !logsCollapsed">
+            <div class="log-header-left">
+              <span class="log-title">SALIDA DE CONSOLA</span>
+              <span class="log-id">{{ reportId || 'NO_REPORT' }}</span>
+            </div>
+            <span class="log-toggle-icon" :class="{ open: !logsCollapsed }">⌄</span>
+          </button>
+          <div v-show="!logsCollapsed" class="log-content" ref="logContent">
+            <div class="log-line" v-for="(log, idx) in consoleLogs" :key="idx">
+              <span class="log-msg" :class="getLogLevelClass(log)">{{ log }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -419,6 +421,7 @@ const consoleLogs = ref([])
 const agentLogLine = ref(0)
 const consoleLogLine = ref(0)
 const showTechnicalTimeline = ref(false)
+const logsCollapsed = ref(true)
 const reportOutline = ref(null)
 const currentSectionIndex = ref(null)
 const generatedSections = ref({})
@@ -5687,6 +5690,64 @@ html[lang="en"] .report-header-block .main-title {
 .workflow-timeline,
 .console-logs {
   border-radius: 28px;
+}
+
+.console-logs {
+  margin-top: 14px;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible;
+}
+
+.log-toggle {
+  width: 100%;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.log-header {
+  margin: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 0 8px !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(235, 255, 251, 0.08) !important;
+  background: transparent !important;
+  min-height: auto;
+}
+
+.log-header-left {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.log-toggle-icon {
+  color: rgba(119, 221, 213, 0.72);
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.log-toggle-icon.open {
+  transform: rotate(180deg);
+}
+
+.console-logs.collapsed .log-content {
+  display: none;
+}
+
+.console-logs .log-content {
+  height: 170px;
+  padding: 8px 0 0;
 }
 
 .report-content-wrapper {
