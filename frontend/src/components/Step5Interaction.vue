@@ -266,7 +266,7 @@
               <div class="message-content">
                 <div class="message-header">
                   <span class="sender-name">
-                    {{ msg.role === 'user' ? 'You' : (chatTarget === 'report_agent' ? 'Report Agent' : (selectedAgent?.username || 'Agent')) }}
+                    {{ msg.role === 'user' ? 'Tú' : (chatTarget === 'report_agent' ? 'Agente de informes' : (selectedAgent?.username || 'Agente')) }}
                   </span>
                   <span class="message-time">{{ formatTime(msg.timestamp) }}</span>
                 </div>
@@ -432,7 +432,7 @@ const showAgentDropdown = ref(false)
 const selectedAgent = ref(null)
 const selectedAgentIndex = ref(null)
 const showFullProfile = ref(true)
-const showToolsDetail = ref(true)
+const showToolsDetail = ref(false)
 
 // Chat State
 const chatInput = ref('')
@@ -1362,6 +1362,7 @@ watch(() => props.simulationId, (newId) => {
   gap: 6px;
   flex: 1;
   justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 .tab-pill {
@@ -1378,6 +1379,7 @@ watch(() => props.simulationId, (newId) => {
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  min-width: 0;
 }
 
 .tab-pill:hover {
@@ -1409,6 +1411,7 @@ watch(() => props.simulationId, (newId) => {
 
 .agent-pill {
   width: 200px;
+  max-width: 200px;
   justify-content: space-between;
 }
 
@@ -1624,13 +1627,13 @@ watch(() => props.simulationId, (newId) => {
 .tool-name {
   font-size: 12px;
   font-weight: 600;
-  color: #1F2937;
+  color: #edf6f2;
   margin-bottom: 4px;
 }
 
 .tool-desc {
   font-size: 11px;
-  color: #6B7280;
+  color: #b8c9c5;
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -2626,6 +2629,14 @@ watch(() => props.simulationId, (newId) => {
 .survey-setup,
 .survey-results {
   backdrop-filter: blur(14px);
+}
+
+.action-bar {
+  align-items: flex-start !important;
+}
+
+.action-bar-tabs .tab-pill {
+  flex: 0 1 auto;
 }
 
 .chat-input,
