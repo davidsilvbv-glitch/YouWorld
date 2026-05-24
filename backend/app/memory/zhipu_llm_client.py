@@ -634,15 +634,12 @@ class ZhipuAILLMClient(OpenAIGenericClient):
         max_retries = 1
         for attempt in range(max_retries + 1):
             try:
-                # OpenRouter suele comportarse mejor con json_object que con
-                # json_schema en extracciones largas de Graphiti. La
-                # normalizacion de abajo ya corrige wrappers/campos omitidos.
                 base_url = str(getattr(self.client, "base_url", "") or "")
                 use_openrouter = "openrouter.ai" in base_url
 
                 # Construir response_format
                 response_format = {"type": "json_object"}
-                if response_model is not None and not use_openrouter:
+                if response_model is not None:
                     schema_name = getattr(
                         response_model, "__name__", "structured_response"
                     )
@@ -655,9 +652,14 @@ class ZhipuAILLMClient(OpenAIGenericClient):
                         },
                     }
 
-                # OpenRouter/Alibaba exige que los mensajes contengan la palabra
-                # "json" para permitir response_format=json_object.
-                if use_openrouter:
+                # Fallback: si OpenRouter ya falló una vez con json_schema,
+                # degradar a json_object solo en el reintento.
+                if use_openrouter and response_model is not None and attempt > 0:
+                    response_format = {"type": "json_object"}
+
+                # OpenRouter/Alibaba exige que los mensajes contengan "json"
+                # cuando usamos json_object.
+                if use_openrouter and response_format.get("type") == "json_object":
                     json_instruction = (
                         "\n\nIMPORTANT: Respond with valid JSON only. "
                         "The output must be a JSON object with no extra text."
