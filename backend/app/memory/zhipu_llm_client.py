@@ -657,12 +657,13 @@ class ZhipuAILLMClient(OpenAIGenericClient):
                 if use_openrouter and response_model is not None and attempt > 0:
                     response_format = {"type": "json_object"}
 
-                # OpenRouter/Alibaba exige que los mensajes contengan "json"
-                # cuando usamos json_object.
-                if use_openrouter and response_format.get("type") == "json_object":
+                # OpenRouter/Alibaba exige que algún mensaje contenga la palabra
+                # literal "json" para structured output. La incluimos en
+                # minúsculas explícitamente para evitar rechazos del upstream.
+                if use_openrouter:
                     json_instruction = (
-                        "\n\nIMPORTANT: Respond with valid JSON only. "
-                        "The output must be a JSON object with no extra text."
+                        "\n\nIMPORTANT: respond with valid json only. "
+                        "The output must be a json object with no extra text."
                     )
                     system_index = next(
                         (i for i, msg in enumerate(openai_messages) if msg.get("role") == "system"),
@@ -680,7 +681,9 @@ class ZhipuAILLMClient(OpenAIGenericClient):
                     )
                     if openai_messages and openai_messages[0].get("role") == "system":
                         openai_messages[0]["content"] += (
-                            "\n\nIMPORTANT: You MUST respond with valid JSON only. No conversational text, no explanations, no other content. Your response MUST be parseable by JSON.parse()."
+                            "\n\nIMPORTANT: you MUST respond with valid json only. "
+                            "No conversational text, no explanations, no other content. "
+                            "Your response MUST be parseable by json.parse()."
                         )
 
                 request_kwargs = {
