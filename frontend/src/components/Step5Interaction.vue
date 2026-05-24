@@ -2850,10 +2850,7 @@ html[lang="en"] .report-header-block .main-title {
 
 .interaction-panel,
 .right-panel {
-  background:
-    radial-gradient(circle at 72% 8%, rgba(91, 203, 190, 0.2), transparent 30%),
-    radial-gradient(circle at 18% 10%, rgba(77, 35, 111, 0.32), transparent 34%),
-    linear-gradient(125deg, #050607 0%, #081310 34%, #0b0715 72%, #05020a 100%) !important;
+  background: transparent !important;
   color: var(--phase-text);
 }
 .left-panel.report-style {
@@ -2871,6 +2868,7 @@ html[lang="en"] .report-header-block .main-title {
   width: auto !important;
   min-width: 320px;
   max-width: 520px;
+  background: transparent !important;
 }
 .report-tag,
 .tab-pill.active,
@@ -2996,7 +2994,12 @@ html[lang="en"] .report-header-block .main-title {
 .chat-input,
 .report-agent-tools-card,
 .agent-profile-card,
-.chat-messages {
+.chat-messages,
+.chat-container,
+.survey-container,
+.tools-card-header,
+.profile-card-header,
+.tools-card-body {
   border-color: rgba(118, 163, 157, 0.14) !important;
 }
 .action-bar,
@@ -3009,9 +3012,11 @@ html[lang="en"] .report-header-block .main-title {
 .survey-input,
 .chat-input,
 .chat-messages,
+.chat-container,
+.survey-container,
 .tools-card-body,
 .section-header-row.clickable:hover {
-  background: rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.04) !important;
 }
 .tab-pill,
 .agent-pill,
@@ -3020,6 +3025,28 @@ html[lang="en"] .report-header-block .main-title {
 .profile-card-toggle,
 .send-btn {
   border-radius: 999px;
+}
+.action-bar,
+.report-agent-tools-card,
+.agent-profile-card,
+.chat-messages,
+.chat-input-area,
+.survey-setup,
+.survey-results,
+.chat-container,
+.survey-container {
+  border-radius: 28px !important;
+}
+
+.chat-container,
+.survey-container {
+  gap: 14px;
+  background: transparent !important;
+}
+
+.report-agent-tools-card,
+.agent-profile-card {
+  overflow: hidden;
 }
 .tab-pill,
 .agent-pill,
@@ -3035,6 +3062,24 @@ html[lang="en"] .report-header-block .main-title {
 .survey-results {
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.035)) !important;
+}
+.tools-card-header,
+.profile-card-header,
+.tools-card-body,
+.profile-card-body {
+  background: transparent !important;
+}
+
+.tools-card-header,
+.profile-card-header {
+  border-bottom: 1px solid rgba(118, 163, 157, 0.14) !important;
+}
+
+.chat-messages,
+.chat-input-area,
+.survey-setup,
+.survey-results {
+  background: var(--phase-surface) !important;
 }
 .action-bar {
   padding: 16px 18px !important;
@@ -3052,7 +3097,20 @@ html[lang="en"] .report-header-block .main-title {
 }
 .tool-item {
   border: 1px solid rgba(235, 255, 251, 0.07) !important;
+  border-radius: 20px !important;
+}
+
+.result-card,
+.agent-checkbox,
+.chat-input,
+.survey-input,
+.chat-message.assistant .message-text,
+.chat-message.user .message-text {
   border-radius: 18px !important;
+}
+
+.tool-icon-wrapper {
+  border-radius: 12px !important;
 }
 .chat-message.user .message-text {
   background: linear-gradient(135deg, rgba(120, 221, 213, 0.2), rgba(185, 130, 255, 0.16)) !important;
@@ -3071,6 +3129,10 @@ html[lang="en"] .report-header-block .main-title {
 .empty-icon,
 .empty-text {
   color: rgba(201, 215, 212, 0.72) !important;
+}
+
+.empty-icon {
+  opacity: 0.7;
 }
 
 @media (max-width: 1200px) {
