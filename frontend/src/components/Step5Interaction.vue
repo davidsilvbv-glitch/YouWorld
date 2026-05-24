@@ -3063,6 +3063,13 @@ html[lang="en"] .report-header-block .main-title {
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.035)) !important;
 }
+
+.action-bar,
+.report-agent-tools-card {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
 .tools-card-header,
 .profile-card-header,
 .tools-card-body,
@@ -3073,6 +3080,16 @@ html[lang="en"] .report-header-block .main-title {
 .tools-card-header,
 .profile-card-header {
   border-bottom: 1px solid rgba(118, 163, 157, 0.14) !important;
+}
+
+.action-bar-header,
+.action-bar-tabs,
+.tools-grid {
+  background: transparent !important;
+}
+
+.tools-card-header {
+  border-bottom: 0 !important;
 }
 
 .chat-messages,
