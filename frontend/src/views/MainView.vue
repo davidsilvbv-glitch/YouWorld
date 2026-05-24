@@ -155,6 +155,29 @@ const rememberProjectRoute = (projectId, path = route.fullPath) => {
   localStorage.setItem(`youworld:last-project-route:${projectId}`, path)
 }
 
+const getResumeRoute = (project) => {
+  const projectId = project?.project_id || currentProjectId.value
+  if (!projectId) return null
+
+  const savedRoute = localStorage.getItem(`youworld:last-project-route:${projectId}`)
+  const savedReportId = localStorage.getItem(`youworld:project-report:${projectId}`) || project?.report_id
+  const savedSimulationId = localStorage.getItem(`youworld:project-simulation:${projectId}`) || project?.simulation_id
+
+  if (savedRoute && !savedRoute.startsWith(`/process/${projectId}`)) {
+    return savedRoute
+  }
+
+  if (savedReportId) {
+    return { name: 'Report', params: { reportId: savedReportId } }
+  }
+
+  if (savedSimulationId) {
+    return { name: 'Simulation', params: { simulationId: savedSimulationId } }
+  }
+
+  return null
+}
+
 // --- Layout Methods ---
 const toggleMaximize = (target) => {
   if (viewMode.value === target) {
@@ -243,6 +266,11 @@ const loadProject = async () => {
     const res = await getProject(currentProjectId.value)
     if (res.success) {
       projectData.value = res.data
+      const resumeRoute = getResumeRoute(res.data)
+      if (resumeRoute) {
+        router.replace(resumeRoute)
+        return
+      }
       rememberProjectRoute(res.data.project_id || currentProjectId.value, `/process/${currentProjectId.value}`)
       updatePhaseByStatus(res.data.status)
       addLog(t('mainView.projectLoaded', { status: res.data.status }))
