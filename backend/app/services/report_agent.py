@@ -33,6 +33,10 @@ from .zep_tools import (
 
 logger = get_logger("mirofish.report_agent")
 
+CHAT_REPORT_CONTEXT_LIMIT = 24000
+CHAT_REPORT_CONTEXT_HEAD = 12000
+CHAT_REPORT_CONTEXT_TAIL = 12000
+
 # Sufijo para la observación que se reinyecta al diálogo después de una tool call.
 # Mantiene al agente en modo de continuidad sin romper si la herramienta ya devolvió
 # suficiente contexto para responder directamente.
@@ -1666,15 +1670,39 @@ class ReportAgent:
 
         # ObteneryaGenerardel informe contenido
         report_content = ""
+        report_outline_summary = ""
         try:
             report = ReportManager.get_report_by_simulation(self.simulation_id)
+            if report and report.outline and report.outline.sections:
+                outline_lines = [
+                    f"{idx + 1}. {section.title}"
+                    for idx, section in enumerate(report.outline.sections)
+                ]
+                report_outline_summary = (
+                    f"Título: {report.outline.title}\n"
+                    f"Resumen: {report.outline.summary}\n"
+                    "Secciones del informe:\n"
+                    + "\n".join(outline_lines)
+                )
             if report and report.markdown_content:
                 # Límitelongitud del informe，evitar contexto demasiado largo
                 report_content = report.markdown_content[:15000]
                 if len(report.markdown_content) > 15000:
-                    report_content += "\n\n... [informe contenidotruncado] ..."
+                    report_content = (
+                        report.markdown_content[:CHAT_REPORT_CONTEXT_HEAD]
+                        + "\n\n... [contenido intermedio omitido para brevedad] ...\n\n"
+                        + report.markdown_content[-CHAT_REPORT_CONTEXT_TAIL:]
+                    )
         except Exception as e:
             logger.warning(t("report.FetchReportFailed", error=e))
+
+        if report_outline_summary:
+            report_content = (
+                f"{report_outline_summary}\n\n"
+                f"Contenido del informe:\n{report_content}"
+                if report_content
+                else report_outline_summary
+            )
 
         system_prompt = load_prompt(
             "report",

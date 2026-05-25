@@ -2544,9 +2544,10 @@ watch(() => props.simulationId, (newId) => {
 .result-answer :deep(.md-quote) {
   margin: 12px 0;
   padding: 12px 16px;
-  background: #F9FAFB;
-  border-left: 3px solid #1F2937;
-  color: #4B5563;
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid rgba(119, 221, 213, 0.7);
+  color: rgba(235, 255, 251, 0.78);
+  border-radius: 12px;
 }
 
 :deep(.code-block) {
@@ -2566,10 +2567,10 @@ watch(() => props.simulationId, (newId) => {
 :deep(.inline-code) {
   font-family: 'JetBrains Mono', monospace;
   font-size: 13px;
-  background: #F3F4F6;
+  background: rgba(255, 255, 255, 0.08);
   padding: 2px 6px;
   border-radius: 4px;
-  color: #1F2937;
+  color: #dffaf5;
 }
 
 :deep(.md-hr) {
